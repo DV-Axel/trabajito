@@ -3,8 +3,9 @@ import logo from '../assets/images/logo trabajito.png';
 import { Link } from 'react-router-dom';
 
 const Header = () => {
-    return (
 
+
+    return (
         <header className="bg-[#02283A] flex justify-between items-center px-8 py-2">
 
             { /* TODO: hacer el menu hamburguesa */ }

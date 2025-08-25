@@ -1,7 +1,32 @@
 import imagenLogin from '../assets/images/image login.png'
+
+import axios from 'axios';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] =  useState('');
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setErrorMessage('');
+
+        try{
+            const res = await axios.post('http://localhost:8888/login', { email, password });
+
+            console.log(res);
+        }catch (error) {
+            if (error.response && error.response.data && error.response.data.message) {
+                setErrorMessage(error.response.data.message);
+            } else {
+                setErrorMessage('Error al conectar con el servidor');
+            }
+        }
+    }
+
     return (
         <div className="flex flex-1 flex-col md:flex-row">
             {/* Sección de la imagen */}
@@ -14,17 +39,19 @@ const Login = () => {
             </div>
             {/* Sección del login */}
             <div className="w-full flex items-center justify-center bg-white">
-                <div className="max-w-lg w-full px-8 mdplus:py-20 py-28">
+                <div className="max-w-lg w-full px-8 py-16">
                     <h2 className="text-3xl md:text-4xl font-semibold text-[#0c3444] mb-8 text-center">
                         Te damos la bienvenida de nuevo
                     </h2>
-                    <form className="bg-white shadow-md rounded-lg p-8 space-y-6 border border-gray-300">
+                    <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-8 space-y-6 border border-gray-300">
                         <div>
                             <label htmlFor="email" className="block text-lg font-medium text-gray-700 mb-1">
                                 Correo electronico
                             </label>
                             <input
                                 id="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 type="email"
                                 placeholder="Tu Email"
                                 className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
@@ -39,6 +66,8 @@ const Login = () => {
                                 id="password"
                                 type="password"
                                 placeholder="Tu contraseña"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                                 className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
                                 required
                             />
@@ -74,6 +103,9 @@ const Login = () => {
                             </Link>
                         </div>
                     </form>
+
+                    {errorMessage && <p className="text-center text-l mdplus:my-2 my-4 text-red-500">{errorMessage}</p>}
+
                 </div>
             </div>
         </div>
