@@ -4,7 +4,11 @@ import { Link } from 'react-router-dom';
 
 const Header = () => {
     return (
+
         <header className="bg-[#02283A] flex justify-between items-center px-8 py-2">
+
+            { /* TODO: hacer el menu hamburguesa */ }
+
             <Link to="/" className="flex items-center text-white text-3xl font-semibold">
                 <img src={logo} alt="Logo" className="mr-4 w-16 h-16 object-contain" />
                 TRABAJITO
