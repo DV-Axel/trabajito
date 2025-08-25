@@ -42,6 +42,11 @@ const Login = () => {
                                 className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
                                 required
                             />
+                            <div className="text-right mt-2">
+                                <Link to="/restablecerContraseña" className="text-[#0c7fcf] hover:underline text-sm">
+                                    ¿Olvidaste tu contraseña?
+                                </Link>
+                            </div>
                         </div>
                         <div className="flex items-center">
                             <input
@@ -49,8 +54,11 @@ const Login = () => {
                                 type="checkbox"
                                 className="mr-2"
                             />
+
+
                             <label htmlFor="remember" className="text-gray-700 text-sm">
                                 Recordar contraseña
+                                { /* TODO: Implementar funcionalidad */}
                             </label>
                         </div>
                         <button
@@ -64,7 +72,6 @@ const Login = () => {
                             <Link to='/registro' className="text-[#0c7fcf] hover:underline">
                                 Crea una ahora mismo
                             </Link>
-
                         </div>
                     </form>
                 </div>
