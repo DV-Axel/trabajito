@@ -2,6 +2,9 @@ import { Link } from "react-router-dom";
 import { FaRegHandshake } from "react-icons/fa6";
 
 const Signup = () => {
+
+    {/* TODO: Generar validaciones */}
+
     return (
         <div className="flex flex-1 min-h-screen items-center justify-center bg-white">
             <div className="max-w-3xl w-full px-8 py-6">

@@ -6,26 +6,51 @@ import { Link } from 'react-router-dom';
 
 const Login = () => {
 
+    //state de los inputs
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    //state del mensaje de error
     const [errorMessage, setErrorMessage] =  useState('');
+
+    //state de los input que faltan
+    const [emailError, setEmailError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
 
-        try{
-            const res = await axios.post('http://localhost:8888/login', { email, password });
+        // Validación de campos vacíos
+        if (!email || !password) {
+            setEmailError(!email);
+            setPasswordError(!password);
+            setErrorMessage('Complete todos los campos');
+            return;
+        } else {
+            setEmailError(false);
+            setPasswordError(false);
+        }
 
+        // Validación de formato de email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setErrorMessage('Ingrese un correo electrónico válido');
+            return;
+        }
+
+        try {
+            const res = await axios.post('http://localhost:8888/login', { email, password });
             console.log(res);
-        }catch (error) {
+            // Aquí puedes redirigir o guardar el token si el login es exitoso
+        } catch (error) {
             if (error.response && error.response.data && error.response.data.message) {
                 setErrorMessage(error.response.data.message);
             } else {
                 setErrorMessage('Error al conectar con el servidor');
             }
         }
-    }
+    };
 
     return (
         <div className="flex flex-1 flex-col md:flex-row">
@@ -54,8 +79,7 @@ const Login = () => {
                                 onChange={(e) => setEmail(e.target.value)}
                                 type="email"
                                 placeholder="Tu Email"
-                                className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
-                                required
+                                className={`w-full border ${emailError ? 'border-red-500' : 'border-gray-300'} rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all`}
                             />
                         </div>
                         <div>
@@ -68,8 +92,7 @@ const Login = () => {
                                 placeholder="Tu contraseña"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
-                                required
+                                className={`w-full border ${passwordError ? 'border-red-500' : 'border-gray-300'} rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all`}
                             />
                             <div className="text-right mt-2">
                                 <Link to="/restablecerContraseña" className="text-[#0c7fcf] hover:underline text-sm">
