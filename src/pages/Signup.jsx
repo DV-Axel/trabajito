@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import { FaRegHandshake } from "react-icons/fa6";
 
 const Signup = () => {
-
     {/* TODO: Generar validaciones */}
+
 
     return (
         <div className="flex flex-1 min-h-screen items-center justify-center bg-white">
@@ -24,7 +24,6 @@ const Signup = () => {
                             type="text"
                             placeholder="Tu nombre"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
-                            required
                         />
                     </div>
                     <div>
@@ -36,7 +35,6 @@ const Signup = () => {
                             type="text"
                             placeholder="Tu apellido"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
-                            required
                         />
                     </div>
                     <div>
@@ -47,7 +45,6 @@ const Signup = () => {
                             <select
                                 id="tipoIdentificacion"
                                 className="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all w-1/2"
-                                required
                             >
                                 <option value="">Tipo</option>
                                 <option value="dni">DNI</option>
@@ -59,7 +56,6 @@ const Signup = () => {
                                 type="number"
                                 placeholder="Número"
                                 className="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all w-1/2"
-                                required
                             />
                         </div>
                     </div>
@@ -72,7 +68,6 @@ const Signup = () => {
                             type="text"
                             placeholder="Tu dirección"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
-                            required
                         />
                     </div>
                     <div className="flex gap-2">
@@ -85,7 +80,6 @@ const Signup = () => {
                                 type="number"
                                 placeholder="N°"
                                 className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
-                                required
                             />
                         </div>
                         <div className="w-1/2">
@@ -109,7 +103,6 @@ const Signup = () => {
                             type="number"
                             placeholder="Código Postal"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
-                            required
                         />
                     </div>
                     <div>
@@ -121,7 +114,6 @@ const Signup = () => {
                             type="email"
                             placeholder="Correo Electrónico"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
-                            required
                         />
                     </div>
                     <div>
@@ -133,7 +125,6 @@ const Signup = () => {
                             type="email"
                             placeholder="Repetir Correo Electrónico"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
-                            required
                         />
                     </div>
                     <div>
@@ -145,7 +136,6 @@ const Signup = () => {
                             type="tel"
                             placeholder="Tu teléfono"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
-                            required
                         />
                     </div>
                     <div>
@@ -156,7 +146,6 @@ const Signup = () => {
                             id="fechaNacimiento"
                             type="date"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
-                            required
                         />
                     </div>
 
