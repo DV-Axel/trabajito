@@ -35,6 +35,7 @@ const Header = () => {
             </div>
 
             {/* Menú hamburguesa en móvil */}
+            {/*TODO: cambiar el color de los iconos en el menu hamburguesa*/}
             {menuOpen && (
                 <div className="absolute top-full right-0 bg-[#02283A] w-48 rounded-lg shadow-lg flex flex-col items-center py-4 md:hidden z-50">
                     <div className="flex flex-col items-center mb-4">
