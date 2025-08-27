@@ -1,32 +1,9 @@
 import { Link } from "react-router-dom";
 import { FaRegHandshake } from "react-icons/fa6";
-import { useState } from "react";
 
 const Signup = () => {
     {/* TODO: Generar validaciones */}
 
-    //State de imputs
-    const [nombre, setNombre] = useState('');
-    const [apellido, setApellido] = useState('');
-    const [tipoIdentificacion, setTipoIdentificacion] = useState('');
-    const [numeroIdentificacion, setNumeroIdentificacion] = useState(0);
-    const [direccion, setDireccion] = useState('');
-    const [numero, setNumero] = useState(0);
-    const [departamento, setDepartamento] = useState('');
-    const [codigoPostal, setCodigoPostal] = useState(0);
-    const [email, setEmail] = useState('');
-    const [repEmail, setRepEmail] = useState('');
-    const [telefono, setTelefono] = useState(0);
-    const [fechaNacimiento, setFechaNacimiento] = useState('');
-
-    //state del mensaje de error
-    const [errorMessage, setErrorMessage] =  useState('');
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setErrorMessage('');
-
-    }
 
     return (
         <div className="flex flex-1 min-h-screen items-center justify-center bg-white">
@@ -37,7 +14,7 @@ const Signup = () => {
                 <h2 className="text-3xl md:text-4xl font-semibold text-[#0c3444] mb-8 text-center">
                     Estas a un paso de encontrar la solución que tanto buscas
                 </h2>
-                <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-8 space-y-6 border border-gray-300">
+                <form className="bg-white shadow-md rounded-lg p-8 space-y-6 border border-gray-300">
                     <div>
                         <label htmlFor="nombre" className="block text-lg font-medium text-gray-700 mb-1">
                             Nombre
@@ -45,8 +22,6 @@ const Signup = () => {
                         <input
                             id="nombre"
                             type="text"
-                            value={nombre}
-                            onChange={(e) => setNombre(e.target.value)}
                             placeholder="Tu nombre"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
                         />
@@ -57,8 +32,6 @@ const Signup = () => {
                         </label>
                         <input
                             id="apellido"
-                            value={apellido}
-                            onChange={(e) => setApellido(e.target.value)}
                             type="text"
                             placeholder="Tu apellido"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
@@ -70,8 +43,6 @@ const Signup = () => {
                         </label>
                         <div className="flex gap-2">
                             <select
-                                value={tipoIdentificacion}
-                                onChange={(e) => setTipoIdentificacion(e.target.value)}
                                 id="tipoIdentificacion"
                                 className="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all w-1/2"
                             >
@@ -83,8 +54,6 @@ const Signup = () => {
                             <input
                                 id="numeroIdentificacion"
                                 type="number"
-                                value={numeroIdentificacion}
-                                onChange={(e) => setNumeroIdentificacion(e.target.value)}
                                 placeholder="Número"
                                 className="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all w-1/2"
                             />
@@ -97,8 +66,6 @@ const Signup = () => {
                         <input
                             id="direccion"
                             type="text"
-                            value={direccion}
-                            onChange={(e) => setDireccion(e.target.value)}
                             placeholder="Tu dirección"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
                         />
@@ -111,8 +78,6 @@ const Signup = () => {
                             <input
                                 id="numero"
                                 type="number"
-                                value={numero}
-                                onChange={(e) => setNumero(e.target.value)}
                                 placeholder="N°"
                                 className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
                             />
@@ -124,8 +89,6 @@ const Signup = () => {
                             <input
                                 id="departamento"
                                 type="text"
-                                value={departamento}
-                                onChange={(e) => setDepartamento(e.target.value)}
                                 placeholder="Depto"
                                 className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
                             />
@@ -138,8 +101,6 @@ const Signup = () => {
                         <input
                             id="codigoPostal"
                             type="number"
-                            value={codigoPostal}
-                            onChange={(e) => setCodigoPostal(e.target.value)}
                             placeholder="Código Postal"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
                         />
@@ -151,8 +112,6 @@ const Signup = () => {
                         <input
                             id="email"
                             type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
                             placeholder="Correo Electrónico"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
                         />
@@ -164,8 +123,6 @@ const Signup = () => {
                         <input
                             id="repEmail"
                             type="email"
-                            value={repEmail}
-                            onChange={(e) => setRepEmail(e.target.value)}
                             placeholder="Repetir Correo Electrónico"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
                         />
@@ -177,8 +134,6 @@ const Signup = () => {
                         <input
                             id="telefono"
                             type="tel"
-                            value={telefono}
-                            onChange={(e) => setTelefono(e.target.value)}
                             placeholder="Tu teléfono"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
                         />
@@ -190,8 +145,6 @@ const Signup = () => {
                         <input
                             id="fechaNacimiento"
                             type="date"
-                            value={fechaNacimiento}
-                            onChange={(e) => setFechaNacimiento(e.target.value)}
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
                         />
                     </div>
@@ -209,7 +162,6 @@ const Signup = () => {
                         </Link>
                     </div>
                 </form>
-                {errorMessage && <p className="text-center text-l mdplus:my-2 my-4 text-red-500">{errorMessage}</p>}
             </div>
         </div>
     );

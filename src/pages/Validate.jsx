@@ -20,7 +20,7 @@ const Validate = () => {
                     >
                         Ir al Login
                     </Link>
-                    <MdWorkspacePremium className="text-9xl mt-4 mdplus:mt-10 text-[#02283A]"/>
+                    <MdWorkspacePremium className="text-9xl mdplus:mb-10 my-6 text-[#02283A]"/>
                 </div>
             </div>
         );
