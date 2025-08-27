@@ -3,12 +3,12 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 
 import Home from './pages/Home';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Confirm from './pages/Confirm';
-import Validate from './pages/Validate';
-import RestartPassword from "./pages/RestartPassword.jsx";
-import NewPassword from "./pages/NewPassword.jsx";
+import Login from './pages/auth/Login.jsx';
+import Signup from './pages/auth/Signup.jsx';
+import Confirm from './pages/auth/Confirm.jsx';
+import Validate from './pages/auth/Validate.jsx';
+import RestartPassword from "./pages/auth/RestartPassword.jsx";
+import NewPassword from "./pages/auth/NewPassword.jsx";
 
 
 function App() {

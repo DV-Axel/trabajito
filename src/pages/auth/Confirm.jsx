@@ -1,4 +1,4 @@
-import imagenLogin from "../assets/images/image login.png";
+import imagenLogin from "../../assets/images/image login.png";
 import { Link } from "react-router-dom";
 
 const Confirm = () => {
