@@ -17,6 +17,7 @@ const RestartPassword = () => {
             setEmailError(true);
             return;
         }
+
         {/* TODO: aplicar logica de envio de email */}
         setShowModal(true);
     };

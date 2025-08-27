@@ -8,6 +8,7 @@ import Signup from './pages/Signup';
 import Confirm from './pages/Confirm';
 import Validate from './pages/Validate';
 import RestartPassword from "./pages/RestartPassword.jsx";
+import NewPassword from "./pages/NewPassword.jsx";
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
                             <Route path="/confirmacion" element={<Confirm/>}/>
                             <Route path="/validacion" element={<Validate/>}/>
                             <Route path="/restablecerContraseña" element={<RestartPassword/>}/>
+                            <Route path="/nuevaContraseña" element={<NewPassword />}/>
                         </Routes>
                     </main>
                     <Footer/>

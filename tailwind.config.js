@@ -8,7 +8,7 @@ export default {
         extend: {
             screens: {
                 'mdplus': '824px',
-                'smplus': '350px',
+                'smplus': '361px',
             },
         },
     },
