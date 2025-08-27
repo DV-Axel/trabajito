@@ -37,13 +37,13 @@ const Header = () => {
             {/* Menú hamburguesa en móvil */}
             {/*TODO: cambiar el color de los iconos en el menu hamburguesa*/}
             {menuOpen && (
-                <div className="absolute top-full right-0 bg-[#02283A] w-48 rounded-lg shadow-lg flex flex-col items-center py-4 md:hidden z-50">
+                <div className="absolute top-full right-0 bg-[#02283A] w-48 rounded-lg shadow-lg flex flex-col items-center py-4 mdplus:hidden z-50">
                     <div className="flex flex-col items-center mb-4">
-                        <FaRegQuestionCircle title="Ayuda" className="cursor-pointer text-3xl" />
+                        <FaRegQuestionCircle title="Ayuda" className="cursor-pointer text-white text-3xl" />
                         <span className="text-base mt-2 uppercase text-white">Ayuda</span>
                     </div>
                     <Link to="/login" className="flex flex-col items-center">
-                        <FaSignInAlt title="Iniciar sesión" className="cursor-pointer text-3xl" />
+                        <FaSignInAlt title="Iniciar sesión" className="cursor-pointer text-white text-3xl" />
                         <span className="text-base mt-2 uppercase text-white">Iniciar Sesión</span>
                     </Link>
                 </div>

@@ -22,8 +22,8 @@ const RestartPassword = () => {
     };
 
     return (
-        <div className="flex-1 flex items-center justify-center bg-white">
-            <div className="max-w-md w-full flex flex-col items-center">
+        <div className="flex-1 flex items-center justify-center bg-white smplus:px-4">
+            <div className="max-w-md w-full flex flex-col items-center smplus:px-4">
                 <MdLockReset className="text-7xl mdplus:mt-8 mdplus:mb-4 text-[#02283A]" />
                 <h2 className="text-3xl font-extrabold text-[#0c3444] mb-6 text-center">
                     Restablecer contraseña
@@ -53,8 +53,8 @@ const RestartPassword = () => {
                 )}
             </div>
             {showModal && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-                    <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full flex flex-col items-center">
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50 smplus:px-4">
+                    <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full flex flex-col items-center smplus:px-2">
                         <MdLockReset className="text-7xl mb-4 text-[#02283A]" />
                         <h2 className="text-3xl font-extrabold text-[#0c3444] mb-4 text-center">
                             ¡Revisa tu correo!
