@@ -9,6 +9,7 @@ import Confirm from './pages/auth/Confirm.jsx';
 import Validate from './pages/auth/Validate.jsx';
 import RestartPassword from "./pages/auth/RestartPassword.jsx";
 import NewPassword from "./pages/auth/NewPassword.jsx";
+import IndexRequester from "./pages/requester/RequesterIndex.jsx";
 
 
 function App() {
@@ -29,6 +30,9 @@ function App() {
                             <Route path="/validacion" element={<Validate/>}/>
                             <Route path="/restablecerContraseña" element={<RestartPassword/>}/>
                             <Route path="/nuevaContraseña" element={<NewPassword />}/>
+
+                            {/* Rutas de los solicitantes de servicios */}
+                            <Route path="/solicitar" element={<IndexRequester />} />
                         </Routes>
                     </main>
                     <Footer/>
