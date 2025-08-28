@@ -2,15 +2,21 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
+//home y landing de la pagina
 import Home from './pages/Home';
+
+// Rutas de autenticación
 import Login from './pages/auth/Login.jsx';
 import Signup from './pages/auth/Signup.jsx';
 import Confirm from './pages/auth/Confirm.jsx';
 import Validate from './pages/auth/Validate.jsx';
 import RestartPassword from "./pages/auth/RestartPassword.jsx";
 import NewPassword from "./pages/auth/NewPassword.jsx";
+
+// Rutas de solicitantes de servicios
 import IndexRequester from "./pages/requester/RequesterIndex.jsx";
 import Formservice from "./pages/requester/Formservice.jsx";
+import LocationService from "./pages/requester/LocationService.jsx";
 
 
 function App() {
@@ -34,7 +40,8 @@ function App() {
 
                             {/* Rutas de los solicitantes de servicios */}
                             <Route path="/solicitar" element={<IndexRequester />} />
-                            <Route path={"/formularioSolicitud"} element={<Formservice/>} />
+                            <Route path="/formularioSolicitud" element={<Formservice/>} />
+                            <Route path="/ubicacionServicio" element={<LocationService/>} />
                         </Routes>
                     </main>
                     <Footer/>
