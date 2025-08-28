@@ -10,6 +10,7 @@ import Validate from './pages/auth/Validate.jsx';
 import RestartPassword from "./pages/auth/RestartPassword.jsx";
 import NewPassword from "./pages/auth/NewPassword.jsx";
 import IndexRequester from "./pages/requester/RequesterIndex.jsx";
+import Formservice from "./pages/requester/Formservice.jsx";
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
 
                             {/* Rutas de los solicitantes de servicios */}
                             <Route path="/solicitar" element={<IndexRequester />} />
+                            <Route path={"/formularioSolicitud"} element={<Formservice/>} />
                         </Routes>
                     </main>
                     <Footer/>
