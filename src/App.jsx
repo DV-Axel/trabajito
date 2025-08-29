@@ -17,7 +17,7 @@ import NewPassword from "./pages/auth/NewPassword.jsx";
 import IndexRequester from "./pages/requester/RequesterIndex.jsx";
 import Formservice from "./pages/requester/Formservice.jsx";
 import LocationService from "./pages/requester/LocationService.jsx";
-
+import UploadFilesService from "./pages/requester/UploadFilesService.jsx";
 
 function App() {
         return (
@@ -42,6 +42,7 @@ function App() {
                             <Route path="/solicitar" element={<IndexRequester />} />
                             <Route path="/formularioSolicitud" element={<Formservice/>} />
                             <Route path="/ubicacionServicio" element={<LocationService/>} />
+                            <Route path="/subirArchivos" element={<UploadFilesService/>} />
                         </Routes>
                     </main>
                     <Footer/>

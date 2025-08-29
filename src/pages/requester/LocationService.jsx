@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
+//TODO: agregar validaciones
+//TODO: nominatim no es el mejor buscador de calles, ver de reemplazarlo
 const nominatimUrl = "https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&countrycodes=ar&q=";
 
 function MapAutoCenter({ position }) {
@@ -22,6 +25,8 @@ const LocationService = () => {
     const [tipoPropiedad, setTipoPropiedad] = useState("");
     const [piso, setPiso] = useState("");
     const [numeroDepto, setNumeroDepto] = useState("");
+    const navigate = useNavigate();
+
 
     const handleInput = async (e) => {
         const value = e.target.value;
@@ -40,6 +45,10 @@ const LocationService = () => {
         setPosition([parseFloat(place.lat), parseFloat(place.lon)]);
         setAddress(place.address);
         setSuggestions([]);
+    };
+
+    const handleContinue = () => {
+        navigate("/subirArchivos");
     };
 
     console.log(address)
@@ -156,8 +165,8 @@ const LocationService = () => {
                     <p>Por favor, verifica que la dirección y los detalles proporcionados sean correctos antes de continuar.</p>
                     <button
                         type="button"
+                        onClick={handleContinue}
                         className="bg-blue-600 text-white font-semibold py-2 px-6 rounded hover:bg-blue-700 transition"
-                        // onClick={handleContinuar} // Aquí puedes agregar la función para continuar
                     >
                         Continuar
                     </button>

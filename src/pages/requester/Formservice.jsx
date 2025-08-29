@@ -23,6 +23,10 @@ const Formservice = () => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
+    const handleContinue = () => {
+        navigate("/ubicacionServicio");
+    };
+
     // Detecta si urgencia es "si"
     const isUrgente = form["urgencia"] === "si";
 
@@ -153,6 +157,7 @@ const Formservice = () => {
 
                 <button
                     type="submit"
+                    onClick={handleContinue}
                     className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition"
                 >
                     Continuar
