@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaRegHandshake } from "react-icons/fa6";
 
 const Signup = () => {
@@ -9,26 +10,51 @@ const Signup = () => {
     const [lastName, setLastName] = useState('');
     const [dni, setDni] = useState('');
     const [email, setEmail] = useState('');
+    const [repeatEmail, setRepeatEmail] = useState('');
     const [birthDate, setBirthDate] = useState('');
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState('');
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
     const [number, setNumber] = useState('');
+    const [deparmentNumber, setDeparmentNumber] = useState('');
     const [postalCode, setPostalCode] = useState('');
 
+    const [error, setError] = useState('');
     // Puedes agregar aquí los demás estados si quieres controlar los otros campos
+    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (password !== repeatPassword) {
+        // validaciones 
+    if (password !== repeatPassword) {
             setError("Las contraseñas no coinciden");
             return;
         }
-        setError("");
-        // Aquí va la lógica para enviar el formulario
-        // Por ahora solo mostramos un alert
-        alert("Formulario enviado correctamente");
+            
+
+        const datos = {
+            firstName, lastName, dni, email, birthDate, password, phone, address, number, deparmentNumber, postalCode
+        }
+
+        try {
+            const response = await fetch('http://localhost:3000/users/signup', {
+                method: 'POST',
+                headers: { 'Content-Type' : 'application/json'},
+                body: JSON.stringify(datos)
+            });
+            if (response.ok) {
+                navigate('/confirmacion');
+            } else {
+                const data = await response.json();
+                setError(data.message || 'Error al registrar');
+            }
+        } catch (error) {
+            setError('Error en la red');
+            console.log(error)
+        }
+
+        
     };
 
     return (
@@ -83,6 +109,8 @@ const Signup = () => {
                                 <option value="pasaporte">Pasaporte</option>
                             </select>
                             <input
+                                value={dni}
+                                onChange={e => setDni(e.target.value)}
                                 id="numeroIdentificacion"
                                 type="number"
                                 placeholder="Número"
@@ -156,6 +184,8 @@ const Signup = () => {
                                 Departamento
                             </label>
                             <input
+                                value={deparmentNumber}
+                                onChange={e => setDeparmentNumber(e.target.value)}
                                 id="departamento"
                                 type="text"
                                 placeholder="Depto"
@@ -168,6 +198,8 @@ const Signup = () => {
                             Código Postal
                         </label>
                         <input
+                             value={postalCode}
+                            onChange={e => setPostalCode(e.target.value)}
                             id="codigoPostal"
                             type="number"
                             placeholder="Código Postal"
@@ -179,6 +211,8 @@ const Signup = () => {
                             Correo Electrónico
                         </label>
                         <input
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
                             id="email"
                             type="email"
                             placeholder="Correo Electrónico"
@@ -190,6 +224,8 @@ const Signup = () => {
                             Repetir Correo Electrónico
                         </label>
                         <input
+                            value={repeatEmail}
+                            onChange={e => setRepeatEmail(e.target.value)}
                             id="repEmail"
                             type="email"
                             placeholder="Repetir Correo Electrónico"
@@ -201,8 +237,10 @@ const Signup = () => {
                             Número de Teléfono
                         </label>
                         <input
+                            value={phone}
+                            onChange={e => setPhone(e.target.value)}
                             id="telefono"
-                            type="tel"
+                            type="number"
                             placeholder="Tu teléfono"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
                         />
@@ -212,6 +250,8 @@ const Signup = () => {
                             Fecha de Nacimiento
                         </label>
                         <input
+                            value={birthDate}
+                            onChange={e => setBirthDate(e.target.value)}
                             id="fechaNacimiento"
                             type="date"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
