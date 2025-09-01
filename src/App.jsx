@@ -18,6 +18,7 @@ import IndexRequester from "./pages/requester/RequesterIndex.jsx";
 import Formservice from "./pages/requester/Formservice.jsx";
 import LocationService from "./pages/requester/LocationService.jsx";
 import UploadFilesService from "./pages/requester/UploadFilesService.jsx";
+import CheckRequestService from "./pages/requester/CheckRequestService.jsx";
 
 function App() {
         return (
@@ -43,6 +44,7 @@ function App() {
                             <Route path="/formularioSolicitud" element={<Formservice/>} />
                             <Route path="/ubicacionServicio" element={<LocationService/>} />
                             <Route path="/subirArchivos" element={<UploadFilesService/>} />
+                            <Route path="/resumenServicio" element={<CheckRequestService/>} />
                         </Routes>
                     </main>
                     <Footer/>

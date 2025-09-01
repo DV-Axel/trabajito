@@ -23,12 +23,15 @@ const Formservice = () => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    const handleContinue = () => {
-        navigate("/ubicacionServicio");
+    const handleContinue = (e) => {
+        e.preventDefault();
+        navigate("/ubicacionServicio", { state: { ...state, form, serviceKey: service.key } });
     };
 
     // Detecta si urgencia es "si"
     const isUrgente = form["urgencia"] === "si";
+
+    /*TODO: validar las input y controlar*/
 
     return (
         <div className="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-8 mt-8">
@@ -158,7 +161,7 @@ const Formservice = () => {
                 <button
                     type="submit"
                     onClick={handleContinue}
-                    className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition"
+                    className="w-full bg-[#02283A] hover:bg-[#03506f] text-white font-semibold py-2 rounded transition"
                 >
                     Continuar
                 </button>
