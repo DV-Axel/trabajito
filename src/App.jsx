@@ -20,6 +20,7 @@ import LocationService from "./pages/requester/LocationService.jsx";
 import UploadFilesService from "./pages/requester/UploadFilesService.jsx";
 import CheckRequestService from "./pages/requester/CheckRequestService.jsx";
 import BeWorker from "./pages/worker/BeWorker.jsx";
+import FormWorker from "./pages/worker/FormWorker.jsx";
 
 function App() {
         return (
@@ -49,6 +50,7 @@ function App() {
 
                             {/* Rutas de los workers */}
                             <Route path="/seUnWorker" element={<BeWorker />} />
+                            <Route path="/registro-worker" element={<FormWorker />} />
                         </Routes>
                     </main>
                     <Footer/>
