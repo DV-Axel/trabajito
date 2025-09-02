@@ -7,7 +7,7 @@ const FormWorker = () => {
     const [form, setForm] = useState({
         subtitulo: "",
         descripcion: "",
-        ubicaciones: "",
+        ubicacion: "",
         radio: "",
         dias: [],
         horarios: [],
@@ -153,13 +153,15 @@ const FormWorker = () => {
                         placeholder="Contanos sobre tu experiencia, habilidades, etc."
                     />
                 </div>
-                {/* Ubicaciones */}
+                {/* Ubicacion
+                TODO: ver si para esto se puede implementar un autocarga de lugares
+                */}
                 <div className="flex flex-col">
-                    <label className="mb-1 font-medium">Ubicaciones donde trabajás</label>
+                    <label className="mb-1 font-medium">Ubicacion donde trabajás</label>
                     <input
                         type="text"
-                        name="ubicaciones"
-                        value={form.ubicaciones}
+                        name="ubicacion"
+                        value={form.ubicacion}
                         onChange={handleChange}
                         className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                         placeholder="Ej: CABA, Zona Oeste, etc."
