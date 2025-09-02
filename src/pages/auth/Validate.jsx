@@ -26,7 +26,7 @@ const Validate = () => {
                 return;
             }
             try {
-                await axios.get(`http://localhost:3000/users/confirmacion?token=${token}`);
+                await axios.get(`http://localhost:3000/auth/confirm?token=${token}`);
                 setStatus("success");
                 setMessage("¡Correo validado con exito!");
             } catch (err) {
