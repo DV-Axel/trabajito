@@ -19,8 +19,11 @@ import Formservice from "./pages/requester/Formservice.jsx";
 import LocationService from "./pages/requester/LocationService.jsx";
 import UploadFilesService from "./pages/requester/UploadFilesService.jsx";
 import CheckRequestService from "./pages/requester/CheckRequestService.jsx";
+
+//Rutas para registro worker
 import BeWorker from "./pages/worker/BeWorker.jsx";
 import FormWorker from "./pages/worker/FormWorker.jsx";
+import ConfirmWorker from "./pages/worker/ConfirmWorker.jsx";
 
 function App() {
         return (
@@ -51,6 +54,7 @@ function App() {
                             {/* Rutas de los workers */}
                             <Route path="/seUnWorker" element={<BeWorker />} />
                             <Route path="/registro-worker" element={<FormWorker />} />
+                            <Route path="/confirmacionWorker" element={<ConfirmWorker />} />
                         </Routes>
                     </main>
                     <Footer/>

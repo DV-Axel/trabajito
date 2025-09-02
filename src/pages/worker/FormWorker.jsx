@@ -1,21 +1,7 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { services } from "../../data/services";
-
-const diasSemana = [
-    { value: "lunes", label: "Lunes" },
-    { value: "martes", label: "Martes" },
-    { value: "miercoles", label: "Miércoles" },
-    { value: "jueves", label: "Jueves" },
-    { value: "viernes", label: "Viernes" },
-    { value: "sabado", label: "Sábado" },
-    { value: "domingo", label: "Domingo" },
-];
-
-const horarios = [
-    { value: "manana", label: "Mañana (8-12)" },
-    { value: "tarde", label: "Tarde (12-18)" },
-    { value: "noche", label: "Noche (18-22)" },
-];
+import {diasSemana, horarios} from "../../data/helpers.js";
 
 const FormWorker = () => {
     const [form, setForm] = useState({
@@ -27,9 +13,20 @@ const FormWorker = () => {
         horarios: [],
         rubros: [],
         foto: null,
+        sponsor: {
+            tipo: "cuit",
+            cuit: "",
+            nombre: "",
+            motivo: "",
+            origen: "",
+            contacto: "",
+            expectativas: ""
+        }
     });
     const [preview, setPreview] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
+
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value, type, checked, files } = e.target;
@@ -65,10 +62,31 @@ const FormWorker = () => {
             : form.rubros.filter((v) => v !== value);
         setForm((prev) => ({
             ...prev,
-            rubros: nuevosRubros,
-            rubroPrincipal: nuevosRubros.includes(prev.rubroPrincipal)
-                ? prev.rubroPrincipal
-                : "",
+            rubros: nuevosRubros
+        }));
+    };
+
+    // Sponsor
+    const handleSponsorChange = (e) => {
+        const { name, value } = e.target;
+        setForm(prev => ({
+            ...prev,
+            sponsor: {
+                ...prev.sponsor,
+                [name]: value
+            }
+        }));
+    };
+
+    const handleSponsorTypeChange = (e) => {
+        setForm(prev => ({
+            ...prev,
+            sponsor: {
+                ...prev.sponsor,
+                tipo: e.target.value,
+                cuit: "",
+                nombre: ""
+            }
         }));
     };
 
@@ -79,9 +97,10 @@ const FormWorker = () => {
 
     const handleConfirm = () => {
         setShowConfirm(false);
-        // Aquí va la lógica para enviar el formulario
-        console.log(form);
-        // Puedes redirigir o mostrar otro mensaje aquí
+
+        /*TODO: aca va la logica para guardar en la bbdd.*/
+
+        navigate("/confirmacionWorker");
     };
 
     const handleCancel = () => {
@@ -120,7 +139,6 @@ const FormWorker = () => {
                         onChange={handleChange}
                         className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                         placeholder='Ej: "Albañil experimentado", "Electricista matriculado", etc.'
-                        required
                     />
                 </div>
                 {/* Descripción */}
@@ -133,7 +151,6 @@ const FormWorker = () => {
                         rows={3}
                         className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
                         placeholder="Contanos sobre tu experiencia, habilidades, etc."
-                        required
                     />
                 </div>
                 {/* Ubicaciones */}
@@ -146,7 +163,6 @@ const FormWorker = () => {
                         onChange={handleChange}
                         className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                         placeholder="Ej: CABA, Zona Oeste, etc."
-                        required
                     />
                 </div>
                 {/* Radio */}
@@ -160,7 +176,6 @@ const FormWorker = () => {
                         min={1}
                         className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                         placeholder="Ej: 10"
-                        required
                     />
                 </div>
                 {/* Días disponibles */}
@@ -171,10 +186,10 @@ const FormWorker = () => {
                             <label
                                 key={d.value}
                                 className={`cursor-pointer px-4 py-2 rounded-full border transition
-                    ${form.dias.includes(d.value)
+                        ${form.dias.includes(d.value)
                                     ? "bg-blue-100 border-blue-400 text-blue-800 font-semibold"
                                     : "bg-white border-gray-300 text-gray-700 hover:bg-blue-50"}
-                `}
+                    `}
                             >
                                 <input
                                     type="checkbox"
@@ -197,10 +212,10 @@ const FormWorker = () => {
                             <label
                                 key={h.value}
                                 className={`cursor-pointer px-4 py-2 rounded-full border transition
-                    ${form.horarios.includes(h.value)
+                        ${form.horarios.includes(h.value)
                                     ? "bg-blue-100 border-blue-400 text-blue-800 font-semibold"
                                     : "bg-white border-gray-300 text-gray-700 hover:bg-blue-50"}
-                `}
+                    `}
                             >
                                 <input
                                     type="checkbox"
@@ -223,10 +238,10 @@ const FormWorker = () => {
                             <label
                                 key={s.key}
                                 className={`cursor-pointer px-4 py-2 rounded-full border transition
-                    ${form.rubros.includes(s.key)
+                        ${form.rubros.includes(s.key)
                                     ? "bg-blue-100 border-blue-400 text-blue-800 font-semibold"
                                     : "bg-white border-gray-300 text-gray-700 hover:bg-blue-50"}
-                `}
+                    `}
                             >
                                 <input
                                     type="checkbox"
@@ -240,6 +255,84 @@ const FormWorker = () => {
                             </label>
                         ))}
                     </div>
+                </div>
+                {/* Sponsor */}
+                <div className="mt-8">
+                    <h2 className="text-lg font-bold mb-2">Datos de la entidad sponsor</h2>
+                    <div className="flex gap-4 mb-2 items-center">
+                        <label className="flex items-center">
+                            <input
+                                type="radio"
+                                className="mx-1"
+                                name="sponsorType"
+                                value="cuit"
+                                checked={form.sponsor.tipo === "cuit"}
+                                onChange={handleSponsorTypeChange}
+                            />
+                            CUIT
+                        </label>
+                        <label className="flex items-center">
+                            <input
+                                className="mx-1"
+                                type="radio"
+                                name="sponsorType"
+                                value="nombre"
+                                checked={form.sponsor.tipo === "nombre"}
+                                onChange={handleSponsorTypeChange}
+                            /> Nombre de la empresa
+                        </label>
+                    </div>
+                    {/*TODO: Ver una forma de que haya una busqueda al poner el CUIT o un autocomplete para el nombre, todo desde la base de datos*/}
+                    {form.sponsor.tipo === "cuit" ? (
+                        <input
+                            type="text"
+                            name="cuit"
+                            value={form.sponsor.cuit}
+                            onChange={handleSponsorChange}
+                            placeholder="CUIT de la empresa"
+                            className="border rounded px-3 py-2 w-full"
+                        />
+                    ) : (
+                        <input
+                            type="text"
+                            name="nombre"
+                            value={form.sponsor.nombre}
+                            onChange={handleSponsorChange}
+                            placeholder="Nombre de la empresa"
+                            className="border rounded px-3 py-2 w-full"
+                        />
+                    )}
+                    <input
+                        type="text"
+                        name="motivo"
+                        value={form.sponsor.motivo}
+                        onChange={handleSponsorChange}
+                        placeholder="¿Por qué la elige?"
+                        className="border rounded px-3 py-2 w-full mt-2"
+                    />
+                    <input
+                        type="text"
+                        name="origen"
+                        value={form.sponsor.origen}
+                        onChange={handleSponsorChange}
+                        placeholder="¿De dónde la conoce?"
+                        className="border rounded px-3 py-2 w-full mt-2"
+                    />
+                    <input
+                        type="text"
+                        name="contacto"
+                        value={form.sponsor.contacto}
+                        onChange={handleSponsorChange}
+                        placeholder="¿Con quién tuvo el primer contacto?"
+                        className="border rounded px-3 py-2 w-full mt-2"
+                    />
+                    <textarea
+                        name="expectativas"
+                        value={form.sponsor.expectativas}
+                        onChange={handleSponsorChange}
+                        placeholder="Expectativas para trabajar juntos"
+                        className="border rounded px-3 py-2 w-full mt-2"
+                    />
                 </div>
                 <button
                     type="submit"
