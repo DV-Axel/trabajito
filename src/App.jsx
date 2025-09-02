@@ -19,6 +19,7 @@ import Formservice from "./pages/requester/Formservice.jsx";
 import LocationService from "./pages/requester/LocationService.jsx";
 import UploadFilesService from "./pages/requester/UploadFilesService.jsx";
 import CheckRequestService from "./pages/requester/CheckRequestService.jsx";
+import BeWorker from "./pages/worker/BeWorker.jsx";
 
 function App() {
         return (
@@ -45,6 +46,9 @@ function App() {
                             <Route path="/ubicacionServicio" element={<LocationService/>} />
                             <Route path="/subirArchivos" element={<UploadFilesService/>} />
                             <Route path="/resumenServicio" element={<CheckRequestService/>} />
+
+                            {/* Rutas de los workers */}
+                            <Route path="/seUnWorker" element={<BeWorker />} />
                         </Routes>
                     </main>
                     <Footer/>
