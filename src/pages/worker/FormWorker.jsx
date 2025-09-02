@@ -1,12 +1,6 @@
 import { useState } from "react";
+import { services } from "../../data/services";
 
-const rubrosDisponibles = [
-    { value: "electricidad", label: "Electricidad" },
-    { value: "plomeria", label: "Plomería" },
-    { value: "pintura", label: "Pintura" },
-    { value: "gas", label: "Gas" },
-    { value: "albañileria", label: "Albañilería" },
-];
 
 const diasSemana = [
     { value: "lunes", label: "Lunes" },
@@ -164,15 +158,23 @@ const FormWorker = () => {
                 {/* Días disponibles */}
                 <div className="flex flex-col">
                     <label className="mb-1 font-medium">Días disponibles</label>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-2">
                         {diasSemana.map((d) => (
-                            <label key={d.value} className="flex items-center gap-1">
+                            <label
+                                key={d.value}
+                                className={`cursor-pointer px-4 py-2 rounded-full border transition
+                    ${form.dias.includes(d.value)
+                                    ? "bg-blue-100 border-blue-400 text-blue-800 font-semibold"
+                                    : "bg-white border-gray-300 text-gray-700 hover:bg-blue-50"}
+                `}
+                            >
                                 <input
                                     type="checkbox"
                                     name="dias"
                                     value={d.value}
                                     checked={form.dias.includes(d.value)}
                                     onChange={handleChange}
+                                    className="hidden"
                                 />
                                 {d.label}
                             </label>
@@ -182,15 +184,23 @@ const FormWorker = () => {
                 {/* Horarios disponibles */}
                 <div className="flex flex-col">
                     <label className="mb-1 font-medium">Horarios disponibles</label>
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap gap-2">
                         {horarios.map((h) => (
-                            <label key={h.value} className="flex items-center gap-1">
+                            <label
+                                key={h.value}
+                                className={`cursor-pointer px-4 py-2 rounded-full border transition
+                    ${form.horarios.includes(h.value)
+                                    ? "bg-blue-100 border-blue-400 text-blue-800 font-semibold"
+                                    : "bg-white border-gray-300 text-gray-700 hover:bg-blue-50"}
+                `}
+                            >
                                 <input
                                     type="checkbox"
                                     name="horarios"
                                     value={h.value}
                                     checked={form.horarios.includes(h.value)}
                                     onChange={handleChange}
+                                    className="hidden"
                                 />
                                 {h.label}
                             </label>
@@ -200,41 +210,28 @@ const FormWorker = () => {
                 {/* Rubros */}
                 <div className="flex flex-col">
                     <label className="mb-1 font-medium">Rubros en los que trabajás</label>
-                    <div className="flex flex-wrap gap-3">
-                        {rubrosDisponibles.map((r) => (
-                            <label key={r.value} className="flex items-center gap-1">
+                    <div className="flex flex-wrap gap-2">
+                        {services.map((s) => (
+                            <label
+                                key={s.key}
+                                className={`cursor-pointer px-4 py-2 rounded-full border transition
+                    ${form.rubros.includes(s.key)
+                                    ? "bg-blue-100 border-blue-400 text-blue-800 font-semibold"
+                                    : "bg-white border-gray-300 text-gray-700 hover:bg-blue-50"}
+                `}
+                            >
                                 <input
                                     type="checkbox"
                                     name="rubros"
-                                    value={r.value}
-                                    checked={form.rubros.includes(r.value)}
+                                    value={s.key}
+                                    checked={form.rubros.includes(s.key)}
                                     onChange={handleRubrosChange}
+                                    className="hidden"
                                 />
-                                {r.label}
+                                {s.name}
                             </label>
                         ))}
                     </div>
-                </div>
-                {/* Rubro principal */}
-                <div className="flex flex-col">
-                    <label className="mb-1 font-medium">¿Cuál es tu rubro principal?</label>
-                    <select
-                        name="rubroPrincipal"
-                        value={form.rubroPrincipal}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        required
-                        disabled={form.rubros.length === 0}
-                    >
-                        <option value="">Seleccione...</option>
-                        {rubrosDisponibles
-                            .filter((r) => form.rubros.includes(r.value))
-                            .map((r) => (
-                                <option key={r.value} value={r.value}>
-                                    {r.label}
-                                </option>
-                            ))}
-                    </select>
                 </div>
                 <button
                     type="submit"
