@@ -53,9 +53,14 @@ const Validate = () => {
                     {message}
                 </p> */}
                 {status === "success" && (
-                    <p className="text-base text-gray-700 text-center mb-8">
-                        Ya puedes iniciar sesión en la plataforma.
-                    </p>
+                    <>
+                        <p className="text-lg font-bold text-[#36b6ff] text-center mb-2">
+                            La cuenta ha sido verificada con éxito
+                        </p>
+                        <p className="text-base text-gray-700 text-center mb-8">
+                            Ya puedes iniciar sesión en la plataforma.
+                        </p>
+                    </>
                 )}
                 {status === "success" && (
                     <Link
