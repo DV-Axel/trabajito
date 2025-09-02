@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { services } from "../../data/services";
 
-
 const diasSemana = [
     { value: "lunes", label: "Lunes" },
     { value: "martes", label: "Martes" },
@@ -20,7 +19,6 @@ const horarios = [
 
 const FormWorker = () => {
     const [form, setForm] = useState({
-        nombre: "",
         subtitulo: "",
         descripcion: "",
         ubicaciones: "",
@@ -28,10 +26,10 @@ const FormWorker = () => {
         dias: [],
         horarios: [],
         rubros: [],
-        rubroPrincipal: "",
         foto: null,
     });
     const [preview, setPreview] = useState(null);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     const handleChange = (e) => {
         const { name, value, type, checked, files } = e.target;
@@ -76,8 +74,18 @@ const FormWorker = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setShowConfirm(true);
+    };
+
+    const handleConfirm = () => {
+        setShowConfirm(false);
         // Aquí va la lógica para enviar el formulario
         console.log(form);
+        // Puedes redirigir o mostrar otro mensaje aquí
+    };
+
+    const handleCancel = () => {
+        setShowConfirm(false);
     };
 
     return (
@@ -237,9 +245,36 @@ const FormWorker = () => {
                     type="submit"
                     className="w-full bg-[#02283A] hover:bg-[#03506f] text-white font-semibold py-2 rounded transition"
                 >
-                    Guardar perfil
+                    Continuar
                 </button>
             </form>
+
+            {/* Modal de confirmación */}
+            {showConfirm && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+                    <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
+                        <h2 className="text-lg font-bold mb-2">¿Estás seguro?</h2>
+                        <p className="mb-4 text-gray-700">
+                            Verifica que los datos seleccionados sean correctos.<br />
+                            Recuerda que estos datos te permiten acceder a los trabajos que desees.
+                        </p>
+                        <div className="flex justify-end gap-2">
+                            <button
+                                onClick={handleCancel}
+                                className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={handleConfirm}
+                                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                            >
+                                Confirmar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
