@@ -40,7 +40,7 @@ const Login = () => {
         }
 
         try {
-            const res = await axios.post('http://localhost:8888/login', { email, password });
+            const res = await axios.post('http://localhost:3000/auth/login', { email, password });
             console.log(res);
             // Aquí puedes redirigir o guardar el token si el login es exitoso
         } catch (error) {
