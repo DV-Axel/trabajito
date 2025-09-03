@@ -28,6 +28,7 @@ import ConfirmWorker from "./pages/worker/ConfirmWorker.jsx";
 //Rutas para registro sponsor
 import BeSponsor from "./pages/sponsor/BeSponsor.jsx";
 import FormSponsor from "./pages/sponsor/FormSponsor.jsx";
+import ConfirmSponsor from "./pages/sponsor/ConfirmSponsor.jsx";
 
 function App() {
         return (
@@ -63,7 +64,7 @@ function App() {
                             {/* Rutas de los sponsors */}
                             <Route path="/seUnSponsor" element={<BeSponsor />} />
                             <Route path="/registro-sponsor" element={<FormSponsor />} />
-
+                            <Route path="/confirmacionSponsor" element={<ConfirmSponsor />} />
                         </Routes>
                     </main>
                     <Footer/>
