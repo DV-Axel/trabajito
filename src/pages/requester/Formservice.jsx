@@ -39,6 +39,17 @@ const Formservice = () => {
             <form className="space-y-5" >
 
                 <div className="flex flex-col">
+                    <label className="mb-1 font-medium">Titulo para su solicitud</label>
+                    <input
+                        type="text"
+                        name="titulo"
+                        value={form["titulo"] || ""}
+                        onChange={handleChange}
+                        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                </div>
+
+                <div className="flex flex-col">
                     <label className="mb-1 font-medium">¿Es una urgencia?</label>
                     <select
                         name="urgencia"
