@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import { AuthProvider } from './context/AuthContext';
 
 //home y landing de la pagina
 import Home from './pages/Home';
@@ -29,46 +30,50 @@ import ConfirmWorker from "./pages/worker/ConfirmWorker.jsx";
 import BeSponsor from "./pages/sponsor/BeSponsor.jsx";
 import FormSponsor from "./pages/sponsor/FormSponsor.jsx";
 import ConfirmSponsor from "./pages/sponsor/ConfirmSponsor.jsx";
+import PerfilRequester from "./pages/requester/PerfilRequester.jsx";
 
 function App() {
         return (
             <Router>
-                <div className="min-h-screen flex flex-col">
-                    <Header/>
-                    <main className="flex-1">
-                        <Routes>
+                <AuthProvider>
+                    <div className="min-h-screen flex flex-col">
+                        <Header/>
+                        <main className="flex-1">
+                            <Routes>
 
-                            {/* ruta home */}
-                            <Route path="/" element={<Home/>}/>
+                                {/* ruta home */}
+                                <Route path="/" element={<Home/>}/>
 
-                            {/* Rutas de login y signup */}
-                            <Route path="/login" element={<Login/>}/>
-                            <Route path="/registro" element={<Signup/>}/>
-                            <Route path="/confirmacion" element={<Confirm/>}/>
-                            <Route path="/validacion" element={<Validate/>}/>
-                            <Route path="/restablecerContraseña" element={<RestartPassword/>}/>
-                            <Route path="/nuevaContraseña" element={<NewPassword />}/>
+                                {/* Rutas de login y signup */}
+                                <Route path="/login" element={<Login/>}/>
+                                <Route path="/registro" element={<Signup/>}/>
+                                <Route path="/confirmacion" element={<Confirm/>}/>
+                                <Route path="/validacion" element={<Validate/>}/>
+                                <Route path="/restablecerContraseña" element={<RestartPassword/>}/>
+                                <Route path="/nuevaContraseña" element={<NewPassword />}/>
 
-                            {/* Rutas de los solicitantes de servicios */}
-                            <Route path="/solicitar" element={<IndexRequester />} />
-                            <Route path="/formularioSolicitud" element={<Formservice/>} />
-                            <Route path="/ubicacionServicio" element={<LocationService/>} />
-                            <Route path="/subirArchivos" element={<UploadFilesService/>} />
-                            <Route path="/resumenServicio" element={<CheckRequestService/>} />
+                                {/* Rutas de los solicitantes de servicios */}
+                                <Route path="/solicitar" element={<IndexRequester />} />
+                                <Route path="/formularioSolicitud" element={<Formservice/>} />
+                                <Route path="/ubicacionServicio" element={<LocationService/>} />
+                                <Route path="/subirArchivos" element={<UploadFilesService/>} />
+                                <Route path="/resumenServicio" element={<CheckRequestService/>} />
+                                <Route path="/perfil" element={<PerfilRequester />}/>
 
-                            {/* Rutas de los workers */}
-                            <Route path="/seUnWorker" element={<BeWorker />} />
-                            <Route path="/registro-worker" element={<FormWorker />} />
-                            <Route path="/confirmacionWorker" element={<ConfirmWorker />} />
+                                {/* Rutas de los workers */}
+                                <Route path="/seUnWorker" element={<BeWorker />} />
+                                <Route path="/registro-worker" element={<FormWorker />} />
+                                <Route path="/confirmacionWorker" element={<ConfirmWorker />} />
 
-                            {/* Rutas de los sponsors */}
-                            <Route path="/seUnSponsor" element={<BeSponsor />} />
-                            <Route path="/registro-sponsor" element={<FormSponsor />} />
-                            <Route path="/confirmacionSponsor" element={<ConfirmSponsor />} />
-                        </Routes>
-                    </main>
-                    <Footer/>
-                </div>
+                                {/* Rutas de los sponsors */}
+                                <Route path="/seUnSponsor" element={<BeSponsor />} />
+                                <Route path="/registro-sponsor" element={<FormSponsor />} />
+                                <Route path="/confirmacionSponsor" element={<ConfirmSponsor />} />
+                            </Routes>
+                        </main>
+                        <Footer/>
+                    </div>
+                </AuthProvider>
             </Router>
         );
     }
