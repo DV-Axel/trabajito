@@ -1,20 +1,48 @@
+import { useRef, useState } from 'react';
 import { useAuth } from '../../context/useAuth';
 import { FaIdCard, FaEnvelope, FaBirthdayCake, FaPhone, FaMapMarkerAlt, FaHashtag, FaUserEdit, FaCamera } from 'react-icons/fa';
 
 const PerfilRequester = () => {
     const { user } = useAuth();
+    const [preview, setPreview] = useState(user?.fotoPerfil || '/default-avatar.png');
+    const fileInputRef = useRef(null);
 
     if (!user) {
         return <div className="text-center mt-10 text-lg text-gray-600">Cargando perfil...</div>;
     }
 
-    const handleEdit = () => {
-        alert('Abrir formulario para editar datos (excepto correo electrónico)');
+    const handleChangePhoto = () => {
+        fileInputRef.current.click();
     };
 
-    const handleChangePhoto = () => {
-        alert('Abrir selector para cambiar foto de perfil');
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append('fotoPerfil', file);
+
+            try {
+                // Cambia la URL por la de tu endpoint real
+                const response = await fetch('/api/usuario/foto', {
+                    method: 'POST',
+                    body: formData,
+                    // Si necesitas enviar credenciales:
+                    // credentials: 'include',
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // Supón que la API responde con la URL de la imagen subida
+                    setPreview(data.fotoPerfilUrl);
+                } else {
+                    alert('Error al subir la foto');
+                }
+            } catch (error) {
+                alert('Error de red al subir la foto');
+            }
+        }
     };
+
 
     return (
         <div className="flex mt-10 items-center justify-center bg-[#f4fbfd]">
@@ -22,7 +50,7 @@ const PerfilRequester = () => {
                 <div className="flex flex-col items-center mb-8">
                     <div className="relative">
                         <img
-                            src={user.fotoPerfil || '/default-avatar.png'}
+                            src={preview}
                             alt="Foto de perfil"
                             className="w-52 h-52 rounded-full object-cover border-2 border-[#00b4d8] mb-3 shadow-2xl"
                         />
@@ -33,17 +61,13 @@ const PerfilRequester = () => {
                         >
                             <FaCamera />
                         </button>
-                    </div>
-                    <div className="flex items-center gap-3 mt-3">
-                        <h2 className="text-2xl font-bold text-[#02283A]">{user.nombre} {user.apellido}</h2>
-                        <button
-                            onClick={handleEdit}
-                            className="bg-[#00b4d8] text-white px-3 py-1 rounded-full flex items-center gap-1 shadow hover:bg-[#0288a7] transition text-sm"
-                            title="Editar datos"
-                        >
-                            <FaUserEdit />
-                            Editar
-                        </button>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            ref={fileInputRef}
+                            style={{ display: 'none' }}
+                            onChange={handleFileChange}
+                        />
                     </div>
                     <span className="text-sm text-[#00b4d8] mt-1">Solicitante de servicios</span>
                 </div>
