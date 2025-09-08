@@ -5,43 +5,25 @@ import { useNavigate } from "react-router-dom";
 import { FaRegHandshake } from "react-icons/fa6";
 
 const Signup = () => {
-    // Estados para los campos de contraseña
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [dni, setDni] = useState('');
-    const [email, setEmail] = useState('');
-    const [repeatEmail, setRepeatEmail] = useState('');
-    const [birthDate, setBirthDate] = useState('');
-    const [password, setPassword] = useState('');
-    const [repeatPassword, setRepeatPassword] = useState('');
-    const [phone, setPhone] = useState('');
-    const [address, setAddress] = useState('');
-    const [number, setNumber] = useState('');
-    const [deparmentNumber, setDeparmentNumber] = useState('');
-    const [postalCode, setPostalCode] = useState('');
-
+    const [form, setForm] = useState({});
     const [error, setError] = useState('');
-    // Puedes agregar aquí los demás estados si quieres controlar los otros campos
     const navigate = useNavigate();
+
+    const handleChange = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // validaciones 
-    if (password !== repeatPassword) {
+        if (form.password !== form.repeatPassword) {
             setError("Las contraseñas no coinciden");
             return;
         }
-            
-
-        const datos = {
-            firstName, lastName, dni, email, birthDate, password, phone, address, number, deparmentNumber, postalCode
-        }
-
         try {
             const response = await fetch('http://localhost:3000/auth/signup', {
                 method: 'POST',
                 headers: { 'Content-Type' : 'application/json'},
-                body: JSON.stringify(datos)
+                body: JSON.stringify(form)
             });
             if (response.ok) {
                 navigate('/confirmacion');
@@ -53,8 +35,6 @@ const Signup = () => {
             setError('Error en la red');
             console.log(error)
         }
-
-        
     };
 
     return (
@@ -67,14 +47,14 @@ const Signup = () => {
                     Estas a un paso de encontrar la solución que tanto buscas
                 </h2>
                 <form className="bg-white shadow-md rounded-lg p-8 space-y-6 border border-gray-300" onSubmit={handleSubmit}>
-                    
                     <div>
                         <label htmlFor="nombre" className="block text-lg font-medium text-gray-700 mb-1">
                             Nombre
                         </label>
                         <input
-                            value={firstName}
-                            onChange={e => setFirstName(e.target.value)}
+                            name="firstName"
+                            value={form.firstName || ""}
+                            onChange={handleChange}
                             id="nombre"
                             type="text"
                             placeholder="Tu nombre"
@@ -86,8 +66,9 @@ const Signup = () => {
                             Apellido
                         </label>
                         <input
-                            value={lastName}
-                            onChange={e => setLastName(e.target.value)}
+                            name="lastName"
+                            value={form.lastName || ""}
+                            onChange={handleChange}
                             id="apellido"
                             type="text"
                             placeholder="Tu apellido"
@@ -100,6 +81,9 @@ const Signup = () => {
                         </label>
                         <div className="flex gap-2">
                             <select
+                                name="idType"
+                                value={form.idType || ""}
+                                onChange={handleChange}
                                 id="tipoIdentificacion"
                                 className="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all w-1/2"
                             >
@@ -109,8 +93,9 @@ const Signup = () => {
                                 <option value="pasaporte">Pasaporte</option>
                             </select>
                             <input
-                                value={dni}
-                                onChange={e => setDni(e.target.value)}
+                                name="dni"
+                                value={form.dni || ""}
+                                onChange={handleChange}
                                 id="numeroIdentificacion"
                                 type="number"
                                 placeholder="Número"
@@ -118,37 +103,36 @@ const Signup = () => {
                             />
                         </div>
                     </div>
-                    {/* Campo de contraseña */}
                     <div>
                         <label htmlFor="password" className="block text-lg font-medium text-gray-700 mb-1">
                             Contraseña
                         </label>
                         <input
+                            name="password"
                             id="password"
                             type="password"
                             placeholder="Contraseña"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            value={form.password || ""}
+                            onChange={handleChange}
                             autoComplete="off"
                         />
                     </div>
-                    {/* Campo de repetir contraseña */}
                     <div>
                         <label htmlFor="repeatPassword" className="block text-lg font-medium text-gray-700 mb-1">
                             Repetir Contraseña
                         </label>
                         <input
+                            name="repeatPassword"
                             id="repeatPassword"
                             type="password"
                             placeholder="Repetir Contraseña"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
-                            value={repeatPassword}
-                            onChange={(e) => setRepeatPassword(e.target.value)}
+                            value={form.repeatPassword || ""}
+                            onChange={handleChange}
                             autoComplete="off"
                         />
                     </div>
-                    {/* Mostrar error si las contraseñas no coinciden */}
                     {error && (
                         <div className="text-red-600 text-sm font-semibold text-center">{error}</div>
                     )}
@@ -157,8 +141,9 @@ const Signup = () => {
                             Dirección
                         </label>
                         <input
-                            value={address}
-                            onChange={e => setAddress(e.target.value)}
+                            name="address"
+                            value={form.address || ""}
+                            onChange={handleChange}
                             id="direccion"
                             type="text"
                             placeholder="Tu dirección"
@@ -171,8 +156,9 @@ const Signup = () => {
                                 Número
                             </label>
                             <input
-                                value={number}
-                                onChange={e => setNumber(e.target.value)}
+                                name="number"
+                                value={form.number || ""}
+                                onChange={handleChange}
                                 id="numero"
                                 type="number"
                                 placeholder="N°"
@@ -184,8 +170,9 @@ const Signup = () => {
                                 Departamento
                             </label>
                             <input
-                                value={deparmentNumber}
-                                onChange={e => setDeparmentNumber(e.target.value)}
+                                name="deparmentNumber"
+                                value={form.deparmentNumber || ""}
+                                onChange={handleChange}
                                 id="departamento"
                                 type="text"
                                 placeholder="Depto"
@@ -198,8 +185,9 @@ const Signup = () => {
                             Código Postal
                         </label>
                         <input
-                             value={postalCode}
-                            onChange={e => setPostalCode(e.target.value)}
+                            name="postalCode"
+                            value={form.postalCode || ""}
+                            onChange={handleChange}
                             id="codigoPostal"
                             type="number"
                             placeholder="Código Postal"
@@ -211,8 +199,9 @@ const Signup = () => {
                             Correo Electrónico
                         </label>
                         <input
-                            value={email}
-                            onChange={e => setEmail(e.target.value)}
+                            name="email"
+                            value={form.email || ""}
+                            onChange={handleChange}
                             id="email"
                             type="email"
                             placeholder="Correo Electrónico"
@@ -224,8 +213,9 @@ const Signup = () => {
                             Repetir Correo Electrónico
                         </label>
                         <input
-                            value={repeatEmail}
-                            onChange={e => setRepeatEmail(e.target.value)}
+                            name="repeatEmail"
+                            value={form.repeatEmail || ""}
+                            onChange={handleChange}
                             id="repEmail"
                             type="email"
                             placeholder="Repetir Correo Electrónico"
@@ -237,8 +227,9 @@ const Signup = () => {
                             Número de Teléfono
                         </label>
                         <input
-                            value={phone}
-                            onChange={e => setPhone(e.target.value)}
+                            name="phone"
+                            value={form.phone || ""}
+                            onChange={handleChange}
                             id="telefono"
                             type="number"
                             placeholder="Tu teléfono"
@@ -250,14 +241,14 @@ const Signup = () => {
                             Fecha de Nacimiento
                         </label>
                         <input
-                            value={birthDate}
-                            onChange={e => setBirthDate(e.target.value)}
+                            name="birthDate"
+                            value={form.birthDate || ""}
+                            onChange={handleChange}
                             id="fechaNacimiento"
                             type="date"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
                         />
                     </div>
-
                     <button
                         type="submit"
                         className="w-full bg-[#0c7fcf] hover:bg-[#095a8e] text-white font-semibold py-2 rounded-md transition-all"
