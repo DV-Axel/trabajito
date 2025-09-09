@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
+import {useNavigate} from "react-router-dom";
+
 import axios from 'axios';
 
 const ActiveServices = () => {
     const [solicitudes, setSolicitudes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Datos de ejemplo
@@ -18,39 +21,6 @@ const ActiveServices = () => {
                 ubicacion: 'Madrid',
                 estado: 'Pendiente',
                 presupuesto: 120
-            },
-            {
-                id: 2,
-                titulo: 'Instalación de lámpara',
-                descripcion: 'Necesito instalar una lámpara en el salón.',
-                fechaCreacion: '2024-06-03T15:30:00Z',
-                tipoTrabajo: 'Instalación',
-                urgente: false,
-                ubicacion: 'Barcelona',
-                estado: 'En proceso',
-                presupuesto: 50
-            },
-            {
-                id: 2,
-                titulo: 'Instalación de lámpara',
-                descripcion: 'Necesito instalar una lámpara en el salón.',
-                fechaCreacion: '2024-06-03T15:30:00Z',
-                tipoTrabajo: 'Instalación',
-                urgente: false,
-                ubicacion: 'Barcelona',
-                estado: 'En proceso',
-                presupuesto: 50
-            },
-            {
-                id: 2,
-                titulo: 'Instalación de lámpara',
-                descripcion: 'Necesito instalar una lámpara en el salón.',
-                fechaCreacion: '2024-06-03T15:30:00Z',
-                tipoTrabajo: 'Instalación',
-                urgente: false,
-                ubicacion: 'Barcelona',
-                estado: 'En proceso',
-                presupuesto: 50
             },
             {
                 id: 2,
@@ -84,6 +54,10 @@ const ActiveServices = () => {
         return <div className="text-center mt-10 text-lg text-gray-600">No tienes solicitudes activas.</div>;
     }
 
+    const handleServiceDetails = (id) => {
+        navigate(`/requestService/${id}`);
+    };
+
     return (
         <div className="max-w-4xl mx-auto my-10 p-6 bg-white rounded-3xl shadow-2xl border-4 border-[#00b4d8]">
             <h2 className="text-2xl font-bold text-[#02283A] mb-6">Solicitudes activas</h2>
@@ -104,6 +78,12 @@ const ActiveServices = () => {
                         </div>
                         <div className="flex gap-3 mt-4 md:mt-0">
                             <button
+                                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full font-semibold shadow transition"
+                                onClick={() => handleServiceDetails(solicitud.id)}
+                            >
+                                Ver
+                            </button>
+                            <button
                                 className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full font-semibold shadow transition"
                                 onClick={() => alert(`Editar solicitud ${solicitud.id}`)}
                             >
@@ -116,6 +96,7 @@ const ActiveServices = () => {
                                 Cancelar
                             </button>
                         </div>
+
                     </li>
                 ))}
             </ul>

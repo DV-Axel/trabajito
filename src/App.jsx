@@ -22,6 +22,7 @@ import UploadFilesService from "./pages/requester/UploadFilesService.jsx";
 import CheckRequestService from "./pages/requester/CheckRequestService.jsx";
 import ActiveServices from "./pages/requester/ActiveServices.jsx";
 import PerfilRequester from "./pages/requester/PerfilRequester.jsx";
+import RequestService from "./pages/requester/RequestService.jsx";
 
 
 //Rutas para registro worker
@@ -33,6 +34,8 @@ import ConfirmWorker from "./pages/worker/ConfirmWorker.jsx";
 import BeSponsor from "./pages/sponsor/BeSponsor.jsx";
 import FormSponsor from "./pages/sponsor/FormSponsor.jsx";
 import ConfirmSponsor from "./pages/sponsor/ConfirmSponsor.jsx";
+import RequestSerivce from "./pages/requester/RequestService.jsx";
+import requestService from "./pages/requester/RequestService.jsx";
 
 function App() {
         return (
@@ -62,6 +65,7 @@ function App() {
                                 <Route path="/resumenServicio" element={<CheckRequestService/>} />
                                 <Route path="/perfil" element={<PerfilRequester />}/>
                                 <Route path="/mis-servicios" element={<ActiveServices />} />
+                                <Route path="/servicio" element={<RequestService />}/>
 
                                 {/* Rutas de los workers */}
                                 <Route path="/seUnWorker" element={<BeWorker />} />

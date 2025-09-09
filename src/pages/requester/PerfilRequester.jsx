@@ -1,11 +1,49 @@
-import { useRef, useState } from 'react';
-import { useAuth } from '../../context/useAuth';
-import { FaIdCard, FaEnvelope, FaBirthdayCake, FaPhone, FaMapMarkerAlt, FaHashtag, FaUserEdit, FaCamera } from 'react-icons/fa';
+import { useRef, useState, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import { FaIdCard, FaEnvelope, FaBirthdayCake, FaPhone, FaMapMarkerAlt, FaHashtag, FaCamera } from 'react-icons/fa';
 
 const PerfilRequester = () => {
-    const { user } = useAuth();
-    const [preview, setPreview] = useState(user?.fotoPerfil || '/default-avatar.png');
+    const [user, setUser] = useState(null);
+    const [preview, setPreview] = useState('/default-avatar.png');
     const fileInputRef = useRef(null);
+
+    // Obtener userId del token
+    const getUserIdFromToken = () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                return decoded.id || decoded.userId || decoded.sub;
+            } catch {
+                return null;
+            }
+        }
+        return null;
+    };
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const token = localStorage.getItem('token');
+            const userId = getUserIdFromToken();
+            if (!userId) return;
+
+            try {
+                const res = await fetch(`http://localhost:3000/users/${userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    setUser(data.user);
+                    setPreview(data.fotoPerfil || '/default-avatar.png');
+                }
+            } catch {
+                // Manejo de error opcional
+            }
+        };
+        fetchUser();
+    }, []);
 
     if (!user) {
         return <div className="text-center mt-10 text-lg text-gray-600">Cargando perfil...</div>;
@@ -21,33 +59,39 @@ const PerfilRequester = () => {
             const formData = new FormData();
             formData.append('fotoPerfil', file);
 
+            const token = localStorage.getItem('token');
+            const userId = getUserIdFromToken();
+
             try {
-                // Cambia la URL por la de tu endpoint real
-                const response = await fetch('/api/usuario/foto', {
+                const response = await fetch(`/api/usuario/${userId}/foto`, {
                     method: 'POST',
                     body: formData,
-                    // Si necesitas enviar credenciales:
-                    // credentials: 'include',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    // Supón que la API responde con la URL de la imagen subida
                     setPreview(data.fotoPerfilUrl);
                 } else {
                     alert('Error al subir la foto');
                 }
-            } catch (error) {
+            } catch {
                 alert('Error de red al subir la foto');
             }
         }
     };
 
-
     return (
         <div className="flex mt-10 items-center justify-center bg-[#f4fbfd]">
             <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-10 border-4">
-                <div className="flex flex-col items-center mb-8">
+                <div className="flex flex-col items-center mb-8 uppercase">
+                    <div className="mb-4 text-center">
+                        <span className="text-2xl font-bold text-[#02283A]">
+                            {user.firstName} {user.lastName}
+                        </span>
+                    </div>
                     <div className="relative">
                         <img
                             src={preview}
@@ -75,7 +119,8 @@ const PerfilRequester = () => {
                     <div className="flex items-center gap-3">
                         <FaIdCard className="text-[#00b4d8] text-xl" />
                         <span className="font-semibold text-[#02283A]">Tipo y N° de identificación:</span>
-                        <span>{user.tipoIdentificacion} {user.numeroIdentificacion}</span>
+                        {/*TODO: falta el tipo de identificacion*/}
+                        <span>{user.tipoIdentificacion} {user.dni}</span>
                     </div>
                     <div className="flex items-center gap-3">
                         <FaEnvelope className="text-[#00b4d8] text-xl" />
@@ -85,26 +130,26 @@ const PerfilRequester = () => {
                     <div className="flex items-center gap-3">
                         <FaBirthdayCake className="text-[#00b4d8] text-xl" />
                         <span className="font-semibold text-[#02283A]">Fecha de nacimiento:</span>
-                        <span>{user.fechaNacimiento}</span>
+                        <span>{user.birthDate}</span>
                     </div>
                     <div className="flex items-center gap-3">
                         <FaPhone className="text-[#00b4d8] text-xl" />
                         <span className="font-semibold text-[#02283A]">Teléfono:</span>
-                        <span>{user.telefono}</span>
+                        <span>{user.phone}</span>
                     </div>
                     <div className="flex items-center gap-3">
                         <FaMapMarkerAlt className="text-[#00b4d8] text-xl" />
                         <span className="font-semibold text-[#02283A]">Dirección:</span>
                         <span>
-                            {user.direccion} {user.numeroDireccion}
-                            {user.piso && `, Piso ${user.piso}`}
+                            {user.address} {user.number}
+                            {user.departmentNumber && `, Piso ${user.departmentNumber}`}
                             {user.departamento && `, Depto. ${user.departamento}`}
                         </span>
                     </div>
                     <div className="flex items-center gap-3">
                         <FaHashtag className="text-[#00b4d8] text-xl" />
                         <span className="font-semibold text-[#02283A]">Código postal:</span>
-                        <span>{user.codigoPostal}</span>
+                        <span>{user.postalCode}</span>
                     </div>
                 </div>
             </div>
