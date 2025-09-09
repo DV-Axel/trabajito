@@ -1,5 +1,4 @@
 import { useLocation } from "react-router-dom";
-import { useState } from "react";
 import { services } from "../../data/services";
 
 const CheckRequestService = () => {
@@ -11,9 +10,17 @@ const CheckRequestService = () => {
         tipoPropiedad,
         piso,
         numeroDepto,
-        position,
         photos = []
     } = location.state || {};
+
+
+    const payload = {
+        ...location.state,
+        photos: (location.state.photos || []).map(photo => ({
+            name: photo.file?.name,
+            note: photo.note
+        }))
+    };
 
     // Buscar el servicio actual y crear un mapa de key a label
     let labelMap = { urgencia: "Urgencia", fecha: "Fecha de solicitada", descripcion: "Descripción" }; // Agregar etiquetas comunes
@@ -23,6 +30,26 @@ const CheckRequestService = () => {
             labelMap[q.key] = q.label; // Mapear key a label
         });
     }
+
+    const handleSubmit = async () => {
+        try {
+            const response = await fetch('http://localhost:3000/job-requests/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+            if (!response.ok) throw new Error('Error al enviar la solicitud');
+            alert('¡Solicitud enviada con éxito!');
+        } catch (error) {
+            alert('Error al enviar la solicitud');
+            console.error(error);
+        }
+    };
+
+
+
 
     /*TODO: Ser minuscioso con las validaciones del resumen*/
 
@@ -106,6 +133,7 @@ const CheckRequestService = () => {
 
                 <button
                     type="submit"
+                    onClick={handleSubmit}
                     className="w-full bg-[#02283A] hover:bg-[#03506f] text-white font-semibold py-2 rounded  transition"
                 >
                     Confirmar solicitud

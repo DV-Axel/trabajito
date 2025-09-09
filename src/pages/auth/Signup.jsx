@@ -19,6 +19,7 @@ const Signup = () => {
             return;
         }
         try {
+            // TODO: no se estan enviando las fotos
             const response = await fetch('http://localhost:3000/auth/signup', {
                 method: 'POST',
                 headers: { 'Content-Type' : 'application/json'},
