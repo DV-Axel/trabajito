@@ -36,7 +36,7 @@ const PerfilRequester = () => {
                 if (res.ok) {
                     const data = await res.json();
                     setUser(data.user);
-                    setPreview(data.fotoPerfil || '/default-avatar.png');
+                    setPreview(data.profilePicture || '/default-avatar.png');
                 }
             } catch {
                 // Manejo de error opcional
@@ -57,14 +57,15 @@ const PerfilRequester = () => {
         const file = e.target.files[0];
         if (file) {
             const formData = new FormData();
-            formData.append('fotoPerfil', file);
+            formData.append('profilePicture', file);
 
             const token = localStorage.getItem('token');
             const userId = getUserIdFromToken();
 
             try {
-                const response = await fetch(`/api/usuario/${userId}/foto`, {
-                    method: 'POST',
+                //const response = await fetch(`/api/usuario/${userId}/foto`
+                const response = await fetch(`http://localhost:3000/users/profile-picture/${userId}`, {
+                    method: 'PUT',
                     body: formData,
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -73,7 +74,7 @@ const PerfilRequester = () => {
 
                 if (response.ok) {
                     const data = await response.json();
-                    setPreview(data.fotoPerfilUrl);
+                    setPreview(data.profilePicture);
                 } else {
                     alert('Error al subir la foto');
                 }
@@ -94,7 +95,8 @@ const PerfilRequester = () => {
                     </div>
                     <div className="relative">
                         <img
-                            src={preview}
+                            //src={preview}
+                            src={`http://localhost:3000${user.profilePicture}`}
                             alt="Foto de perfil"
                             className="w-52 h-52 rounded-full object-cover border-2 border-[#00b4d8] mb-3 shadow-2xl"
                         />
