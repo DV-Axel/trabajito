@@ -4,6 +4,7 @@ import { FaIdCard, FaEnvelope, FaBirthdayCake, FaPhone, FaMapMarkerAlt, FaHashta
 
 const PerfilRequester = () => {
     const [user, setUser] = useState(null);
+    /*TODO: no se ve el default avatar*/
     const [preview, setPreview] = useState('/default-avatar.png');
     const fileInputRef = useRef(null);
 
@@ -53,6 +54,8 @@ const PerfilRequester = () => {
         fileInputRef.current.click();
     };
 
+
+
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -83,6 +86,13 @@ const PerfilRequester = () => {
             }
         }
     };
+
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        const [year, month, day] = dateString.slice(0, 10).split('-');
+        return `${day}-${month}-${year}`;
+    };
+
 
     return (
         <div className="flex mt-10 items-center justify-center bg-[#f4fbfd]">
@@ -122,17 +132,18 @@ const PerfilRequester = () => {
                         <FaIdCard className="text-[#00b4d8] text-xl" />
                         <span className="font-semibold text-[#02283A]">Tipo y N° de identificación:</span>
                         {/*TODO: falta el tipo de identificacion*/}
-                        <span>{user.tipoIdentificacion} {user.dni}</span>
+                        <span className="uppercase">{user.idType} {user.dni}</span>
                     </div>
                     <div className="flex items-center gap-3">
                         <FaEnvelope className="text-[#00b4d8] text-xl" />
                         <span className="font-semibold text-[#02283A]">Correo electrónico:</span>
-                        <span className="text-gray-500">{user.email}</span>
+                        <span>{user.email}</span>
                     </div>
                     <div className="flex items-center gap-3">
                         <FaBirthdayCake className="text-[#00b4d8] text-xl" />
                         <span className="font-semibold text-[#02283A]">Fecha de nacimiento:</span>
-                        <span>{user.birthDate}</span>
+                        <span>{formatDate(user.birthDate)}</span>
+
                     </div>
                     <div className="flex items-center gap-3">
                         <FaPhone className="text-[#00b4d8] text-xl" />

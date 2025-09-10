@@ -170,8 +170,8 @@ const Signup = () => {
                                 Departamento
                             </label>
                             <input
-                                name="deparmentNumber"
-                                value={form.deparmentNumber || ""}
+                                name="departmentNumber"
+                                value={form.departmentNumber || ""}
                                 onChange={handleChange}
                                 id="departamento"
                                 type="text"
