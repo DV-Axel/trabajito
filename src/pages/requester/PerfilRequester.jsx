@@ -37,7 +37,9 @@ const PerfilRequester = () => {
                 if (res.ok) {
                     const data = await res.json();
                     setUser(data.user);
-                    setPreview(data.profilePicture || '/default-avatar.png');
+
+                    console.log(data.user);
+                    setPreview(data.profilePicture);
                 }
             } catch {
                 // Manejo de error opcional

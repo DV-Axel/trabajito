@@ -1,8 +1,21 @@
 import { useLocation } from "react-router-dom";
+import { jwtDecode } from 'jwt-decode';
 import { services } from "../../data/services";
+
 
 const CheckRequestService = () => {
     const location = useLocation();
+
+    const token = localStorage.getItem("token");
+
+    console.log(location.state);
+
+    let userId = null;
+    if (token) {
+        const decoded = jwtDecode(token);
+        userId = decoded.id || decoded.userId || decoded.sub; // según cómo esté tu JWT
+    }
+
     const {
         serviceKey,
         form,
@@ -12,15 +25,6 @@ const CheckRequestService = () => {
         numeroDepto,
         photos = []
     } = location.state || {};
-
-
-    const payload = {
-        ...location.state,
-        photos: (location.state.photos || []).map(photo => ({
-            name: photo.file?.name,
-            note: photo.note
-        }))
-    };
 
     // Buscar el servicio actual y crear un mapa de key a label
     let labelMap = { urgencia: "Urgencia", fecha: "Fecha de solicitada", descripcion: "Descripción" }; // Agregar etiquetas comunes
@@ -32,13 +36,30 @@ const CheckRequestService = () => {
     }
 
     const handleSubmit = async () => {
+        const formData = new FormData();
+
+        // Agrega los campos simples
+        formData.append("userId", userId);
+        formData.append("serviceKey", serviceKey);
+        formData.append("tipoPropiedad", tipoPropiedad || "");
+        formData.append("piso", piso || "");
+        formData.append("numeroDepto", numeroDepto || "");
+        formData.append("address", JSON.stringify(address || {}));
+        formData.append("form", JSON.stringify(form || {}));
+        formData.append("position", JSON.stringify(form || {}));
+
+        // Agrega las fotos
+        (photos || []).forEach((photo, idx) => {
+            if (photo.file) {
+                formData.append(`photos`, photo.file, photo.file.name);
+                formData.append(`notes`, photo.note || "");
+            }
+        });
+
         try {
             const response = await fetch('http://localhost:3000/job-requests/', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
+                body: formData
             });
             if (!response.ok) throw new Error('Error al enviar la solicitud');
             alert('¡Solicitud enviada con éxito!');
