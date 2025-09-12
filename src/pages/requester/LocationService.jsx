@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -26,7 +26,7 @@ const LocationService = () => {
     const [piso, setPiso] = useState("");
     const [numeroDepto, setNumeroDepto] = useState("");
     const navigate = useNavigate();
-
+    const location = useLocation();
 
     const handleInput = async (e) => {
         const value = e.target.value;
@@ -48,13 +48,25 @@ const LocationService = () => {
     };
 
     const handleContinue = () => {
-        navigate("/subirArchivos");
+        let coords = null;
+        if (position && Array.isArray(position)) {
+            coords = { lat: position[0], lng: position[1] };
+        }
+        navigate("/subirArchivos", {
+            state: {
+                ...location.state,
+                address,
+                tipoPropiedad,
+                piso,
+                numeroDepto,
+                position: coords
+            }
+        });
     };
 
-    console.log(address)
 
     return (
-        <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-8 mt-8">
+        <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-8 mt-8 ">
             <h1 className="text-2xl font-bold mb-6 text-center">Selecciona la ubicación de tu servicio</h1>
             <div className="flex flex-col md:flex-row gap-8">
                 {/* Formulario */}
