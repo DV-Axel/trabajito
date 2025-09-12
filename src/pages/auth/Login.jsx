@@ -1,10 +1,13 @@
 import imagenLogin from '../../assets/images/image login.png'
-
+import { useAuth } from '../../context/useAuth';
 import axios from 'axios';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import {useNavigate} from "react-router-dom";
 
 const Login = () => {
+    const { login } = useAuth();
+    const navigate = useNavigate();
 
     //state de los inputs
     const [email, setEmail] = useState('');
@@ -40,9 +43,9 @@ const Login = () => {
         }
 
         try {
-            const res = await axios.post('http://localhost:8888/login', { email, password });
-            console.log(res);
-            // Aquí puedes redirigir o guardar el token si el login es exitoso
+            const res = await axios.post('http://localhost:3000/auth/login', { email, password });
+            login(res.data.user, res.data.token);
+            navigate('/solicitar');
         } catch (error) {
             if (error.response && error.response.data && error.response.data.message) {
                 setErrorMessage(error.response.data.message);
