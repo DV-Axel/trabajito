@@ -66,7 +66,7 @@ function App() {
                                 <Route path="/resumenServicio" element={<CheckRequestService/>} />
                                 <Route path="/perfil" element={<PerfilRequester />}/>
                                 <Route path="/mis-servicios" element={<ActiveServices />} />
-                                <Route path="/servicio" element={<RequestService />}/>
+                                <Route path="/servicio/:id" element={<RequestService />}/>
                                 <Route path="/postulacion" element={<Postulation />}/>
 
                                 {/* Rutas de los workers */}

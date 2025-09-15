@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { getUserIdFromToken } from '../../data/helpers';
+import { getUserIdFromToken, formatearLocacion  } from '../../data/helpers';
 
 const ActiveServices = () => {
     const [solicitudes, setSolicitudes] = useState([]);
@@ -43,7 +43,7 @@ const ActiveServices = () => {
     }
 
     const handleServiceDetails = (id) => {
-        navigate(`/requestService/${id}`);
+        navigate(`/servicio/${id}`);
     };
 
     return (
@@ -53,15 +53,13 @@ const ActiveServices = () => {
                 {solicitudes.map(solicitud => (
                     <li key={solicitud.id} className="p-6 rounded-xl bg-[#f4fbfd] shadow flex flex-col md:flex-row md:items-center md:justify-between border border-[#00b4d8]">
                         <div>
-                            <h3 className="text-xl font-bold text-[#02283A] mb-2">{solicitud.titulo}</h3>
-                            <p className="text-gray-700 mb-2">{solicitud.descripcion}</p>
+                            <h3 className="text-xl font-bold text-[#02283A] mb-2">{solicitud.title}</h3>
+                            <p className="text-gray-700 mb-2">{solicitud.description}</p>
                             <div className="flex flex-wrap gap-4 text-sm text-[#02283A] mb-2">
-                                <span><strong>Fecha de creación:</strong> {new Date(solicitud.fechaCreacion).toLocaleDateString()}</span>
-                                <span><strong>Tipo de trabajo:</strong> {solicitud.tipoTrabajo}</span>
-                                <span><strong>Urgencia:</strong> {solicitud.urgente ? 'Sí' : 'No'}</span>
-                                <span><strong>Ubicación:</strong> {solicitud.ubicacion}</span>
-                                {solicitud.estado && <span><strong>Estado:</strong> {solicitud.estado}</span>}
-                                {solicitud.presupuesto && <span><strong>Presupuesto:</strong> ${solicitud.presupuesto}</span>}
+                                <span><strong>Fecha de creación:</strong> {new Date(solicitud.jobCreationDate).toLocaleDateString()}</span>
+                                <span><strong>Tipo de trabajo:</strong> {solicitud.serviceKey}</span>
+                                <span><strong>Urgencia:</strong> {solicitud.urgency ? 'Sí' : 'No'}</span>
+                                <span><strong>Ubicación:</strong> {formatearLocacion(solicitud.address)}</span>
                             </div>
                         </div>
                         <div className="flex gap-3 mt-4 md:mt-0">
@@ -71,12 +69,7 @@ const ActiveServices = () => {
                             >
                                 Ver
                             </button>
-                            <button
-                                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full font-semibold shadow transition"
-                                onClick={() => alert(`Editar solicitud ${solicitud.id}`)}
-                            >
-                                Editar
-                            </button>
+
                             <button
                                 className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full font-semibold shadow transition"
                                 onClick={() => alert(`Cancelar solicitud ${solicitud.id}`)}

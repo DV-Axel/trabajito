@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import {formatDate} from '../../data/helpers';
 import { FaIdCard, FaEnvelope, FaBirthdayCake, FaPhone, FaMapMarkerAlt, FaHashtag, FaCamera } from 'react-icons/fa';
 
 const PerfilRequester = () => {
@@ -90,13 +91,6 @@ const PerfilRequester = () => {
             }
         }
     };
-
-    const formatDate = (dateString) => {
-        if (!dateString) return '';
-        const [year, month, day] = dateString.slice(0, 10).split('-');
-        return `${day}-${month}-${year}`;
-    };
-
 
     return (
         <div className="flex mt-10 items-center justify-center bg-[#f4fbfd]">

@@ -70,8 +70,7 @@ const CheckRequestService = () => {
     };
 
 
-
-
+    // TODO: no se estan guardando las notas de las fotos
     /*TODO: Ser minuscioso con las validaciones del resumen*/
 
     return (

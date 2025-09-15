@@ -38,3 +38,19 @@ export const getUserIdFromToken = () => {
     }
     return null;
 };
+
+
+// Formatear Locacion
+export const formatearLocacion = (location) => {
+    const {road, house_number, town, state_district, state, postcode} = location;
+    if (!location) return 'Ubicación no disponible';
+
+    return `${road} ${house_number}, ${postcode} - ${town}, ${state_district}, ${state} `;
+}
+
+// Formatear fecha DD-MM-YYYY
+export const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const [year, month, day] = dateString.slice(0, 10).split('-');
+    return `${day}-${month}-${year}`;
+};
