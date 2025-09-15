@@ -1,3 +1,5 @@
+import { jwtDecode } from 'jwt-decode';
+
 //Dias de la semana.
 export const diasSemana = [
     { value: "lunes", label: "Lunes" },
@@ -21,3 +23,18 @@ export const horarios = [
 const mañana = new Date() //le asigno TEMPORALMENTE la fecha de hoy
 mañana.setDate(mañana.getDate() + 1);
 export const fechaMinima = mañana.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+
+
+// Obtener userId del token
+export const getUserIdFromToken = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        try {
+            const decoded = jwtDecode(token);
+            return decoded.id || decoded.userId || decoded.sub;
+        } catch {
+            return null;
+        }
+    }
+    return null;
+};

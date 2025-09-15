@@ -1,56 +1,44 @@
 import { useEffect, useState } from 'react';
-import {useNavigate} from "react-router-dom";
-
-import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+import { getUserIdFromToken } from '../../data/helpers';
 
 const ActiveServices = () => {
     const [solicitudes, setSolicitudes] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        // Datos de ejemplo
-        const datosDemo = [
-            {
-                id: 1,
-                titulo: 'Reparación de aire acondicionado',
-                descripcion: 'El aire acondicionado no enfría correctamente.',
-                fechaCreacion: '2024-06-01T10:00:00Z',
-                tipoTrabajo: 'Reparación',
-                urgente: true,
-                ubicacion: 'Madrid',
-                estado: 'Pendiente',
-                presupuesto: 120
-            },
-            {
-                id: 2,
-                titulo: 'Instalación de lámpara',
-                descripcion: 'Necesito instalar una lámpara en el salón.',
-                fechaCreacion: '2024-06-03T15:30:00Z',
-                tipoTrabajo: 'Instalación',
-                urgente: false,
-                ubicacion: 'Barcelona',
-                estado: 'En proceso',
-                presupuesto: 50
-            }
-        ];
-        setSolicitudes(datosDemo);
-        setLoading(false);
-    }, []);
 
-    // useEffect(() => {
-    //     // Reemplaza la URL por la de tu API
-    //     axios.get('http://localhost:3000/solicitudes/activas')
-    //         .then(res => setSolicitudes(res.data))
-    //         .catch(() => setSolicitudes([]))
-    //         .finally(() => setLoading(false));
-    // }, []);
+    const userId = getUserIdFromToken();
+    const token = localStorage.getItem('token');
+
+    useEffect(() => {
+        const fetchSolicitudes = async () => {
+
+            if (!userId) return;
+
+            try {
+                const response = await fetch(`http://localhost:3000/job-requests/${userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+                if (!response.ok) throw new Error('Error al obtener solicitudes');
+                const data = await response.json();
+                setSolicitudes(data);
+            } catch (error) {
+                setSolicitudes([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        if (userId && token) fetchSolicitudes();
+    }, [userId, token]);
 
     if (loading) {
         return <div className="text-center mt-10 text-lg text-gray-600">Cargando solicitudes...</div>;
     }
 
-    if (solicitudes.length === 0) {
+    if (!solicitudes || solicitudes.length === 0) {
         return <div className="text-center mt-10 text-lg text-gray-600">No tienes solicitudes activas.</div>;
     }
 
@@ -96,7 +84,6 @@ const ActiveServices = () => {
                                 Cancelar
                             </button>
                         </div>
-
                     </li>
                 ))}
             </ul>

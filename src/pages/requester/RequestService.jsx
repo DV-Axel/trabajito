@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const servicio = {
     tipo: 'Reparación',
@@ -23,7 +24,17 @@ const postulaciones = Array.from({ length: 8 }, (_, i) => ({
     estado: i % 2 === 0 ? 'Pendiente' : 'Aceptada'
 }));
 
-const RequestService = () => (
+const RequestService = () => {
+
+    const navigate = useNavigate();
+
+    const handleNavigate = () => {
+        navigate('/postulacion');
+    }
+
+    return(
+
+
 
     // TODO: mejorar estilo mobil
 
@@ -56,7 +67,7 @@ const RequestService = () => (
                         </div>
                     </div>
                 </div>
-                <button className="mt-6 bg-gradient-to-r from-indigo-500 to-blue-400 text-white rounded-full px-8 py-3 font-semibold text-base shadow hover:from-indigo-600 hover:to-blue-500 transition-colors">
+                <button className="mt-6 bg-[#02283A] hover:bg-[#03506f] text-white  rounded-full px-8 py-3 font-semibold text-base">
                     Editar Servicio
                 </button>
             </div>
@@ -78,8 +89,8 @@ const RequestService = () => (
                             </div>
                             <div className="text-right md:mx-10 mdplus:mx-20">
                                 {/*TODO: terminar accion de contrar*/}
-                                <button className="mt-3 bg-gradient-to-r from-indigo-500 to-blue-400 text-white rounded-full px-4 py-2 font-medium text-sm shadow hover:from-indigo-600 hover:to-blue-500 transition-colors">
-                                    Contratar
+                                <button onClick={handleNavigate} className="mt-6 bg-[#02283A] hover:bg-[#03506f] text-white rounded-full px-8 py-3 font-semibold text-base shadow transition-colors">
+                                    Ver Mas
                                 </button>
                             </div>
 
@@ -89,6 +100,6 @@ const RequestService = () => (
             </div>
         </div>
     </div>
-);
+)};
 
 export default RequestService;

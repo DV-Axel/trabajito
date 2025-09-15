@@ -23,6 +23,7 @@ import CheckRequestService from "./pages/requester/CheckRequestService.jsx";
 import ActiveServices from "./pages/requester/ActiveServices.jsx";
 import PerfilRequester from "./pages/requester/PerfilRequester.jsx";
 import RequestService from "./pages/requester/RequestService.jsx";
+import Postulation from "./pages/requester/Postulation.jsx";
 
 
 //Rutas para registro worker
@@ -66,6 +67,7 @@ function App() {
                                 <Route path="/perfil" element={<PerfilRequester />}/>
                                 <Route path="/mis-servicios" element={<ActiveServices />} />
                                 <Route path="/servicio" element={<RequestService />}/>
+                                <Route path="/postulacion" element={<Postulation />}/>
 
                                 {/* Rutas de los workers */}
                                 <Route path="/seUnWorker" element={<BeWorker />} />

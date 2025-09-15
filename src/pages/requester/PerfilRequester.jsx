@@ -4,8 +4,8 @@ import { FaIdCard, FaEnvelope, FaBirthdayCake, FaPhone, FaMapMarkerAlt, FaHashta
 
 const PerfilRequester = () => {
     const [user, setUser] = useState(null);
-    /*TODO: no se ve el default avatar*/
-    const [preview, setPreview] = useState('/default-avatar.png');
+    /*TODO: ver el tema de los inputrs numeros*/
+    const [preview, setPreview] = useState('');
     const fileInputRef = useRef(null);
 
     // Obtener userId del token
@@ -77,6 +77,8 @@ const PerfilRequester = () => {
                     },
                 });
 
+                /*TODO: Agregar la alerta para cuando cambia la interfaz o cuando no la cambia*/
+
                 if (response.ok) {
                     const data = await response.json();
                     setPreview(data.profilePicture);
@@ -107,11 +109,11 @@ const PerfilRequester = () => {
                     </div>
                     <div className="relative">
                         <img
-                            //src={preview}
                             src={`http://localhost:3000${user.profilePicture}`}
                             alt="Foto de perfil"
                             className="w-52 h-52 rounded-full object-cover border-2 border-[#00b4d8] mb-3 shadow-2xl"
                         />
+
                         <button
                             onClick={handleChangePhoto}
                             className="absolute bottom-4 right-4 bg-[#00b4d8] text-white p-2 rounded-full shadow hover:bg-[#0288a7] transition"
