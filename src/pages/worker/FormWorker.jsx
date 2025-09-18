@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { services } from "../../data/services";
-import {diasSemana, horarios} from "../../data/helpers.js";
+import { diasSemana, horarios, provinciasArgentina } from "../../data/helpers.js";
 
 const FormWorker = () => {
     const [form, setForm] = useState({
-        subtitulo: "",
         descripcion: "",
         ubicacion: "",
         radio: "",
         dias: [],
+        zona_trabajo: [],
         horarios: [],
         rubros: [],
         foto: null,
@@ -25,12 +25,11 @@ const FormWorker = () => {
     });
     const [preview, setPreview] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
-
     const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value, type, checked, files } = e.target;
-        if (type === "checkbox") {
+        if (type === "checkbox" && (name === "dias" || name === "horarios")) {
             setForm((prev) => ({
                 ...prev,
                 [name]: checked
@@ -53,6 +52,16 @@ const FormWorker = () => {
                 [name]: value,
             }));
         }
+    };
+
+    const handleZonaTrabajoChange = (e) => {
+        const { value, checked } = e.target;
+        setForm((prev) => ({
+            ...prev,
+            zona_trabajo: checked
+                ? [...prev.zona_trabajo, value]
+                : prev.zona_trabajo.filter((p) => p !== value)
+        }));
     };
 
     const handleRubrosChange = (e) => {
@@ -98,7 +107,18 @@ const FormWorker = () => {
     const handleConfirm = () => {
         setShowConfirm(false);
 
-        /*TODO: aca va la logica para guardar en la bbdd.*/
+        const formData = new FormData();
+        formData.append("subtitulo", form.subtitulo);
+        formData.append("descripcion", form.descripcion);
+        formData.append("ubicacion", form.ubicacion);
+        formData.append("radio", form.radio);
+        formData.append("foto", form.foto);
+
+        formData.append("dias", JSON.stringify(form.dias));
+        formData.append("zona_trabajo", JSON.stringify(form.zona_trabajo));
+        formData.append("horarios", JSON.stringify(form.horarios));
+        formData.append("rubros", JSON.stringify(form.rubros));
+        formData.append("sponsor", JSON.stringify(form.sponsor));
 
         navigate("/confirmacionWorker");
     };
@@ -153,33 +173,34 @@ const FormWorker = () => {
                         placeholder="Contanos sobre tu experiencia, habilidades, etc."
                     />
                 </div>
-                {/* Ubicacion
-                TODO: ver si para esto se puede implementar un autocarga de lugares
-                */}
+                {/* zona_trabajo */}
                 <div className="flex flex-col">
-                    <label className="mb-1 font-medium">Ubicacion donde trabajás</label>
-                    <input
-                        type="text"
-                        name="ubicacion"
-                        value={form.ubicacion}
-                        onChange={handleChange}
-                        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        placeholder="Ej: CABA, Zona Oeste, etc."
-                    />
+                    <label className="mb-1 font-medium">Provincias donde trabajás</label>
+                    <div className="flex flex-wrap gap-2">
+                        {provinciasArgentina.map((p) => (
+                            <label
+                                key={p.value}
+                                className={`cursor-pointer px-4 py-2 rounded-full border transition select-none
+                    ${form.zona_trabajo.includes(p.value)
+                                    ? "bg-blue-100 border-blue-500 text-blue-800 font-semibold shadow"
+                                    : "bg-white border-gray-300 text-gray-700 hover:bg-blue-50"}
+                `}
+                            >
+                                <input
+                                    type="checkbox"
+                                    name="zona_trabajo"
+                                    value={p.value}
+                                    checked={form.zona_trabajo.includes(p.value)}
+                                    onChange={handleZonaTrabajoChange}
+                                    className="hidden"
+                                />
+                                {p.label}
+                            </label>
+                        ))}
+                    </div>
+                    <small className="text-gray-500">Seleccioná una o varias provincias</small>
                 </div>
-                {/* Radio */}
-                <div className="flex flex-col">
-                    <label className="mb-1 font-medium">Radio de trabajo (km)</label>
-                    <input
-                        type="number"
-                        name="radio"
-                        value={form.radio}
-                        onChange={handleChange}
-                        min={1}
-                        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        placeholder="Ej: 10"
-                    />
-                </div>
+
                 {/* Días disponibles */}
                 <div className="flex flex-col">
                     <label className="mb-1 font-medium">Días disponibles</label>
@@ -284,7 +305,6 @@ const FormWorker = () => {
                             /> Nombre de la empresa
                         </label>
                     </div>
-                    {/*TODO: Ver una forma de que haya una busqueda al poner el CUIT o un autocomplete para el nombre, todo desde la base de datos*/}
                     {form.sponsor.tipo === "cuit" ? (
                         <input
                             type="text"
