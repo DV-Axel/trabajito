@@ -85,7 +85,7 @@ const FormSponsor = () => {
         setShowConfirm(false);
 
         const formData = new FormData();
-        formData.append("foto", form.foto);
+        formData.append("photo", form.foto);
         formData.append("razonSocial", form.razonSocial);
         formData.append("nombreComercial", form.nombreComercial);
         formData.append("cuil", form.cuil);
@@ -95,7 +95,7 @@ const FormSponsor = () => {
         formData.append("email", form.email);
         formData.append("emailAlternativo", form.emailAlternativo);
         formData.append("otros", form.otros);
-        formData.append("altaEmpresa", form.altaEmpresa);
+        formData.append("companyRegistration", form.altaEmpresa);
 
         formData.append("rubros", JSON.stringify(form.rubros));
         formData.append("dias", JSON.stringify(form.dias));
@@ -104,7 +104,7 @@ const FormSponsor = () => {
 
         try {
             // TODO: Poner el endpoint real
-            const response = await fetch('', {
+            const response = await fetch('http://localhost:3000/sponsors/', {
                 method: 'POST',
                 body: formData
             });
