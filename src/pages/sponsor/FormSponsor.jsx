@@ -1,12 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { services } from "../../data/services";
-import {useNavigate} from "react-router-dom";
-import {diasSemana} from "../../data/helpers.js";
+import { useNavigate } from "react-router-dom";
+import { diasSemana } from "../../data/helpers.js";
 
 const FormSponsor = () => {
     const [form, setForm] = useState({
         foto: null,
-        preview: null,
         razonSocial: "",
         nombreComercial: "",
         cuil: "",
@@ -26,9 +25,15 @@ const FormSponsor = () => {
         altaEmpresa: null,
         altaEmpresaNombre: "",
     });
+    const [previewFoto, setPreviewFoto] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        return () => {
+            if (previewFoto) URL.revokeObjectURL(previewFoto);
+        };
+    }, [previewFoto]);
 
     const handleChange = (e) => {
         const { name, value, type, files, checked } = e.target;
@@ -39,12 +44,16 @@ const FormSponsor = () => {
                 altaEmpresa: files[0],
                 altaEmpresaNombre: files[0] ? files[0].name : "",
             }));
-        }else if (type === "file") {
+        } else if (type === "file" && name === "foto") {
             setForm((prev) => ({
                 ...prev,
                 foto: files[0],
-                preview: files[0] ? URL.createObjectURL(files[0]) : null,
             }));
+            if (files && files[0]) {
+                setPreviewFoto(URL.createObjectURL(files[0]));
+            } else {
+                setPreviewFoto(null);
+            }
         } else if (type === "checkbox" && name === "dias") {
             setForm((prev) => ({
                 ...prev,
@@ -72,12 +81,39 @@ const FormSponsor = () => {
         setShowConfirm(true);
     };
 
-    const handleConfirm = () => {
-        {/*TODO: Aca deberia ir la la insersion a la base de datos*/}
+    const handleConfirm = async () => {
         setShowConfirm(false);
-        // Aquí va la lógica de envío real
-        navigate("/confirmacionSponsor");
 
+        const formData = new FormData();
+        formData.append("foto", form.foto);
+        formData.append("razonSocial", form.razonSocial);
+        formData.append("nombreComercial", form.nombreComercial);
+        formData.append("cuil", form.cuil);
+        formData.append("direccion", form.direccion);
+        formData.append("contacto", form.contacto);
+        formData.append("telefono", form.telefono);
+        formData.append("email", form.email);
+        formData.append("emailAlternativo", form.emailAlternativo);
+        formData.append("otros", form.otros);
+        formData.append("altaEmpresa", form.altaEmpresa);
+
+        formData.append("rubros", JSON.stringify(form.rubros));
+        formData.append("dias", JSON.stringify(form.dias));
+        formData.append("horarios", JSON.stringify([form.horarioInicio, form.horarioFin]));
+        formData.append("redesSociales", JSON.stringify([form.instagram, form.facebook, form.web]));
+
+        try {
+            // TODO: Poner el endpoint real
+            const response = await fetch('', {
+                method: 'POST',
+                body: formData
+            });
+            if (!response.ok) throw new Error('Error al enviar la solicitud');
+            navigate("/confirmacionSponsor");
+        } catch (error) {
+            alert('Error al enviar la solicitud');
+            console.error(error);
+        }
     };
 
     const handleCancel = () => setShowConfirm(false);
@@ -91,13 +127,6 @@ const FormSponsor = () => {
                     <label className="mb-1 font-medium">
                         Logo o foto de la entidad <span className="text-gray-500 text-sm">(agregue el logo de la empresa o una foto representativa)</span>
                     </label>
-                    {form.preview && (
-                        <img
-                            src={form.preview}
-                            alt="Preview"
-                            className="w-24 h-24 rounded-full object-cover mb-2 border"
-                        />
-                    )}
                     <input
                         type="file"
                         name="foto"
@@ -105,6 +134,13 @@ const FormSponsor = () => {
                         onChange={handleChange}
                         className="mb-2"
                     />
+                    {previewFoto && (
+                        <img
+                            src={previewFoto}
+                            alt="Previsualización"
+                            className="w-32 h-32 object-cover rounded-full border mb-2"
+                        />
+                    )}
                 </div>
                 {/* Nombre comercial */}
                 <div className="flex flex-col">

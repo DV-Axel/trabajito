@@ -5,6 +5,7 @@ import { diasSemana, horarios, provinciasArgentina } from "../../data/helpers.js
 
 const FormWorker = () => {
     const [form, setForm] = useState({
+        subtitulo: "",
         descripcion: "",
         ubicacion: "",
         radio: "",
@@ -104,7 +105,7 @@ const FormWorker = () => {
         setShowConfirm(true);
     };
 
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
         setShowConfirm(false);
 
         const formData = new FormData();
@@ -121,7 +122,7 @@ const FormWorker = () => {
         formData.append("sponsor", JSON.stringify(form.sponsor));
 
         try {
-            const response = await fetch('http://localhost:3000/', {
+            const response = await fetch('http://localhost:3000/job-requests/', {
                 method: 'POST',
                 body: formData
             });
