@@ -120,7 +120,17 @@ const FormWorker = () => {
         formData.append("rubros", JSON.stringify(form.rubros));
         formData.append("sponsor", JSON.stringify(form.sponsor));
 
-        navigate("/confirmacionWorker");
+        try {
+            const response = await fetch('http://localhost:3000/', {
+                method: 'POST',
+                body: formData
+            });
+            if (!response.ok) throw new Error('Error al enviar la solicitud');
+            alert('¡Solicitud enviada con éxito!');
+        } catch (error) {
+            alert('Error al enviar la solicitud');
+            console.error(error);
+        }
     };
 
     const handleCancel = () => {
