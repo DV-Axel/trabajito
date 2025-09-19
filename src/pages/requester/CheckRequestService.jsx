@@ -87,6 +87,7 @@ const CheckRequestService = () => {
                     </div>
                     <div className="bg-indigo-50 rounded-lg p-4 text-lg font-semibold shadow uppercase">
                         {serviceKey || "No especificado"}
+                        {/*TODO: se muestra el key y no el nombre, hay que cambiarlo*/}
                     </div>
                 </section>
 

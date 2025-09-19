@@ -85,22 +85,22 @@ const FormSponsor = () => {
         setShowConfirm(false);
 
         const formData = new FormData();
-        formData.append("photo", form.foto);
-        formData.append("razonSocial", form.razonSocial);
-        formData.append("nombreComercial", form.nombreComercial);
-        formData.append("cuil", form.cuil);
-        formData.append("direccion", form.direccion);
-        formData.append("contacto", form.contacto);
-        formData.append("telefono", form.telefono);
+        formData.append("logo", form.foto);
+        formData.append("businessName", form.razonSocial);
+        formData.append("tradeName", form.nombreComercial);
+        formData.append("cuilId", form.cuil);
+        formData.append("address", form.direccion);
+        formData.append("contactName", form.contacto);
+        formData.append("phone", form.telefono);
         formData.append("email", form.email);
-        formData.append("emailAlternativo", form.emailAlternativo);
-        formData.append("otros", form.otros);
+        formData.append("alternativeEmail", form.emailAlternativo);
+        formData.append("aditionalInformation", form.otros);
         formData.append("companyRegistration", form.altaEmpresa);
 
-        formData.append("rubros", JSON.stringify(form.rubros));
-        formData.append("dias", JSON.stringify(form.dias));
-        formData.append("horarios", JSON.stringify([form.horarioInicio, form.horarioFin]));
-        formData.append("redesSociales", JSON.stringify([form.instagram, form.facebook, form.web]));
+        formData.append("rubros", JSON.stringify(form.rubros)); //Esto no impacta directo en la abse de datos del sponsor, sino en la pivot
+        formData.append("workingDays", JSON.stringify(form.dias));
+        formData.append("workingHours", JSON.stringify([form.horarioInicio, form.horarioFin]));
+        formData.append("social", JSON.stringify([form.instagram, form.facebook, form.web]));
 
         try {
             // TODO: Poner el endpoint real
@@ -111,7 +111,7 @@ const FormSponsor = () => {
             if (!response.ok) throw new Error('Error al enviar la solicitud');
             navigate("/confirmacionSponsor");
         } catch (error) {
-            alert('Error al enviar la solicitud');
+            alert(error.message);
             console.error(error);
         }
     };

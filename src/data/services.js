@@ -9,13 +9,13 @@ import {
 //TODO: terminar de hardcodear los sericios y agregar las preguntas especificas de cada uno
 
 export const services = [
-    { key: "aires", name: "Aires Acondicionados", icon: FaSnowflake },
-    { key: "albanileria", name: "Albañilería", icon: GiBrickWall },
-    { key: "carpintero", name: "Carpintero", icon: GiWoodBeam },
-    { key: "cerrajeria", name: "Cerrajería", icon: GiLockpicks },
-    { key: "cuidados_adultos", name: "Cuidados Adultos", icon: GiNurseFemale },
+    { key: "1", name: "Aires Acondicionados", icon: FaSnowflake },
+    { key: "2", name: "Albañilería", icon: GiBrickWall },
+    { key: "3", name: "Carpintero", icon: GiWoodBeam },
+    { key: "4", name: "Cerrajería", icon: GiLockpicks },
+    { key: "5", name: "Cuidados Adultos", icon: GiNurseFemale },
     {
-        key: "electricidad",
+        key: "6",
         name: "Electricidad",
         icon: FaBolt,
         questions: [
@@ -92,13 +92,13 @@ export const services = [
             }
         ]
     },
-    { key: "herrería", name: "Herrería", icon: GiBlacksmith },
-    { key: "jardineria", name: "Jardinería", icon: GiGardeningShears },
-    { key: "limpieza", name: "Limpieza", icon: FaBroom },
-    { key: "logistica", name: "Logística", icon: FaBoxes },
-    { key: "mudanzas", name: "Mudanzas", icon: FaTruck },
-    { key: "ninera", name: "Niñera", icon: GiBabyBottle },
-    { key: "pintura", name: "Pintura", icon: FaPaintRoller },
-    { key: "plomeria", name: "Plomería", icon: FaFaucet },
-    { key: "tornería", name: "Tornería", icon: GiGearHammer },
+    { key: "7", name: "Herrería", icon: GiBlacksmith },
+    { key: "8", name: "Jardinería", icon: GiGardeningShears },
+    { key: "9", name: "Limpieza", icon: FaBroom },
+    { key: "10", name: "Logística", icon: FaBoxes },
+    { key: "11", name: "Mudanzas", icon: FaTruck },
+    { key: "12", name: "Niñera", icon: GiBabyBottle },
+    { key: "13", name: "Pintura", icon: FaPaintRoller },
+    { key: "14", name: "Plomería", icon: FaFaucet },
+    { key: "15", name: "Tornería", icon: GiGearHammer },
 ];
