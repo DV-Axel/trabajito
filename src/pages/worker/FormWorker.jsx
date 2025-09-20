@@ -1,14 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import { services } from "../../data/services";
-import { diasSemana, horarios, provinciasArgentina } from "../../data/helpers.js";
+import { diasSemana, horarios, provinciasArgentina, getUserIdFromToken } from "../../data/helpers.js";
 
 const FormWorker = () => {
     const [form, setForm] = useState({
         subtitulo: "",
         descripcion: "",
-        ubicacion: "",
-        radio: "",
         dias: [],
         zona_trabajo: [],
         horarios: [],
@@ -27,6 +25,8 @@ const FormWorker = () => {
     const [preview, setPreview] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
     const navigate = useNavigate();
+
+    const idUser = getUserIdFromToken();
 
     const handleChange = (e) => {
         const { name, value, type, checked, files } = e.target;
@@ -109,20 +109,23 @@ const FormWorker = () => {
         setShowConfirm(false);
 
         const formData = new FormData();
-        formData.append("subtitulo", form.subtitulo);
-        formData.append("descripcion", form.descripcion);
-        formData.append("ubicacion", form.ubicacion);
-        formData.append("radio", form.radio);
-        formData.append("foto", form.foto);
+        formData.append("subtitle", form.subtitulo);
+        formData.append("description", form.descripcion);
+        formData.append("workLocation", JSON.stringify(form.zona_trabajo));
+        formData.append("idUser", idUser);
 
-        formData.append("dias", JSON.stringify(form.dias));
-        formData.append("zona_trabajo", JSON.stringify(form.zona_trabajo));
-        formData.append("horarios", JSON.stringify(form.horarios));
+        formData.append("workingDays", JSON.stringify(form.dias));
+        formData.append("workingHours", JSON.stringify(form.horarios));
+
+
         formData.append("rubros", JSON.stringify(form.rubros));
         formData.append("sponsor", JSON.stringify(form.sponsor));
 
+        formData.append("photo", form.foto);
+
+
         try {
-            const response = await fetch('http://localhost:3000/job-requests/', {
+            const response = await fetch('http://localhost:3000/workers/', {
                 method: 'POST',
                 body: formData
             });
