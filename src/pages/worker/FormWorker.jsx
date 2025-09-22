@@ -24,6 +24,10 @@ const FormWorker = () => {
     });
     const [preview, setPreview] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
+    const [sponsorData, setSponsorData] = useState(null);
+
+    console.log(sponsorData.id);
+
     const navigate = useNavigate();
 
     const idUser = getUserIdFromToken();
@@ -100,10 +104,27 @@ const FormWorker = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setShowConfirm(true);
+        const { tipo, cuit, nombre } = form.sponsor;
+        const body = tipo === "cuit" ? { cuit } : { nombre };
+
+        try {
+            const response = await fetch('http://localhost:3000/sponsors/getSponsorFromFormWorker', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (!response.ok) throw new Error('Error al enviar la solicitud');
+            const data = await response.json();
+            setSponsorData(data); // Guarda los datos recibidos
+            setShowConfirm(true); // Muestra el modal
+        } catch (error) {
+            alert('Error al enviar la solicitud');
+            console.error(error);
+        }
     };
+
 
     const handleConfirm = async () => {
         setShowConfirm(false);
@@ -116,6 +137,7 @@ const FormWorker = () => {
 
         formData.append("workingDays", JSON.stringify(form.dias));
         formData.append("workingHours", JSON.stringify(form.horarios));
+        formData.append("idSponsor", sponsorData.id);
 
 
         formData.append("rubros", JSON.stringify(form.rubros));
@@ -301,7 +323,7 @@ const FormWorker = () => {
                             <input
                                 type="radio"
                                 className="mx-1"
-                                name="sponsorType"
+                                name="tipo"
                                 value="cuit"
                                 checked={form.sponsor.tipo === "cuit"}
                                 onChange={handleSponsorTypeChange}
@@ -312,7 +334,7 @@ const FormWorker = () => {
                             <input
                                 className="mx-1"
                                 type="radio"
-                                name="sponsorType"
+                                name="tipo"
                                 value="nombre"
                                 checked={form.sponsor.tipo === "nombre"}
                                 onChange={handleSponsorTypeChange}
@@ -383,27 +405,29 @@ const FormWorker = () => {
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
                     <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
                         <h2 className="text-lg font-bold mb-2">¿Estás seguro?</h2>
+                        {sponsorData && (
+                            <div className="mb-4 text-gray-700">
+                                <p><strong>Nombre:</strong> {sponsorData.nombre}</p>
+                                <p><strong>CUIL:</strong> {sponsorData.cuil}</p>
+                                <p><strong>Dirección:</strong> {sponsorData.direccion}</p>
+                            </div>
+                        )}
                         <p className="mb-4 text-gray-700">
                             Verifica que los datos seleccionados sean correctos.<br />
                             Recuerda que estos datos te permiten acceder a los trabajos que desees.
                         </p>
                         <div className="flex justify-end gap-2">
-                            <button
-                                onClick={handleCancel}
-                                className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
-                            >
+                            <button onClick={handleCancel} className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">
                                 Cancelar
                             </button>
-                            <button
-                                onClick={handleConfirm}
-                                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-                            >
+                            <button onClick={handleConfirm} className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">
                                 Confirmar
                             </button>
                         </div>
                     </div>
                 </div>
             )}
+
         </div>
     );
 };
