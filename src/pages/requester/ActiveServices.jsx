@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { getUserIdFromToken, formatearLocacion  } from '../../data/helpers';
+import { traerIdServicio } from '../../data/services.js'
 
 const ActiveServices = () => {
     const [solicitudes, setSolicitudes] = useState([]);
@@ -46,6 +47,7 @@ const ActiveServices = () => {
         navigate(`/servicio/${id}`);
     };
 
+
     return (
         <div className="max-w-4xl mx-auto my-10 p-6 bg-white rounded-3xl shadow-2xl border-4 border-[#00b4d8]">
             <h2 className="text-2xl font-bold text-[#02283A] mb-6">Solicitudes activas</h2>
@@ -57,8 +59,10 @@ const ActiveServices = () => {
                             <p className="text-gray-700 mb-2">{solicitud.description}</p>
                             <div className="flex flex-wrap gap-4 text-sm text-[#02283A] mb-2">
                                 <span><strong>Fecha de creación:</strong> {new Date(solicitud.jobCreationDate).toLocaleDateString()}</span>
-                                <span><strong>Tipo de trabajo:</strong> {solicitud.serviceKey}</span>
+                                <span><strong>Tipo de trabajo:</strong> {traerIdServicio(solicitud.serviceKey)}</span>
                                 <span><strong>Urgencia:</strong> {solicitud.urgency ? 'Sí' : 'No'}</span>
+                                {console.log(solicitud.serviceKey)}
+
                                 <span><strong>Ubicación:</strong> {formatearLocacion(solicitud.address)}</span>
                             </div>
                         </div>

@@ -26,8 +26,6 @@ const FormWorker = () => {
     const [showConfirm, setShowConfirm] = useState(false);
     const [sponsorData, setSponsorData] = useState(null);
 
-    console.log(sponsorData.id);
-
     const navigate = useNavigate();
 
     const idUser = getUserIdFromToken();

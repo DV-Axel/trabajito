@@ -14,7 +14,7 @@ const RequesterIndex = () => {
 
     const handleContinue = () => {
         setShowModal(false);
-        navigate("/formularioSolicitud", { state: { serviceKey: selectedService.key } });
+        navigate("/formularioSolicitud", { state: { serviceKey: selectedService.key, nameService: selectedService.name } });
     };
 
     const selectedService = services.find(s => s.key === selected); // Encuentra el servicio seleccionado

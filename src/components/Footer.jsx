@@ -10,7 +10,7 @@ const Footer = () => (
 
                 { /* TODO: Poner el nombre empresa */ }
 
-                <span className="text-xl font-bold">NombreEmpresa</span>
+                <span className="text-xl font-bold">TRABAJITO</span>
             </div>
             {/* Centro: Redes sociales */}
             <div className="flex space-x-6 mb-4 md:mb-0">

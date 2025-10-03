@@ -102,3 +102,10 @@ export const services = [
     { key: "14", name: "Plomería", icon: FaFaucet },
     { key: "15", name: "Tornería", icon: GiGearHammer },
 ];
+
+
+
+export const traerIdServicio = (id) => {
+    const servicio = services.find(s => String(s.key) === String(id));
+    return servicio ? servicio.name : "Servicio Desconocido";
+}

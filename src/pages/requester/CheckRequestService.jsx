@@ -1,10 +1,11 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { jwtDecode } from 'jwt-decode';
 import { services } from "../../data/services";
 
 
 const CheckRequestService = () => {
     const location = useLocation();
+    const navigate = useNavigate()
 
     const token = localStorage.getItem("token");
 
@@ -18,6 +19,7 @@ const CheckRequestService = () => {
 
     const {
         serviceKey,
+        nameService,
         form,
         address,
         tipoPropiedad,
@@ -63,11 +65,14 @@ const CheckRequestService = () => {
             });
             if (!response.ok) throw new Error('Error al enviar la solicitud');
             alert('¡Solicitud enviada con éxito!');
+            navigate('/solicitar')
         } catch (error) {
             alert('Error al enviar la solicitud');
             console.error(error);
         }
     };
+
+
 
 
     // TODO: no se estan guardando las notas de las fotos
@@ -86,8 +91,7 @@ const CheckRequestService = () => {
                         <span className="text-2xl mr-2">🔧</span>
                     </div>
                     <div className="bg-indigo-50 rounded-lg p-4 text-lg font-semibold shadow uppercase">
-                        {serviceKey || "No especificado"}
-                        {/*TODO: se muestra el key y no el nombre, hay que cambiarlo*/}
+                        {nameService || "No especificado"}
                     </div>
                 </section>
 
@@ -125,8 +129,18 @@ const CheckRequestService = () => {
                                     : "No especificada"}
                             </li>
                             <li><span className="font-semibold">Tipo de propiedad:</span> {tipoPropiedad || "No especificado"}</li>
-                            <li><span className="font-semibold">Piso:</span> {piso || "No especificado"}</li>
-                            <li><span className="font-semibold">Número depto:</span> {numeroDepto || "No especificado"}</li>
+
+                            {tipoPropiedad === "departamento" && (
+                                <>
+                                    <li>
+                                        <span className="font-semibold">Piso:</span> {piso || "No especificado"}
+                                    </li>
+                                    <li>
+                                        <span className="font-semibold">Número depto:</span> {numeroDepto || "No especificado"}
+                                    </li>
+                                </>
+                            )}
+
                         </ul>
                     </div>
                 </section>
@@ -159,6 +173,8 @@ const CheckRequestService = () => {
                 >
                     Confirmar solicitud
                 </button>
+
+
 
             </div>
         </div>

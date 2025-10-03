@@ -83,6 +83,7 @@ const PerfilRequester = () => {
                 if (response.ok) {
                     const data = await response.json();
                     setPreview(data.profilePicture);
+                    window.location.reload()
                 } else {
                     alert('Error al subir la foto');
                 }
@@ -129,7 +130,6 @@ const PerfilRequester = () => {
                     <div className="flex items-center gap-3">
                         <FaIdCard className="text-[#00b4d8] text-xl" />
                         <span className="font-semibold text-[#02283A]">Tipo y N° de identificación:</span>
-                        {/*TODO: falta el tipo de identificacion*/}
                         <span className="uppercase">{user.idType} {user.dni}</span>
                     </div>
                     <div className="flex items-center gap-3">

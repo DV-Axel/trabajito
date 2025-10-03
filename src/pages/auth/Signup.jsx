@@ -133,9 +133,6 @@ const Signup = () => {
                             autoComplete="off"
                         />
                     </div>
-                    {error && (
-                        <div className="text-red-600 text-sm font-semibold text-center">{error}</div>
-                    )}
                     <div>
                         <label htmlFor="direccion" className="block text-lg font-medium text-gray-700 mb-1">
                             Dirección
@@ -261,8 +258,13 @@ const Signup = () => {
                             Inicia sesión
                         </Link>
                     </div>
+                    {error && (
+                        <div className="text-red-600 bg-red-200 text-xl py-3 font-semibold text-center">{error}</div>
+                    )}
                 </form>
+
             </div>
+
         </div>
     );
 };

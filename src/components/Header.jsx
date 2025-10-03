@@ -1,5 +1,6 @@
-import { FaRegQuestionCircle, FaSignInAlt, FaBars, FaUserCircle, FaClipboardList } from 'react-icons/fa';
+import { FaRegQuestionCircle, FaSignInAlt,FaToolbox , FaBars, FaUserCircle, FaClipboardList } from 'react-icons/fa';
 import { GiStoneCrafting } from "react-icons/gi";
+import { MdDashboard } from "react-icons/md";
 import logo from '../assets/images/logo trabajito.png';
 import { Link } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
@@ -79,6 +80,16 @@ const Header = () => {
                                         <FaClipboardList className="text-2xl" />
                                         <span>Mis servicios</span>
                                     </Link>
+                                    <Link
+                                        to={user.isWorker ? "/trabajos" : "/seUnWorker"}
+                                        className="flex items-center gap-3 px-5 py-3 hover:bg-[#095a8e] transition-colors"
+                                    >
+                                        {user.isWorker ? <MdDashboard className="text-2xl" /> : <FaToolbox className="text-2xl" />}
+
+                                        <span>{user.isWorker ? "Panel Worker" : "Se un WORKER!"}</span>
+                                    </Link>
+
+
                                     <div className="border-t border-[#095a8e] my-1"></div>
                                     <button
                                         onClick={logout}
@@ -100,6 +111,7 @@ const Header = () => {
             </div>
 
             {/* Menú hamburguesa en móvil */}
+            {/*TODO: Mejorar el menu hamburguesa en el movil*/}
             {menuOpen && (
                 <div className="absolute top-full right-0 bg-[#02283A] w-56 rounded-xl shadow-2xl flex flex-col items-center py-4 mdplus:hidden z-50 border border-[#095a8e] animate-fade-in">
                     {!user ? (
@@ -122,6 +134,18 @@ const Header = () => {
                             <Link to="/mis-servicios" className="flex flex-col items-center mb-2 hover:text-[#00b4d8] transition-colors">
                                 <FaClipboardList className="text-white text-3xl" />
                                 <span className="text-base mt-2 uppercase text-white">Mis servicios</span>
+                            </Link>
+                            <Link
+                                to={user.isWorker ? "/trabajos" : "/seUnWorker"}
+                                className="flex flex-col items-center mb-2 hover:text-[#00b4d8] transition-colors"
+                            >
+                                {user.isWorker
+                                    ? <MdDashboard className="text-white text-3xl" />
+                                    : <FaToolbox className="text-white text-3xl" />}
+
+                                <span className="text-base mt-2 uppercase text-white">
+                                    {user.isWorker ? "Panel Worker" : "Se un Worker!"}
+                                </span>
                             </Link>
                             <Link to="/ayuda" className="flex flex-col items-center mb-2 hover:text-[#00b4d8] transition-colors">
                                 <FaRegQuestionCircle className="text-white text-3xl" />

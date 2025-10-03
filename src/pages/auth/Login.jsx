@@ -45,6 +45,7 @@ const Login = () => {
         try {
             const res = await axios.post('http://localhost:3000/auth/login', { email, password });
             login(res.data.user, res.data.token);
+            console.log(res.data.user)
             navigate('/solicitar');
         } catch (error) {
             if (error.response && error.response.data && error.response.data.message) {

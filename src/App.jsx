@@ -30,13 +30,13 @@ import Postulation from "./pages/requester/Postulation.jsx";
 import BeWorker from "./pages/worker/BeWorker.jsx";
 import FormWorker from "./pages/worker/FormWorker.jsx";
 import ConfirmWorker from "./pages/worker/ConfirmWorker.jsx";
+import WorksList from "./pages/worker/WorksList.jsx";
+import ViewShowRequest from "./pages/worker/ViewShowRequest.jsx";
 
 //Rutas para registro sponsor
 import BeSponsor from "./pages/sponsor/BeSponsor.jsx";
 import FormSponsor from "./pages/sponsor/FormSponsor.jsx";
 import ConfirmSponsor from "./pages/sponsor/ConfirmSponsor.jsx";
-import RequestSerivce from "./pages/requester/RequestService.jsx";
-import requestService from "./pages/requester/RequestService.jsx";
 
 function App() {
         return (
@@ -73,6 +73,8 @@ function App() {
                                 <Route path="/seUnWorker" element={<BeWorker />} />
                                 <Route path="/registro-worker" element={<FormWorker />} />
                                 <Route path="/confirmacionWorker" element={<ConfirmWorker />} />
+                                <Route path="/trabajos" element={<WorksList />} />
+                                <Route path="/solicitud/:id" element={<ViewShowRequest />} />
 
                                 {/* Rutas de los sponsors */}
                                 <Route path="/seUnSponsor" element={<BeSponsor />} />
