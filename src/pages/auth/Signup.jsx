@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { FaRegHandshake } from "react-icons/fa6";
+import {ErrorAlert} from "../../components/alerts/ErrorAlert";
 
 const Signup = () => {
     const [form, setForm] = useState({});
@@ -259,7 +260,7 @@ const Signup = () => {
                         </Link>
                     </div>
                     {error && (
-                        <div className="text-red-600 bg-red-200 text-xl py-3 font-semibold text-center">{error}</div>
+                        <ErrorAlert message={error} />
                     )}
                 </form>
 

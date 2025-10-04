@@ -31,7 +31,7 @@ import BeWorker from "./pages/worker/BeWorker.jsx";
 import FormWorker from "./pages/worker/FormWorker.jsx";
 import ConfirmWorker from "./pages/worker/ConfirmWorker.jsx";
 import WorksList from "./pages/worker/WorksList.jsx";
-import ViewShowRequest from "./pages/worker/ViewShowRequest.jsx";
+import ViewJobRequest from "./pages/worker/ViewJobRequest.jsx";
 
 //Rutas para registro sponsor
 import BeSponsor from "./pages/sponsor/BeSponsor.jsx";
@@ -74,7 +74,7 @@ function App() {
                                 <Route path="/registro-worker" element={<FormWorker />} />
                                 <Route path="/confirmacionWorker" element={<ConfirmWorker />} />
                                 <Route path="/trabajos" element={<WorksList />} />
-                                <Route path="/solicitud/:id" element={<ViewShowRequest />} />
+                                <Route path="/solicitud/:id" element={<ViewJobRequest />} />
 
                                 {/* Rutas de los sponsors */}
                                 <Route path="/seUnSponsor" element={<BeSponsor />} />

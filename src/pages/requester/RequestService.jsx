@@ -41,7 +41,7 @@ const RequestService = () => {
                     <div className="mb-4 w-full space-y-2 text-base text-left">
                         <p><span className="font-bold ">Nombre del servicio:</span> {servicio.title}</p>
                         <p><span className="font-bold ">Fecha de creación:</span> {formatDate(servicio.jobCreationDate)}</p>
-                        <p><span className="font-bold ">Tipo de servicio:</span> {servicio.serviceKey}</p>
+                        <p><span className="font-bold ">Tipo de servicio:</span> {servicio.service.name}</p>
                         <p><span className="font-bold ">Urgencia:</span> {servicio.urgency ? 'Si' : 'No'}</p>
                         <p><span className="font-bold ">Fecha solicitada:</span> {formatDate(servicio.date)}</p>
                         <p><span className="font-bold ">Ubicación:</span> {formatearLocacion(servicio.address)}</p>

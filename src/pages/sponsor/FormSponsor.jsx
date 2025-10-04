@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { services } from "../../data/services";
 import { useNavigate } from "react-router-dom";
 import { diasSemana } from "../../data/helpers.js";
+import { ErrorAlert } from "../../components/alerts/ErrorAlert.jsx";
 
 const FormSponsor = () => {
     const [form, setForm] = useState({
@@ -27,6 +28,7 @@ const FormSponsor = () => {
     });
     const [previewFoto, setPreviewFoto] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -78,11 +80,13 @@ const FormSponsor = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setError("");
         setShowConfirm(true);
     };
 
     const handleConfirm = async () => {
         setShowConfirm(false);
+        setError("");
 
         const formData = new FormData();
         formData.append("logo", form.foto);
@@ -97,22 +101,24 @@ const FormSponsor = () => {
         formData.append("aditionalInformation", form.otros);
         formData.append("companyRegistration", form.altaEmpresa);
 
-        formData.append("rubros", JSON.stringify(form.rubros)); //Esto no impacta directo en la abse de datos del sponsor, sino en la pivot
+        formData.append("rubros", JSON.stringify(form.rubros));
         formData.append("workingDays", JSON.stringify(form.dias));
         formData.append("workingHours", JSON.stringify([form.horarioInicio, form.horarioFin]));
         formData.append("social", JSON.stringify([form.instagram, form.facebook, form.web]));
 
         try {
-            // TODO: Poner el endpoint real
             const response = await fetch('http://localhost:3000/sponsors/', {
                 method: 'POST',
                 body: formData
             });
-            if (!response.ok) throw new Error('Error al enviar la solicitud');
+            if (!response.ok) {
+                const errorData = await response.json();
+                setError(errorData.message || "Error al enviar la solicitud");
+                return;
+            }
             navigate("/confirmacionSponsor");
         } catch (error) {
-            alert(error.message);
-            console.error(error);
+            setError(error.message);
         }
     };
 
@@ -383,6 +389,7 @@ const FormSponsor = () => {
                 >
                     Continuar
                 </button>
+                {error && <ErrorAlert message={error} />}
             </form>
             {/* Modal de confirmación */}
             {showConfirm && (

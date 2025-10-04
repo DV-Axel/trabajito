@@ -104,19 +104,6 @@ const Login = () => {
                                 </Link>
                             </div>
                         </div>
-                        <div className="flex items-center">
-                            <input
-                                id="remember"
-                                type="checkbox"
-                                className="mr-2"
-                            />
-
-
-                            <label htmlFor="remember" className="text-gray-700 text-sm">
-                                Recordar contraseña
-                                { /* TODO: Implementar funcionalidad */}
-                            </label>
-                        </div>
                         <button
                             type="submit"
                             className="w-full bg-[#0c7fcf] hover:bg-[#095a8e] text-white font-semibold py-2 rounded-md transition-all"
