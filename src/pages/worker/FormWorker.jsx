@@ -136,7 +136,7 @@ const FormWorker = () => {
         formData.append("workingDays", JSON.stringify(form.dias));
         formData.append("workingHours", JSON.stringify(form.horarios));
         formData.append("idSponsor", sponsorData.id);
-
+2
 
         formData.append("rubros", JSON.stringify(form.rubros));
         formData.append("sponsor", JSON.stringify(form.sponsor));
