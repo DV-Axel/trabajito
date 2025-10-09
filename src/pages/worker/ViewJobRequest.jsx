@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { formatearLocacion } from "../../data/helpers";
+import {formatearLocacion, getUserIdFromToken} from "../../data/helpers";
+import Swal from 'sweetalert2';
 
 function formatearNombre(nombre) {
     if (!nombre) return "";
@@ -14,6 +15,8 @@ const ViewJobRequest = () => {
     const [modalPostular, setModalPostular] = useState(false);
     const [presupuesto, setPresupuesto] = useState("");
     const [presentacion, setPresentacion] = useState("");
+    const [requiereVisita, setRequiereVisita] = useState(false);
+    const [isWorkerRegistered, setIsWorkerRegistered] = useState(null);
 
     useEffect(() => {
         const fetchJobRequest = async () => {
@@ -30,6 +33,25 @@ const ViewJobRequest = () => {
         fetchJobRequest();
     }, [id]);
 
+    useEffect(() => {
+        const checkWorker = async () => {
+            const idUser = getUserIdFromToken();
+            if (!idUser) {
+                setIsWorkerRegistered(false);
+                return;
+            }
+            try {
+                const response = await fetch(`http://localhost:3000/workers/check-postulacion?idUser=${idUser}&idJobRequest=${id}`);
+                const data = await response.json(); // data = { yaPostulado: true/false }
+                setIsWorkerRegistered(!data.yaPostulado); // true si puede postularse, false si ya está postulado
+            } catch (error) {
+                setIsWorkerRegistered(false);
+            }
+        };
+        checkWorker();
+    }, [id]);
+
+
     if (!jobRequest) {
         return (
             <div className="flex justify-center items-center h-64">
@@ -41,18 +63,55 @@ const ViewJobRequest = () => {
     const handleExpandirFoto = (foto) => setModalFoto(foto);
     const handleCerrarModal = () => setModalFoto(null);
 
-    const handleAbrirPostular = () => setModalPostular(true);
-    const handleCerrarPostular = () => {
-        setModalPostular(false);
-        setPresupuesto("");
-        setPresentacion("");
+    const handleEnviarPostulacion = async () => {
+        // mando el id del usuario, para en el controlador buscar el worker asociado
+        const idUser = getUserIdFromToken();
+
+        const postulacion = {
+            idJobRequest: jobRequest.id,
+            presupuesto,
+            presentacion,
+            requiereVisita,
+            idUser
+        };
+
+        const confirm = await Swal.fire({
+            title: '¿Confirmar postulación?',
+            html: `
+            <div>
+                <b>Trabajo:</b> ${jobRequest.title}<br/>
+                <b>Presupuesto:</b> $${postulacion.presupuesto}<br/>
+                <b>¿Requiere visita previa?</b> ${postulacion.requiereVisita ? 'Sí' : 'No'}
+            </div>
+        `,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, postularme',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#02283A',
+            cancelButtonColor: '#aaa'
+        });
+
+        if (confirm.isConfirmed) {
+
+            try {
+                const response = await fetch('http://localhost:3000/job-requests/postularse', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(postulacion)
+                });
+                if (!response.ok) throw new Error('Error al enviar la postulación');
+                Swal.fire('¡Postulación enviada!', '', 'success');
+            } catch (error) {
+                Swal.fire('Error', 'No se pudo enviar la postulación', 'error');
+            }
+        }
     };
 
-    const handleEnviarPostulacion = () => {
-        // Aquí puedes agregar la lógica para enviar la postulación al backend
-        alert(`Postulación enviada con presupuesto: $${presupuesto}\nPresentación: ${presentacion}`);
-        handleCerrarPostular();
-    };
+
+    /*TODO: ver que en el panel de worker no se vean los mismo servicios que uno carga*/
 
     return (
         <div className="flex max-w-5xl mx-auto mt-8 bg-white rounded-lg shadow-lg p-0 overflow-hidden min-h-[600px]">
@@ -117,37 +176,59 @@ const ViewJobRequest = () => {
                     <h3 className="text-xl font-bold mb-4 text-gray-800 text-center">
                         Presentación para el trabajo
                     </h3>
-                    <textarea
-                        className="border rounded px-3 py-2 mb-4 w-full min-h-[150px] resize-none"
-                        placeholder="Escribe una breve presentación o descripción para el cliente..."
-                        value={presentacion}
-                        onChange={e => setPresentacion(e.target.value)}
-                    />
-                    <input
-                        type="number"
-                        min="0"
-                        className="border rounded px-3 py-2 mb-4 w-full text-center"
-                        placeholder="Ingrese un monto en $"
-                        value={presupuesto}
-                        onChange={e => setPresupuesto(e.target.value)}
-                    />
+                    {isWorkerRegistered ? (
+                        <>
+                <textarea
+                    className="border rounded px-3 py-2 mb-4 w-full min-h-[150px] resize-none"
+                    placeholder="Escribe una breve presentación o descripción para el cliente..."
+                    value={presentacion}
+                    onChange={e => setPresentacion(e.target.value)}
+                />
+                            <input
+                                type="number"
+                                min="0"
+                                className="border rounded px-3 py-2 mb-4 w-full text-center"
+                                placeholder="Ingrese un monto en $"
+                                value={presupuesto}
+                                onChange={e => setPresupuesto(e.target.value)}
+                            />
+                            <div className="flex items-center mb-4">
+                                <input
+                                    type="checkbox"
+                                    id="requiereVisita"
+                                    checked={requiereVisita}
+                                    onChange={e => setRequiereVisita(e.target.checked)}
+                                    className="mr-2"
+                                />
+                                <label htmlFor="requiereVisita" className="text-gray-700">
+                                    ¿Requiere visita previa para el trabajo?
+                                </label>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="text-center text-green-700 font-semibold text-lg mb-6">
+                            Ya estás registrado en esta solicitud.
+                        </div>
+                    )}
                 </div>
                 <div className="flex gap-4 w-full">
-                    <button
-                        className="bg-[#02283A] text-white px-4 py-2 rounded-full font-semibold flex-1"
-                        onClick={handleEnviarPostulacion}
-                        disabled={!presupuesto || !presentacion}
-                    >
-                        Enviar postulación
-                    </button>
-                    <button
-                        className="bg-gray-300 text-gray-700 px-4 py-2 rounded-full font-semibold flex-1"
-                        onClick={handleCerrarPostular}
-                    >
-                        Cancelar
-                    </button>
+                    {isWorkerRegistered ? (
+                        <button
+                            className={`px-4 py-2 rounded-full font-semibold flex-1 transition-colors
+                    ${presupuesto
+                                ? 'bg-[#02283A] text-white hover:bg-[#03506b] cursor-pointer'
+                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            }`
+                            }
+                            onClick={handleEnviarPostulacion}
+                            disabled={!presupuesto}
+                        >
+                            Enviar postulación
+                        </button>
+                    ) : null}
                 </div>
             </div>
+
             {/* Modal para expandir foto */}
             {modalFoto && (
                 <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
