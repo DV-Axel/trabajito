@@ -145,6 +145,8 @@ const FormWorker = () => {
 
 
         try {
+            
+            
             const response = await fetch('http://localhost:3000/workers/', {
                 method: 'POST',
                 body: formData

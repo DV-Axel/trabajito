@@ -41,9 +41,10 @@ const ViewJobRequest = () => {
                 return;
             }
             try {
-                const response = await fetch(`http://localhost:3000/workers/check-postulacion?idUser=${idUser}&idJobRequest=${id}`);
+                //const response = await fetch(`http://localhost:3000/workers/check-postulacion?idUser=${idUser}&idJobRequest=${id}`);
+                const response = await fetch(`http://localhost:3000/job-requests/check-postulacion?idUser=${idUser}&idJobRequest=${id}`);
                 const data = await response.json(); // data = { yaPostulado: true/false }
-                setIsWorkerRegistered(!data.yaPostulado); // true si puede postularse, false si ya está postulado
+                setIsWorkerRegistered(!data.yaPostulado); // true si puede postularse, false si ya está postulado                
             } catch (error) {
                 setIsWorkerRegistered(false);
             }
