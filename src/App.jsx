@@ -67,7 +67,7 @@ function App() {
                                 <Route path="/perfil" element={<PerfilRequester />}/>
                                 <Route path="/mis-servicios" element={<ActiveServices />} />
                                 <Route path="/servicio/:id" element={<RequestService />}/>
-                                <Route path="/postulacion" element={<Postulation />}/>
+                                <Route path="/postulacion/:id" element={<Postulation />}/>
 
                                 {/* Rutas de los workers */}
                                 <Route path="/seUnWorker" element={<BeWorker />} />

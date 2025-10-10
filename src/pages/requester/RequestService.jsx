@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { formatDate, formatearLocacion } from '../../data/helpers';
+import { useNavigate } from 'react-router-dom';
+
+// ...dentro de tu componente
 
 const RequestService = () => {
     const { id } = useParams();
     const [servicio, setServicio] = useState(null);
     const [modalFoto, setModalFoto] = useState(null);
+    const [postulaciones, setPostulaciones] = useState([]);
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         const fetchServicio = async () => {
@@ -20,14 +26,27 @@ const RequestService = () => {
         fetchServicio();
     }, [id]);
 
+    useEffect(() => {
+        const fetchPostulaciones = async () => {
+            try {
+                const response = await fetch(`http://localhost:3000/job-requests/postulaciones-workers?jobRequestId=${id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data)
+
+                    setPostulaciones(data);
+                }
+            } catch (error) {
+                console.error('Error al obtener postulaciones:', error);
+            }
+        };
+        if (id) fetchPostulaciones();
+    }, [id]);
+
     const handleExpandirFoto = (foto) => setModalFoto(foto);
     const handleCerrarModal = () => setModalFoto(null);
 
     if (!servicio) return <div>Cargando...</div>;
-
-    const postulaciones = servicio.postulaciones || [];
-
-    console.log(servicio)
 
     return (
         <div className="py-10">
@@ -83,27 +102,40 @@ const RequestService = () => {
                 {/* Derecha: Lista de postulaciones */}
                 <div className="flex-1 pl-8 overflow-y-auto max-h-[70vh]">
                     <h2 className="mb-5 font-bold text-lg">Postulaciones</h2>
+
+
                     <ul className="space-y-6">
-                        {postulaciones.map(s => (
-                            <li key={s.id} className="border-b border-gray-200 pb-4">
-                                <div className="flex items-center justify-between mb-2">
-                                    <span className="font-bold">{s.nombre}</span>
-                                </div>
-                                <div className="mb-1">
-                                    <span className="font-bold">Presupuesto:</span> <span className="text-gray-800">{s.presupuesto}</span>
-                                </div>
-                                <div>
-                                    <span className="font-bold">Comentarios:</span>
-                                    <p className="whitespace-pre-line">{s.comentarios}</p>
-                                </div>
-                                <div className="text-right md:mx-10 mdplus:mx-20">
-                                    <button className="mt-6 bg-[#02283A] hover:bg-[#03506f] text-white rounded-full px-8 py-3 font-semibold text-base shadow transition-colors">
-                                        Ver Mas
-                                    </button>
-                                </div>
-                            </li>
-                        ))}
+                        {postulaciones.length === 0 ? (
+                            <li>No hay postulaciones</li>
+                        ) : (
+                            postulaciones.map((s) => (
+                                <li key={s.id} className="border-b border-gray-200 pb-4">
+                                    <div className="flex items-center justify-between mb-2">
+                    <span className="font-bold">
+                        {s.worker?.user?.name} {s.worker?.user?.lastName}
+                    </span>
+                                    </div>
+                                    <div className="mb-1">
+                                        <span className="font-bold">Presupuesto:</span>{" "}
+                                        <span className="text-gray-800">{s.budget}</span>
+                                    </div>
+                                    <div>
+                                        <span className="font-bold">Descripción:</span>
+                                        <p className="whitespace-pre-line">{s.description}</p>
+                                    </div>
+                                    <div className="text-right md:mx-10 mdplus:mx-20">
+                                        <button
+                                            className="mt-6 bg-[#02283A] hover:bg-[#03506f] text-white rounded-full px-8 py-3 font-semibold text-base shadow transition-colors"
+                                            onClick={() => navigate(`/postulacion/${s.id}`)}
+                                        >
+                                            Ver más
+                                        </button>
+                                    </div>
+                                </li>
+                            ))
+                        )}
                     </ul>
+
                 </div>
             </div>
             {/* Modal para expandir foto */}
