@@ -12,6 +12,8 @@ const RequestService = () => {
     const [postulaciones, setPostulaciones] = useState([]);
     const navigate = useNavigate();
 
+    console.log(servicio)
+
 
     useEffect(() => {
         const fetchServicio = async () => {
@@ -47,6 +49,10 @@ const RequestService = () => {
     const handleCerrarModal = () => setModalFoto(null);
 
     if (!servicio) return <div>Cargando...</div>;
+
+    const postulationSelected = servicio.applicationSelectedId;
+
+    console.log(postulationSelected)
 
     return (
         <div className="py-10">
@@ -95,9 +101,17 @@ const RequestService = () => {
                             </div>
                         </div>
                     </div>
-                    <button className="mt-6 bg-[#02283A] hover:bg-[#03506f] text-white  rounded-full px-8 py-3 font-semibold text-base">
-                        Editar Servicio
-                    </button>
+                    <div className="flex gap-4 mt-6">
+                        <button className="bg-[#02283A] hover:bg-[#03506f] text-white rounded-full px-8 py-3 font-semibold text-base">
+                            Editar Servicio
+                        </button>
+                        <button
+                            className="bg-gray-500 hover:bg-gray-600 text-white rounded-full px-8 py-3 font-semibold text-base"
+                            onClick={() => {/* lógica para ver estado */}}
+                        >
+                            Ver estado
+                        </button>
+                    </div>
                 </div>
                 {/* Derecha: Lista de postulaciones */}
                 <div className="flex-1 pl-8 overflow-y-auto max-h-[70vh]">
@@ -111,9 +125,9 @@ const RequestService = () => {
                             postulaciones.map((s) => (
                                 <li key={s.id} className="border-b border-gray-200 pb-4">
                                     <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold">
-                        {s.worker?.user?.name} {s.worker?.user?.lastName}
-                    </span>
+                                        <span className="font-bold">
+                                            {s.worker?.user?.name} {s.worker?.user?.lastName}
+                                        </span>
                                     </div>
                                     <div className="mb-1">
                                         <span className="font-bold">Presupuesto:</span>{" "}
@@ -125,8 +139,13 @@ const RequestService = () => {
                                     </div>
                                     <div className="text-right md:mx-10 mdplus:mx-20">
                                         <button
-                                            className="mt-6 bg-[#02283A] hover:bg-[#03506f] text-white rounded-full px-8 py-3 font-semibold text-base shadow transition-colors"
+                                            className={`mt-6 rounded-full px-8 py-3 font-semibold text-base shadow transition-colors ${
+                                                postulationSelected
+                                                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                                    : "bg-[#02283A] hover:bg-[#03506f] text-white"
+                                            }`}
                                             onClick={() => navigate(`/postulacion/${s.id}`)}
+                                            disabled={!!postulationSelected}
                                         >
                                             Ver más
                                         </button>

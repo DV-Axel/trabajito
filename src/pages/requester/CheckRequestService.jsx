@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { jwtDecode } from 'jwt-decode';
 import { services } from "../../data/services";
+import { showSuccessAlert, showErrorAlert } from '../../components/alerts/sweetAlertsComponents.jsx';
 
 
 const CheckRequestService = () => {
@@ -64,10 +65,10 @@ const CheckRequestService = () => {
                 body: formData
             });
             if (!response.ok) throw new Error('Error al enviar la solicitud');
-            alert('¡Solicitud enviada con éxito!');
-            navigate('/solicitar')
+            await showSuccessAlert('¡Solicitud enviada con éxito!', 'Tu solicitud fue registrada correctamente.');
+            navigate('/solicitar');
         } catch (error) {
-            alert('Error al enviar la solicitud');
+            await showErrorAlert('Error al enviar la solicitud', 'Por favor, intenta nuevamente.');
             console.error(error);
         }
     };
