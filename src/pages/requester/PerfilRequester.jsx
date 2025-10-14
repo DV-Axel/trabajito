@@ -104,7 +104,7 @@ const PerfilRequester = () => {
                     </div>
                     <div className="relative">
                         <img
-                            src={`http://localhost:3000${user.profilePicture}`}
+                            src={user.profilePicture}
                             alt="Foto de perfil"
                             className="w-52 h-52 rounded-full object-cover border-2 border-[#00b4d8] mb-3 shadow-2xl"
                         />
