@@ -25,15 +25,15 @@ export const showErrorAlert = (
 };
 
 export const showConfirmAlert = (
-    // Valores por defecto
     title = '¿Estás seguro?',
-    text = 'Esta acción no se puede deshacer.',
+    content = 'Esta acción no se puede deshacer.',
     confirmButtonText = 'Sí, confirmar',
-    cancelButtonText = 'Cancelar') => {
+    cancelButtonText = 'Cancelar'
+) => {
     return Swal.fire({
         icon: 'warning',
         title,
-        text,
+        html: content, //
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
