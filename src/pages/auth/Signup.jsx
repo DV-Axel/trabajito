@@ -20,7 +20,6 @@ const Signup = () => {
             return;
         }
         try {
-            // TODO: no se estan enviando las fotos
             // TODO: los campos numericos tienen las flechas y queda mal
             const response = await fetch('http://localhost:3000/auth/signup', {
                 method: 'POST',
