@@ -83,3 +83,17 @@ export const formatDate = (dateString) => {
     const [year, month, day] = dateString.slice(0, 10).split('-');
     return `${day}-${month}-${year}`;
 };
+
+
+//Validador para inputs numéricos en formularios
+export const handleNumericInputChange = (e, form, setForm, numericFields = []) => {
+    const { name, value } = e.target;
+    if (numericFields.includes(name)) {
+        if (/^\d*$/.test(value)) {
+            setForm({ ...form, [name]: value });
+        }
+    } else {
+        setForm({ ...form, [name]: value });
+    }
+};
+

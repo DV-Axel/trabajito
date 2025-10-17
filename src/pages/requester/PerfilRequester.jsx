@@ -6,7 +6,6 @@ import {showSuccessAlert, showErrorAlert} from "../../components/alerts/sweetAle
 
 const PerfilRequester = () => {
     const [user, setUser] = useState(null);
-    /*TODO: ver el tema de los inputrs numeros*/
     const [preview, setPreview] = useState('');
     const fileInputRef = useRef(null);
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {formatearLocacion, getUserIdFromToken} from "../../data/helpers";
+import { formatearLocacion, getUserIdFromToken, handleNumericInputChange } from "../../data/helpers";
+import { showConfirmAlert, showErrorAlert, showSuccessAlert } from "../../components/alerts/sweetAlertsComponents.jsx";
 import Swal from 'sweetalert2';
 
 function formatearNombre(nombre) {
@@ -12,9 +13,7 @@ const ViewJobRequest = () => {
     const { id } = useParams();
     const [jobRequest, setJobRequest] = useState(null);
     const [modalFoto, setModalFoto] = useState(null);
-    const [modalPostular, setModalPostular] = useState(false);
-    const [presupuesto, setPresupuesto] = useState("");
-    const [presentacion, setPresentacion] = useState("");
+    const [form, setForm] = useState({ presupuesto: "", presentacion: "" });
     const [requiereVisita, setRequiereVisita] = useState(false);
     const [isWorkerRegistered, setIsWorkerRegistered] = useState(null);
 
@@ -41,17 +40,15 @@ const ViewJobRequest = () => {
                 return;
             }
             try {
-                //const response = await fetch(`http://localhost:3000/workers/check-postulacion?idUser=${idUser}&idJobRequest=${id}`);
                 const response = await fetch(`http://localhost:3000/job-requests/check-postulacion?idUser=${idUser}&idJobRequest=${id}`);
-                const data = await response.json(); // data = { yaPostulado: true/false }
-                setIsWorkerRegistered(!data.yaPostulado); // true si puede postularse, false si ya está postulado                
+                const data = await response.json();
+                setIsWorkerRegistered(!data.yaPostulado);
             } catch (error) {
                 setIsWorkerRegistered(false);
             }
         };
         checkWorker();
     }, [id]);
-
 
     if (!jobRequest) {
         return (
@@ -65,36 +62,32 @@ const ViewJobRequest = () => {
     const handleCerrarModal = () => setModalFoto(null);
 
     const handleEnviarPostulacion = async () => {
-        // mando el id del usuario, para en el controlador buscar el worker asociado
         const idUser = getUserIdFromToken();
 
         const postulacion = {
             idJobRequest: jobRequest.id,
-            presupuesto,
-            presentacion,
+            presupuesto: form.presupuesto,
+            presentacion: form.presentacion,
             requiereVisita,
             idUser
         };
 
-        const confirm = await Swal.fire({
-            title: '¿Confirmar postulación?',
-            html: `
+        const html = `
             <div>
                 <b>Trabajo:</b> ${jobRequest.title}<br/>
                 <b>Presupuesto:</b> $${postulacion.presupuesto}<br/>
                 <b>¿Requiere visita previa?</b> ${postulacion.requiereVisita ? 'Sí' : 'No'}
             </div>
-        `,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Sí, postularme',
-            cancelButtonText: 'Cancelar',
-            confirmButtonColor: '#02283A',
-            cancelButtonColor: '#aaa'
-        });
+        `;
+
+        const confirm = await showConfirmAlert(
+            '¿Confirmar postulación?',
+            html,
+            'Sí, postularme',
+            'Cancelar',
+        );
 
         if (confirm.isConfirmed) {
-
             try {
                 const response = await fetch('http://localhost:3000/job-requests/postularse', {
                     method: 'POST',
@@ -103,16 +96,17 @@ const ViewJobRequest = () => {
                     },
                     body: JSON.stringify(postulacion)
                 });
-                if (!response.ok) throw new Error('Error al enviar la postulación');
-                Swal.fire('¡Postulación enviada!', '', 'success');
+                if (response.ok) {
+                    showSuccessAlert('Postulacion enviada!', 'Operación realizada correctamente')
+                        .then(() => {
+                            window.location.reload();
+                        });
+                }
             } catch (error) {
-                Swal.fire('Error', 'No se pudo enviar la postulación', 'error');
+                showErrorAlert('Error', 'Ocurrió un error inesperado al enviar la postulación');
             }
         }
     };
-
-
-    /*TODO: ver que en el panel de worker no se vean los mismo servicios que uno carga*/
 
     return (
         <div className="flex max-w-5xl mx-auto mt-8 bg-white rounded-lg shadow-lg p-0 overflow-hidden min-h-[600px]">
@@ -179,19 +173,20 @@ const ViewJobRequest = () => {
                     </h3>
                     {isWorkerRegistered ? (
                         <>
-                <textarea
-                    className="border rounded px-3 py-2 mb-4 w-full min-h-[150px] resize-none"
-                    placeholder="Escribe una breve presentación o descripción para el cliente..."
-                    value={presentacion}
-                    onChange={e => setPresentacion(e.target.value)}
-                />
+                            <textarea
+                                className="border rounded px-3 py-2 mb-4 w-full min-h-[150px] resize-none"
+                                placeholder="Escribe una breve presentación o descripción para el cliente..."
+                                name="presentacion"
+                                value={form.presentacion}
+                                onChange={e => setForm({ ...form, presentacion: e.target.value })}
+                            />
                             <input
-                                type="number"
-                                min="0"
+                                type="text"
+                                name="presupuesto"
                                 className="border rounded px-3 py-2 mb-4 w-full text-center"
                                 placeholder="Ingrese un monto en $"
-                                value={presupuesto}
-                                onChange={e => setPresupuesto(e.target.value)}
+                                value={form.presupuesto}
+                                onChange={e => handleNumericInputChange(e, form, setForm, ["presupuesto"])}
                             />
                             <div className="flex items-center mb-4">
                                 <input
@@ -216,13 +211,13 @@ const ViewJobRequest = () => {
                     {isWorkerRegistered ? (
                         <button
                             className={`px-4 py-2 rounded-full font-semibold flex-1 transition-colors
-                    ${presupuesto
+                    ${form.presupuesto
                                 ? 'bg-[#02283A] text-white hover:bg-[#03506b] cursor-pointer'
                                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                             }`
                             }
                             onClick={handleEnviarPostulacion}
-                            disabled={!presupuesto}
+                            disabled={!form.presupuesto}
                         >
                             Enviar postulación
                         </button>
