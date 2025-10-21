@@ -25,6 +25,8 @@ import PerfilRequester from "./pages/requester/PerfilRequester.jsx";
 import RequestService from "./pages/requester/RequestService.jsx";
 import Postulation from "./pages/requester/Postulation.jsx";
 
+import WorkerRequesterContact from "./pages/mutualContact/WorkerRequesterContact.jsx"
+import ServiceTracking from "./pages/mutualContact/ServiceTracking.jsx"
 
 //Rutas para registro worker
 import BeWorker from "./pages/worker/BeWorker.jsx";
@@ -57,6 +59,16 @@ function App() {
                                 <Route path="/validacion" element={<Validate/>}/>
                                 <Route path="/restablecerContraseña" element={<RestartPassword/>}/>
                                 <Route path="/nuevaContraseña" element={<NewPassword />}/>
+                                <Route path="/servicio/:id" element={<RequestService />}/>
+
+
+
+                                {/*Ruta en comun Worker - Requester */}
+                                <Route path="/contacto-laboral/:id" element={<WorkerRequesterContact />}/>
+                                <Route path="/seguimiento-servicio/:id" element={<ServiceTracking />}/>
+
+
+
 
                                 {/* Rutas de los solicitantes de servicios */}
                                 <Route path="/solicitar" element={<IndexRequester />} />
@@ -66,7 +78,6 @@ function App() {
                                 <Route path="/resumenServicio" element={<CheckRequestService/>} />
                                 <Route path="/perfil" element={<PerfilRequester />}/>
                                 <Route path="/mis-servicios" element={<ActiveServices />} />
-                                <Route path="/servicio/:id" element={<RequestService />}/>
                                 <Route path="/postulacion/:id" element={<Postulation />}/>
 
                                 {/* Rutas de los workers */}
