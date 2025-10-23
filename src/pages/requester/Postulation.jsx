@@ -20,6 +20,7 @@ const Postulation = () => {
         fetchPostulacion();
     }, [id]);
 
+    //TODO: pasar el sweet alert al componente de alerts
 
     const handleSelect = async () => {
         const result = await Swal.fire({
@@ -47,6 +48,7 @@ const Postulation = () => {
                 });
                 if (response.ok) {
                     Swal.fire("¡Seleccionado!", "El worker ha sido seleccionado.", "success");
+                    //TODO: hacer que te mande al detalle del servicio
                 } else {
                     Swal.fire("Error", "No se pudo seleccionar al worker.", "error");
                 }

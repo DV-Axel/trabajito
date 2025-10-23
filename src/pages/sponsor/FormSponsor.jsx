@@ -3,6 +3,7 @@ import { services } from "../../data/services";
 import { useNavigate } from "react-router-dom";
 import { diasSemana } from "../../data/helpers.js";
 import { ErrorAlert } from "../../components/alerts/ErrorAlert.jsx";
+import {showConfirmAlert} from "../../components/alerts/sweetAlertsComponents.jsx";
 
 const FormSponsor = () => {
     const [form, setForm] = useState({
@@ -27,7 +28,6 @@ const FormSponsor = () => {
         altaEmpresaNombre: "",
     });
     const [previewFoto, setPreviewFoto] = useState(null);
-    const [showConfirm, setShowConfirm] = useState(false);
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
@@ -78,51 +78,58 @@ const FormSponsor = () => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
-        setShowConfirm(true);
-    };
+        const datosHtml = `
+                <strong>Nombre comercial:</strong> ${form.nombreComercial}<br/>
+                <strong>Dirección:</strong> ${form.direccion}<br/>
+                <strong>CUIT/CUIL:</strong> ${form.cuil}<br/>
+                <strong>Nombre de contacto:</strong> ${form.contacto}<br/>
+                <strong>Email:</strong> ${form.email}<br/>
+                <strong>Teléfono:</strong> ${form.telefono}
+                `;
 
-    const handleConfirm = async () => {
-        setShowConfirm(false);
-        setError("");
+        const result = await showConfirmAlert(
+            'Revisa tus datos',
+            datosHtml,
+            'Confirmar',
+            'Cancelar'
+        );
+        if (result.isConfirmed) {
+            const formData = new FormData();
+            formData.append("logo", form.foto);
+            formData.append("businessName", form.razonSocial);
+            formData.append("tradeName", form.nombreComercial);
+            formData.append("cuilId", form.cuil);
+            formData.append("address", form.direccion);
+            formData.append("contactName", form.contacto);
+            formData.append("phone", form.telefono);
+            formData.append("email", form.email);
+            formData.append("alternativeEmail", form.emailAlternativo);
+            formData.append("aditionalInformation", form.otros);
+            formData.append("companyRegistration", form.altaEmpresa);
 
-        const formData = new FormData();
-        formData.append("logo", form.foto);
-        formData.append("businessName", form.razonSocial);
-        formData.append("tradeName", form.nombreComercial);
-        formData.append("cuilId", form.cuil);
-        formData.append("address", form.direccion);
-        formData.append("contactName", form.contacto);
-        formData.append("phone", form.telefono);
-        formData.append("email", form.email);
-        formData.append("alternativeEmail", form.emailAlternativo);
-        formData.append("aditionalInformation", form.otros);
-        formData.append("companyRegistration", form.altaEmpresa);
+            formData.append("rubros", JSON.stringify(form.rubros));
+            formData.append("workingDays", JSON.stringify(form.dias));
+            formData.append("workingHours", JSON.stringify([form.horarioInicio, form.horarioFin]));
+            formData.append("social", JSON.stringify([form.instagram, form.facebook, form.web]));
 
-        formData.append("rubros", JSON.stringify(form.rubros));
-        formData.append("workingDays", JSON.stringify(form.dias));
-        formData.append("workingHours", JSON.stringify([form.horarioInicio, form.horarioFin]));
-        formData.append("social", JSON.stringify([form.instagram, form.facebook, form.web]));
-
-        try {
-            const response = await fetch('http://localhost:3000/sponsors/', {
-                method: 'POST',
-                body: formData
-            });
-            if (!response.ok) {
-                const errorData = await response.json();
-                setError(errorData.message || "Error al enviar la solicitud");
-                return;
+            try {
+                const response = await fetch('http://localhost:3000/sponsors/', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    setError(errorData.message || "Error al enviar la solicitud");
+                    return;
+                }
+                navigate("/confirmacionSponsor");
+            } catch (error) {
+                setError(error.message);
             }
-            navigate("/confirmacionSponsor");
-        } catch (error) {
-            setError(error.message);
         }
     };
-
-    const handleCancel = () => setShowConfirm(false);
 
     return (
         <div className="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-8 mt-8">
@@ -391,32 +398,6 @@ const FormSponsor = () => {
                 </button>
                 {error && <ErrorAlert message={error} />}
             </form>
-            {/* Modal de confirmación */}
-            {showConfirm && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-                    <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
-                        <h2 className="text-lg font-bold mb-2">¿Estás seguro?</h2>
-                        <p className="mb-4 text-gray-700">
-                            Verifica que los datos ingresados sean correctos.<br />
-                            Recuerda que estos datos serán usados para certificar a los workers.
-                        </p>
-                        <div className="flex justify-end gap-2">
-                            <button
-                                onClick={handleCancel}
-                                className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                onClick={handleConfirm}
-                                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-                            >
-                                Confirmar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

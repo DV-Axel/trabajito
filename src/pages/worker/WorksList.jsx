@@ -10,8 +10,6 @@ const WorksList = () => {
 
     const userId = getUserIdFromToken();
 
-
-    //TODO: Ver si necesita el token de seguridad la request como en ActiveServices
     useEffect(() => {
 
 
@@ -39,6 +37,9 @@ const WorksList = () => {
         fetchSolicitudesRubro();
     }, [userId]);
 
+    console.log(works)
+
+
     return (
         <div className="max-w-3xl mx-auto p-4">
             <h1 className="text-2xl font-bold mb-6 text-center">Trabajos disponibles</h1>
@@ -48,35 +49,53 @@ const WorksList = () => {
                         No hay solicitudes correspondientes a tu rubro.
                     </p>
                 ) : (
-                    works.map(work => (
-                        <div key={work.id} className="border rounded-lg p-4 shadow-sm bg-white">
-                            <div className="flex justify-between items-center mb-2">
-                                <h2 className="text-xl font-semibold">{work.title}</h2>
-                                {work.urgency && (
-                                    <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">URGENTE</span>
-                                )}
-                            </div>
-                            <div className="text-sm text-gray-600 mb-1">
-                                Fecha: {work.date ? new Date(work.date).toLocaleDateString() : "No especificada"}
-                            </div>
-                            <div className="text-sm text-gray-600 mb-1">
-                                Dirección: {work.address ? `${work.address.road || ""} ${work.address.house_number || ""}, ${work.address.town || ""}` : "No especificada"}
-                            </div>
-                            <div className="text-sm text-gray-600 mb-1">
-                                Tipo de trabajo: <span className="font-semibold capitalize">{work.position?.tipo_trabajo || "No especificado"}</span>
-                            </div>
-                            <div className="mt-2 text-gray-800">{work.description}</div>
-                            <div className="mt-4 flex justify-end">
-                                <button
-                                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-4 rounded transition"
-                                    onClick={() => navigate(`/solicitud/${work.id}`)}
-                                >
-                                    Ver Servicio
-                                </button>
-                            </div>
-                        </div>
+                    works.map(work => {
+                        const isOwnPostulation = String(work.userId) === String(userId);
+                        return (
+                            <div
+                                key={work.id}
+                                className={`border border-gray-500 rounded-lg p-4 shadow-sm ${isOwnPostulation ? "bg-gray-300" : "bg-white"}`}
+                            >
 
-                    ))
+                                <div className="flex justify-between items-center mb-2">
+                                    <h2 className="text-xl font-semibold">{work.title}</h2>
+                                    {work.urgency && (
+                                        <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">URGENTE</span>
+                                    )}
+                                </div>
+                                <div className="text-sm text-gray-600 mb-1">
+                                    Fecha: {work.date ? new Date(work.date).toLocaleDateString() : "No especificada"}
+                                </div>
+                                <div className="text-sm text-gray-600 mb-1">
+                                    Dirección: {work.address ? `${work.address.road || ""} ${work.address.house_number || ""}, ${work.address.town || ""}` : "No especificada"}
+                                </div>
+                                <div className="text-sm text-gray-600 mb-1">
+                                    Tipo de trabajo: <span className="font-semibold capitalize">{work.position?.tipo_trabajo || "No especificado"}</span>
+                                </div>
+                                <div className="mt-2 text-gray-800">{work.description}</div>
+                                <div className="mt-4 flex justify-between items-center">
+                                    {isOwnPostulation && (
+                                        <div className="text-sm text-gray-700 font-semibold">
+                                            Esta es tu propia postulación
+                                        </div>
+                                    )}
+                                    <button
+                                        className={`font-semibold py-1 px-4 rounded transition ${
+                                            isOwnPostulation
+                                                ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                                                : "bg-blue-600 hover:bg-blue-700 text-white"
+                                        }`}
+                                        disabled={isOwnPostulation}
+                                        onClick={() => navigate(`/solicitud/${work.id}`)}
+                                    >
+                                        Ver Servicio
+                                    </button>
+                                </div>
+
+                            </div>
+                        );
+                    })
+
                 )}
 
             </div>

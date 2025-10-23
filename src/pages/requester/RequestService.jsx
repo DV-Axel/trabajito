@@ -1,9 +1,8 @@
+// src/pages/requester/RequestService.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { formatDate, formatearLocacion } from '../../data/helpers';
 import { useNavigate } from 'react-router-dom';
-
-// ...dentro de tu componente
 
 const RequestService = () => {
     const { id } = useParams();
@@ -11,9 +10,6 @@ const RequestService = () => {
     const [modalFoto, setModalFoto] = useState(null);
     const [postulaciones, setPostulaciones] = useState([]);
     const navigate = useNavigate();
-
-    console.log(servicio)
-
 
     useEffect(() => {
         const fetchServicio = async () => {
@@ -35,7 +31,6 @@ const RequestService = () => {
                 if (response.ok) {
                     const data = await response.json();
                     console.log(data)
-
                     setPostulaciones(data);
                 }
             } catch (error) {
@@ -53,6 +48,7 @@ const RequestService = () => {
     const postulationSelected = servicio.applicationSelectedId;
 
     console.log(postulationSelected)
+    console.log(servicio)
 
     return (
         <div className="py-10">
@@ -102,21 +98,35 @@ const RequestService = () => {
                         </div>
                     </div>
                     <div className="flex gap-4 mt-6">
-                        <button className="bg-[#02283A] hover:bg-[#03506f] text-white rounded-full px-8 py-3 font-semibold text-base">
-                            Editar Servicio
-                        </button>
-                        <button
-                            className="bg-gray-500 hover:bg-gray-600 text-white rounded-full px-8 py-3 font-semibold text-base"
-                            onClick={() => {/* lógica para ver estado */}}
-                        >
-                            Ver estado
-                        </button>
+
+                        {postulationSelected ? (
+                            <button
+                                className="bg-[#02283A] hover:bg-[#03506f] text-white rounded-full px-8 py-3 font-semibold text-base"
+                                onClick={() => {
+                                    navigate(`/contacto-laboral/${servicio.id}`);
+                                }}
+                            >
+                                Comenzar contacto
+                            </button>
+                        ) : (
+                            <>
+                                {/*TODO: hacer funcionalidad de los botones*/}
+                                <button className="bg-[#02283A] hover:bg-[#03506f] text-white rounded-full px-8 py-3 font-semibold text-base">
+                                    Editar Servicio
+                                </button>
+                                <button
+                                    className="bg-gray-500 hover:bg-gray-600 text-white rounded-full px-8 py-3 font-semibold text-base"
+                                    onClick={() => {/* lógica para ver estado */}}
+                                >
+                                    Ver estado
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
                 {/* Derecha: Lista de postulaciones */}
                 <div className="flex-1 pl-8 overflow-y-auto max-h-[70vh]">
                     <h2 className="mb-5 font-bold text-lg">Postulaciones</h2>
-
 
                     <ul className="space-y-6">
                         {postulaciones.length === 0 ? (

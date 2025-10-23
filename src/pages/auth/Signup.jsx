@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { FaRegHandshake } from "react-icons/fa6";
+import { handleNumericInputChange } from '../../data/helpers.js';
 import {ErrorAlert} from "../../components/alerts/ErrorAlert";
 
 const Signup = () => {
@@ -9,9 +10,9 @@ const Signup = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
+    const numericFields = ['dni', 'number', 'postalCode', 'phone'];
+    const handleChange = (e) => handleNumericInputChange(e, form, setForm, numericFields);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,8 +21,6 @@ const Signup = () => {
             return;
         }
         try {
-            // TODO: no se estan enviando las fotos
-            // TODO: los campos numericos tienen las flechas y queda mal
             const response = await fetch('http://localhost:3000/auth/signup', {
                 method: 'POST',
                 headers: { 'Content-Type' : 'application/json'},
@@ -99,10 +98,13 @@ const Signup = () => {
                                 value={form.dni || ""}
                                 onChange={handleChange}
                                 id="numeroIdentificacion"
-                                type="number"
+                                type="text"
+                                inputMode="numeric"
+                                pattern="\d*"
                                 placeholder="Número"
                                 className="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all w-1/2"
                             />
+
                         </div>
                     </div>
                     <div>
@@ -159,7 +161,9 @@ const Signup = () => {
                                 value={form.number || ""}
                                 onChange={handleChange}
                                 id="numero"
-                                type="number"
+                                type="text"
+                                inputMode="numeric"
+                                pattern="\d*"
                                 placeholder="N°"
                                 className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
                             />
@@ -188,7 +192,9 @@ const Signup = () => {
                             value={form.postalCode || ""}
                             onChange={handleChange}
                             id="codigoPostal"
-                            type="number"
+                            type="text"
+                            inputMode="numeric"
+                            pattern="\d*"
                             placeholder="Código Postal"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
                         />
@@ -230,10 +236,13 @@ const Signup = () => {
                             value={form.phone || ""}
                             onChange={handleChange}
                             id="telefono"
-                            type="number"
+                            type="text"
+                            inputMode="numeric"
+                            pattern="\d*"
                             placeholder="Tu teléfono"
                             className="w-full border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-[#0c3444] transition-all"
                         />
+
                     </div>
                     <div>
                         <label htmlFor="fechaNacimiento" className="block text-lg font-medium text-gray-700 mb-1">

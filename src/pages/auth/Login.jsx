@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {useNavigate} from "react-router-dom";
+import {ErrorAlert} from "../../components/alerts/ErrorAlert.jsx";
 
 const Login = () => {
     const { login } = useAuth();
@@ -118,7 +119,8 @@ const Login = () => {
                         </div>
                     </form>
 
-                    {errorMessage && <p className="text-center text-l mdplus:my-2 my-4 text-red-500">{errorMessage}</p>}
+                    {errorMessage && <ErrorAlert message={errorMessage} />}
+
 
                 </div>
             </div>

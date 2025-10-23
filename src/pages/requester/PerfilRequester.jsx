@@ -2,10 +2,10 @@ import { useRef, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import {formatDate} from '../../data/helpers';
 import { FaIdCard, FaEnvelope, FaBirthdayCake, FaPhone, FaMapMarkerAlt, FaHashtag, FaCamera } from 'react-icons/fa';
+import {showSuccessAlert, showErrorAlert} from "../../components/alerts/sweetAlertsComponents.jsx";
 
 const PerfilRequester = () => {
     const [user, setUser] = useState(null);
-    /*TODO: ver el tema de los inputrs numeros*/
     const [preview, setPreview] = useState('');
     const fileInputRef = useRef(null);
 
@@ -78,17 +78,17 @@ const PerfilRequester = () => {
                     },
                 });
 
-                /*TODO: Agregar la alerta para cuando cambia la interfaz o cuando no la cambia*/
-
                 if (response.ok) {
                     const data = await response.json();
                     setPreview(data.profilePicture);
-                    window.location.reload()
+                    showSuccessAlert('¡Foto actualizada!', 'Tu foto de perfil se actualizó correctamente.')
+                        .then(() => window.location.reload());
                 } else {
-                    alert('Error al subir la foto');
+                    showErrorAlert('Error al subir la foto', 'No se pudo actualizar la foto de perfil.');
                 }
+
             } catch {
-                alert('Error de red al subir la foto');
+                showErrorAlert('Error al subir la foto','Error de red al subir la foto' )
             }
         }
     };
