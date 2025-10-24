@@ -7,7 +7,7 @@ export default function useGetApplicationbyId (id) {
 
 
     async function traerApplication(id) {
-        if (!id) return null;
+        if(!id) return null;
         try {
             const res = await fetch(`http://localhost:3000/job-requests/postulacion-worker/${id}`);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
