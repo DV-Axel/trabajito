@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 
 export default function useGetJobRequest(id) {
     const [servicio, setServicio] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [loadingServicio, setLoadingServicio] = useState(true);
+    const [errorServicio, setErrorServicio] = useState(null);
 
     // Función interna para traer el servicio
     async function traerServicio(id) {
@@ -20,19 +20,19 @@ export default function useGetJobRequest(id) {
 
     useEffect(() => {
         let mounted = true;
-        setLoading(true);
+        setLoadingServicio(true);
         traerServicio(id)
             .then(data => {
                 if (mounted) setServicio(data);
             })
             .catch(err => {
-                if (mounted) setError(err);
+                if (mounted) setErrorServicio(err);
             })
             .finally(() => {
-                if (mounted) setLoading(false);
+                if (mounted) setLoadingServicio(false);
             });
         return () => { mounted = false; };
     }, [id]);
 
-    return { servicio, loading, error };
+    return { servicio, loadingServicio, errorServicio };
 }

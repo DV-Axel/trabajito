@@ -9,14 +9,14 @@ const RequestService = () => {
     const [modalFoto, setModalFoto] = useState(null);
     const navigate = useNavigate();
 
-    const { servicio, loading, error } = useGetJobRequest(id);
+    const { servicio, loadingServicio, errorServicio } = useGetJobRequest(id);
     const { applications, loadingApplications, errorApplications } = useGetApplicationsById(id);
 
     const handleExpandirFoto = (foto) => setModalFoto(foto);
     const handleCerrarModal = () => setModalFoto(null);
 
-    if (loading) return <div>Cargando...</div>;
-    if (error) return <div>Error al obtener la solicitud</div>;
+    if (loadingServicio) return <div>Cargando...</div>;
+    if (errorServicio) return <div>Error al obtener la solicitud</div>;
 
     if(loadingApplications) return <div>Cargando Postulaciones</div>;
     if(errorApplications) return <div>Error al obtener las postulaciones</div>;

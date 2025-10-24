@@ -130,7 +130,7 @@ const FormWorker = () => {
 
         const result = await showConfirmAlert('¿Estás seguro?', datosHtml, 'Confirmar', 'Cancelar')
 
-        if(result.isConfirmed){
+        if(result){
             const formData = new FormData();
             formData.append("subtitle", form.subtitulo);
             formData.append("description", form.descripcion);

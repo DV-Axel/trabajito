@@ -33,11 +33,11 @@ export const showConfirmAlert = (
     return Swal.fire({
         icon: 'warning',
         title,
-        html: content, //
+        html: content,
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
         confirmButtonText,
         cancelButtonText
-    });
+    }).then(result => result.isConfirmed);
 };
