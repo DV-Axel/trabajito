@@ -19,7 +19,7 @@ const RequestService = () => {
     useEffect(() => {
         const fetchPostulaciones = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/job-requests/postulaciones-workers?jobRequestId=${id}`);
+                const response = await fetch(`http://localhost:3000/job-requests/postulaciones-workers/${id}`);
                 if (response.ok) {
                     const data = await response.json();
                     console.log(data)
