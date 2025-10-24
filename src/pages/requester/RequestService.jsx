@@ -1,28 +1,20 @@
 // src/pages/requester/RequestService.jsx
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { formatDate, formatearLocacion } from '../../data/helpers';
-import { useNavigate } from 'react-router-dom';
+import useGetJobRequest from '../../data/hooks/useGetJobRequest';
+
+
 
 const RequestService = () => {
     const { id } = useParams();
-    const [servicio, setServicio] = useState(null);
     const [modalFoto, setModalFoto] = useState(null);
     const [postulaciones, setPostulaciones] = useState([]);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchServicio = async () => {
-            try {
-                const response = await fetch(`http://localhost:3000/job-requests/detalle/${id}`);
-                const data = await response.json();
-                setServicio(data);
-            } catch (error) {
-                console.error('Error al obtener la solicitud:', error);
-            }
-        };
-        fetchServicio();
-    }, [id]);
+    const { servicio, loading, error } = useGetJobRequest(id);
+
+
 
     useEffect(() => {
         const fetchPostulaciones = async () => {
@@ -43,7 +35,9 @@ const RequestService = () => {
     const handleExpandirFoto = (foto) => setModalFoto(foto);
     const handleCerrarModal = () => setModalFoto(null);
 
-    if (!servicio) return <div>Cargando...</div>;
+    if (loading) return <div>Cargando...</div>;
+    if (error) return <div>Error al obtener la solicitud</div>;
+
 
     const postulationSelected = servicio.applicationSelectedId;
 
