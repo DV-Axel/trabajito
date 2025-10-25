@@ -95,7 +95,7 @@ const FormSponsor = () => {
             'Confirmar',
             'Cancelar'
         );
-        if (result.isConfirmed) {
+        if (result) {
             const formData = new FormData();
             formData.append("logo", form.foto);
             formData.append("businessName", form.razonSocial);

@@ -1,49 +1,27 @@
-// src/pages/requester/RequestService.jsx
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { formatDate, formatearLocacion } from '../../data/helpers';
-import { useNavigate } from 'react-router-dom';
+import useGetJobRequest from '../../data/hooks/useGetJobRequest';
+import useGetApplicationsById from '../../data/hooks/useGetApplicationsById.js';
 
 const RequestService = () => {
     const { id } = useParams();
-    const [servicio, setServicio] = useState(null);
     const [modalFoto, setModalFoto] = useState(null);
-    const [postulaciones, setPostulaciones] = useState([]);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchServicio = async () => {
-            try {
-                const response = await fetch(`http://localhost:3000/job-requests/detalle/${id}`);
-                const data = await response.json();
-                setServicio(data);
-            } catch (error) {
-                console.error('Error al obtener la solicitud:', error);
-            }
-        };
-        fetchServicio();
-    }, [id]);
-
-    useEffect(() => {
-        const fetchPostulaciones = async () => {
-            try {
-                const response = await fetch(`http://localhost:3000/job-requests/postulaciones-workers?jobRequestId=${id}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(data)
-                    setPostulaciones(data);
-                }
-            } catch (error) {
-                console.error('Error al obtener postulaciones:', error);
-            }
-        };
-        if (id) fetchPostulaciones();
-    }, [id]);
+    const { servicio, loadingServicio, errorServicio } = useGetJobRequest(id);
+    const { applications, loadingApplications, errorApplications } = useGetApplicationsById(id);
 
     const handleExpandirFoto = (foto) => setModalFoto(foto);
     const handleCerrarModal = () => setModalFoto(null);
 
-    if (!servicio) return <div>Cargando...</div>;
+    if (loadingServicio) return <div>Cargando...</div>;
+    if (errorServicio) return <div>Error al obtener la solicitud</div>;
+
+    if(loadingApplications) return <div>Cargando Postulaciones</div>;
+    if(errorApplications) return <div>Error al obtener las postulaciones</div>;
+
+
 
     const postulationSelected = servicio.applicationSelectedId;
 
@@ -129,10 +107,10 @@ const RequestService = () => {
                     <h2 className="mb-5 font-bold text-lg">Postulaciones</h2>
 
                     <ul className="space-y-6">
-                        {postulaciones.length === 0 ? (
+                        {Array.isArray(applications) && applications.length === 0 ? (
                             <li>No hay postulaciones</li>
                         ) : (
-                            postulaciones.map((s) => (
+                            Array.isArray(applications) && applications.map((s) => (
                                 <li key={s.id} className="border-b border-gray-200 pb-4">
                                     <div className="flex items-center justify-between mb-2">
                                         <span className="font-bold">

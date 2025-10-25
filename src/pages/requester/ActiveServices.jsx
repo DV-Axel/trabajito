@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { getUserIdFromToken, formatearLocacion  } from '../../data/helpers';
 import { traerIdServicio } from '../../data/services.js'
-import {showConfirmAlert} from "../../components/alerts/sweetAlertsComponents.jsx";
+import {showConfirmAlert, showErrorAlert, showSuccessAlert} from "../../components/alerts/sweetAlertsComponents.jsx";
 
 const ActiveServices = () => {
     const [solicitudes, setSolicitudes] = useState([]);
@@ -38,21 +38,21 @@ const ActiveServices = () => {
         if (userId && token) fetchSolicitudes();
     }, [userId, token]);
 
-    const handleCancel = async (id) => {
-        const result = await showConfirmAlert(
-            '¿Cancelar solicitud?',
-            '¿Estás seguro de cancelar esta solicitud? Esta acción no se puede deshacer.',
-            'Sí, cancelar',
-            'No'
-        );
-        if (result.isConfirmed) {
-            try {
-                // Aquí tu lógica para borrar/cancelar
-                await showSuccessAlert('Cancelado', 'La solicitud fue cancelada.');
-            } catch (e) {
-                await showErrorAlert('Error', 'No se pudo cancelar la solicitud.');
+        const handleCancel = async (id) => {
+            const result = await showConfirmAlert(
+                '¿Cancelar solicitud?',
+                '¿Estás seguro de cancelar esta solicitud? Esta acción no se puede deshacer.',
+                'Sí, cancelar',
+                'No'
+            );
+            if (result) {
+                try {
+                    // Aquí tu lógica para borrar/cancelar
+                    await showSuccessAlert('Cancelado', 'La solicitud fue cancelada.');
+                } catch (e) {
+                    await showErrorAlert('Error', 'No se pudo cancelar la solicitud.');
+                }
             }
-        }
     };
 
     if (loading) {

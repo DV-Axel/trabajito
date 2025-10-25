@@ -87,7 +87,7 @@ const ViewJobRequest = () => {
             'Cancelar',
         );
 
-        if (confirm.isConfirmed) {
+        if (confirm) {
             try {
                 const response = await fetch('http://localhost:3000/job-requests/postularse', {
                     method: 'POST',
