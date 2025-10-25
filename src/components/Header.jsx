@@ -1,5 +1,7 @@
 import { FaRegQuestionCircle, FaSignInAlt,FaToolbox , FaBars, FaUserCircle, FaClipboardList } from 'react-icons/fa';
 import { GiStoneCrafting } from "react-icons/gi";
+import { LiaToolsSolid } from 'react-icons/lia';
+import { RiToolsFill } from 'react-icons/ri';
 import { MdDashboard } from "react-icons/md";
 import logo from '../assets/images/logo trabajito.png';
 import { Link } from 'react-router-dom';
@@ -24,9 +26,9 @@ const Header = () => {
     }, [userMenuOpen]);
 
     return (
-        <header className="bg-[#02283A] flex justify-between items-center px-8 py-2 relative">
-            <Link to="/" className="flex items-center text-white text-3xl font-semibold">
-                <img src={logo} alt="Logo" className="mr-4 w-16 h-16 object-contain" />
+        <header className="bg-[#02283A] flex justify-between items-center px-9 py-3 relative">
+            <Link to="/" className="flex items-center text-white text-2xl font-semibold">
+                <img src={logo} alt="Logo" className="mr-4 w-9 h-9 object-contain" />
                 TRABAJITO
             </Link>
 
@@ -42,24 +44,26 @@ const Header = () => {
             {/* Menú de escritorio */}
             <div className="hidden mdplus:flex gap-10 text-white items-center">
                 <Link to="/ayuda" className="flex flex-col items-center hover:text-[#00b4d8] transition-colors">
-                    <FaRegQuestionCircle title="Ayuda" className="text-4xl" />
-                    <span className="text-base mt-2 uppercase">Ayuda</span>
+                    <FaRegQuestionCircle title="Ayuda" className="text-3xl" />
+                    {/* <span className="text-base mt-0">Ayuda</span> */}
                 </Link>
                 {user ? (
                     <>
                         <Link to="/solicitar" className="flex flex-col items-center hover:text-[#00b4d8] transition-colors">
-                            <GiStoneCrafting className="text-4xl" />
-                            <span className="text-base mt-2 uppercase">Pedir un servicio</span>
+                            {/* <GiStoneCrafting title='Pedir un servicio' className="text-2xl" /> */}
+                            <RiToolsFill title='Pedir un servicio' className="text-3xl" />
+                            {/* <LiaToolsSolid title='Pedir un servicio' className="text-2xl" /> */}
+                            {/* <span className="text-base mt-2">Pedir un servicio</span> */}
                         </Link>
                         <div className="relative flex flex-col items-center">
                             <button
                                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                                 className="flex flex-col items-center gap-0 focus:outline-none"
                             >
-                                <FaUserCircle className="text-4xl" />
-                                <span className="text-base mt-2 uppercase">
+                                <FaUserCircle title={`${user.nombre} ${user.apellido}`} className="text-3xl" />
+                                {/* <span className="text-base mt-2 uppercase">
                                     {user.nombre} {user.apellido}
-                                </span>
+                                </span> */}
                             </button>
                             {userMenuOpen && (
                                 <div
@@ -104,8 +108,8 @@ const Header = () => {
                     </>
                 ) : (
                     <Link to="/login" className="flex flex-col items-center hover:text-[#00b4d8] transition-colors">
-                        <FaSignInAlt title="Iniciar sesión" className="text-4xl" />
-                        <span className="text-base mt-2 uppercase">Iniciar Sesión</span>
+                        <FaSignInAlt title="Iniciar sesión" className="text-2xl" />
+                        <span className="text-base mt-0"></span>
                     </Link>
                 )}
             </div>
@@ -116,16 +120,16 @@ const Header = () => {
                 <div className="absolute top-full right-0 bg-[#02283A] w-56 rounded-xl shadow-2xl flex flex-col items-center py-4 mdplus:hidden z-50 border border-[#095a8e] animate-fade-in">
                     {!user ? (
                         <Link to="/login" className="flex flex-col items-center hover:text-[#00b4d8] transition-colors">
-                            <FaSignInAlt title="Iniciar sesión" className="text-white text-3xl" />
+                            <FaSignInAlt title="Iniciar sesión" className="text-white text-2xl" />
                             <span className="text-base mt-2 uppercase text-white">Iniciar Sesión</span>
                         </Link>
                     ) : (
                         <>
                             <div className="flex flex-col items-center mb-2">
                                 <FaUserCircle className="text-white text-3xl" />
-                                <span className="text-base mt-2 uppercase text-white">
-                        {user.nombre} {user.apellido}
-                    </span>
+                                <span className="text-base mt-2 text-white">
+                                    
+                                </span>
                             </div>
                             <Link to="/solicitar" className="flex flex-col items-center mb-2 hover:text-[#00b4d8] transition-colors">
                                 <GiStoneCrafting className="text-white text-3xl" />

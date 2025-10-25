@@ -94,9 +94,9 @@ const PerfilRequester = () => {
     };
 
     return (
-        <div className="flex mt-10 items-center justify-center bg-[#f4fbfd]">
-            <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-10 border-4">
-                <div className="flex flex-col items-center mb-8 uppercase">
+        <div className="flex items-center justify-center bg-[#f4fbfd]">
+            <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-10 border-4 m-5">
+                <div className="flex flex-col items-center mb-8">
                     <div className="mb-4 text-center">
                         <span className="text-2xl font-bold text-[#02283A]">
                             {user.firstName} {user.lastName}
@@ -124,7 +124,7 @@ const PerfilRequester = () => {
                             onChange={handleFileChange}
                         />
                     </div>
-                    <span className="text-sm text-[#00b4d8] mt-1">Solicitante de servicios</span>
+                    <span className="text-lg text-[#00b4d8] mt-1">Solicitante de servicios</span>
                 </div>
                 <div className="space-y-5">
                     <div className="flex items-center gap-3">
