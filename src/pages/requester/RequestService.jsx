@@ -78,28 +78,38 @@ const RequestService = () => {
                     <div className="flex gap-4 mt-6">
 
                         {postulationSelected ? (
-                            <button
-                                className="bg-[#02283A] hover:bg-[#03506f] text-white rounded-full px-8 py-3 font-semibold text-base"
-                                onClick={() => {
-                                    navigate(`/contacto-laboral/${servicio.id}`);
-                                }}
-                            >
-                                Comenzar contacto
-                            </button>
+                            <>
+                                {servicio.agreementUser && servicio.agreementWorker ? (
+                                    <button
+                                        className="bg-[#02283A] hover:bg-[#03506f] text-white rounded-full px-8 py-3 font-semibold text-base"
+                                        onClick={() => {
+                                            navigate(`/seguimiento-servicio/${servicio.id}`)
+                                        }}
+                                    >
+                                        Tracking service
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="bg-[#02283A] hover:bg-[#03506f] text-white rounded-full px-8 py-3 font-semibold text-base"
+                                        onClick={() => {
+                                            navigate(`/contacto-laboral/${servicio.id}`);
+                                        }}
+                                    >
+                                        Comenzar contacto
+                                    </button>
+                                )}
+                            </>
                         ) : (
                             <>
                                 {/*TODO: hacer funcionalidad de los botones*/}
+                                {/*TODO: HAcer la funcionalidad de editar servicio*/}
                                 <button className="bg-[#02283A] hover:bg-[#03506f] text-white rounded-full px-8 py-3 font-semibold text-base">
                                     Editar Servicio
                                 </button>
-                                <button
-                                    className="bg-gray-500 hover:bg-gray-600 text-white rounded-full px-8 py-3 font-semibold text-base"
-                                    onClick={() => {/* lógica para ver estado */}}
-                                >
-                                    Ver estado
-                                </button>
                             </>
                         )}
+
+
                     </div>
                 </div>
                 {/* Derecha: Lista de postulaciones */}
