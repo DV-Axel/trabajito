@@ -3,37 +3,17 @@ import { useParams } from 'react-router-dom';
 import useGetJobRequest from '../../data/hooks/useGetJobRequest';
 import useGetApplicationById from '../../data/hooks/useGetApplicationById';
 import useSetAgreementUserWorkerTrue from "../../data/hooks/useSetAgreementUserWorkerTrue.js";
+import useGetWorkerById from '../../data/hooks/useGetWorkerById';
 import { formatDate, formatearLocacion } from '../../data/helpers';
 
+// TODO: revisar que el diseño y los datos queden bien.
+/*TODO: implementar funcionalidad de cancelar acuerdo*/
+
 const WorkerRequesterContact = () => {
-    const { setAgreementUserWorkerTrue } = useSetAgreementUserWorkerTrue();
-
-
-    const requester = {
-        profilePicture: 'uploads/requester1.jpg',
-        firstName: 'Ana',
-        lastName: 'García',
-        description: 'Solicitante frecuente de servicios de jardinería y limpieza.',
-        subtitle: 'Cliente Premium',
-        email: 'ana.garcia@email.com',
-        phone: '+54 9 11 1234-5678'
-    };
-
-    const worker = {
-        profilePicture: 'uploads/worker1.jpg',
-        user: {
-            firstName: 'Carlos',
-            lastName: 'Pérez'
-        },
-        rating: 4.8,
-        description: 'Especialista en mantenimiento de jardines y espacios verdes.',
-        subtitle: 'Jardinero certificado',
-        workLocation: ['Palermo', 'Recoleta'],
-        workingDays: ['Lunes', 'Miércoles', 'Viernes'],
-        workingHours: ['08:00-12:00', '14:00-18:00']
-    };
-
     const { id } = useParams();
+
+    const { setAgreementUserWorkerTrue } = useSetAgreementUserWorkerTrue();
+    const { worker, loadingWorker, errorWorker } = useGetWorkerById(1)
     const { servicio, loading, error } = useGetJobRequest(id);
     const applicationSelectedId = servicio?.applicationSelectedId ?? null;
     const { application, loadingApplication, errorApplication } = useGetApplicationById(applicationSelectedId);
@@ -43,28 +23,32 @@ const WorkerRequesterContact = () => {
     if (error) return <div>Error al obtener la solicitud</div>;
     if (!servicio) return null;
 
-    console.log('Application', application)
-    console.log('Servicio', servicio)
-
-
     if(loadingApplication) return <div>Cargando postulacion</div>
     if(errorApplication) return <div>Error al obtener la postulacion</div>
     if(!application) return null;
 
+    if(loadingWorker) return <div>Cargando worker...</div>
+    if(errorWorker) return <div>Error al obtener la worker...</div>
+    if(!worker) return null;
+
+    console.log('servicio',servicio)
+    console.log('worker',   worker)
+
     return (
         <div className="flex flex-row gap-8 bg-white p-8 rounded shadow items-stretch">
+
             {/* Columna izquierda: Requester */}
             <div className="flex-1 p-8 flex flex-col items-center border-r">
                 <img
-                    src={`http://localhost:3000/${requester.profilePicture}`}
+                    src={`http://localhost:3000${servicio.user.profilePicture}`}
                     alt="Foto de perfil"
                     className="w-40 h-40 rounded-full object-cover border-2 border-[#00b4d8] mb-3 shadow-2xl"
                 />
                 <h2 className="text-xl font-bold mb-1">{servicio.user.firstName} {servicio.user.lastName}</h2>
                 {/*TODO: ver de adaptar esto*/}
                 {/*TODO: hacer andar las fotos*/}
-                <p className="text-gray-700 text-center mb-2">{requester.description}</p>
-                <p className="text-indigo-700 font-semibold mb-1">{requester.subtitle}</p>
+                <p className="text-gray-700 text-center mb-2">Solicitante de servicios</p>
+                <p className="text-indigo-700 font-semibold mb-1">Datos de contacto</p>
                 <div className="mb-1">
                     <span className="font-semibold">Email:</span>
                     <span className="ml-1">{servicio.user.email}</span>
@@ -89,6 +73,7 @@ const WorkerRequesterContact = () => {
                                 onClick={() => setAgreementUserWorkerTrue(servicio.id, 'user')}
                             >
                                 Cancelar acuerdo
+
                             </button>
                         )
                 }
@@ -103,7 +88,7 @@ const WorkerRequesterContact = () => {
                 <div className="mb-2">
                     {/*TODO: Tengo que traer el presupuesto de la aplication*/}
                     <span className="font-semibold">Presupuesto:</span>
-                    <span className="ml-2">{servicio.budget}</span>
+                    <span className="ml-2">${application.budget}</span>
                 </div>
                 <div className="mb-2">
                     <span className="font-semibold">Tipo:</span>
@@ -122,23 +107,25 @@ const WorkerRequesterContact = () => {
                     className="w-40 h-40 rounded-full object-cover border-2 border-[#00b4d8] mb-3 shadow-2xl"
                 />
                 <h2 className="text-xl font-bold mb-1">{application.worker.user.firstName} {application.worker.user.lastName}</h2>
+                <p className="text-gray-700 text-center mb-2">Worker</p>
                 <p className="text-yellow-500 mb-1 flex items-center gap-1">
                     <span>⭐</span> {worker.rating}
                 </p>
-                <p className="text-gray-700 text-center mb-2">{worker.description}</p>
-                <p className="text-indigo-700 font-semibold mb-1">{worker.subtitle}</p>
-                <div className="mb-1">
+                <p className="text-indigo-700 font-semibold mb-1">Datos de contacto </p>
+                <div className="mb-1 text-center w-full">
                     <span className="font-semibold">Locaciones:</span>
                     <span className="ml-1">{worker.workLocation.join(", ")}</span>
                 </div>
-                <div className="mb-1">
+                <div className="mb-1 text-center w-full">
                     <span className="font-semibold">Días:</span>
                     <span className="ml-1">{worker.workingDays.join(", ")}</span>
                 </div>
-                <div>
+                <div className="text-center w-full">
                     <span className="font-semibold">Horarios:</span>
                     <span className="ml-1">{worker.workingHours.join(", ")}</span>
                 </div>
+
+
                 {
                     !servicio.agreementWorker
                         ? (
