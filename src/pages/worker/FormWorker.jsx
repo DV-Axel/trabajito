@@ -70,6 +70,7 @@ const FormWorker = () => {
         }));
     };
 
+    // TODO: Verificar como se guardan los datos de horarios de trabajo, dias de trabajo y locaciones.
 
     const handleRubrosChange = (e) => {
         const { value, checked } = e.target;
