@@ -69,7 +69,7 @@ const PerfilRequester = () => {
             const userId = getUserIdFromToken();
 
             try {
-                //const response = await fetch(`/api/usuario/${userId}/foto`
+
                 const response = await fetch(`http://localhost:3000/users/profile-picture/${userId}`, {
                     method: 'PUT',
                     body: formData,
