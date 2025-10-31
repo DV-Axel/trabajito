@@ -13,14 +13,15 @@ const WorkerRequesterContact = () => {
     const { id } = useParams();
 
     const { setAgreementUserWorkerTrue } = useSetAgreementUserWorkerTrue();
+    // TODO: esta hardcodeado el workerId, hay que traerlo de la application seleccionada en el servicio
     const { worker, loadingWorker, errorWorker } = useGetWorkerById(1)
-    const { servicio, loading, error } = useGetJobRequest(id);
+    const { servicio, loadingServicio, errorServicio } = useGetJobRequest(id);
     const applicationSelectedId = servicio?.applicationSelectedId ?? null;
     const { application, loadingApplication, errorApplication } = useGetApplicationById(applicationSelectedId);
 
 
-    if (loading) return <div>Cargando solicitud...</div>;
-    if (error) return <div>Error al obtener la solicitud</div>;
+    if (loadingServicio) return <div>Cargando solicitud...</div>;
+    if (errorServicio) return <div>Error al obtener la solicitud</div>;
     if (!servicio) return null;
 
     if(loadingApplication) return <div>Cargando postulacion</div>

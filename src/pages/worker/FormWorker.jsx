@@ -59,14 +59,13 @@ const FormWorker = () => {
 
     const handleZonaTrabajoChange = (e) => {
         const { value, checked } = e.target;
-        // Buscar el label correspondiente al value seleccionado
         const provincia = provinciasArgentina.find(p => p.value === value);
         if (!provincia) return;
         setForm((prev) => ({
             ...prev,
             zona_trabajo: checked
-                ? [...prev.zona_trabajo, provincia.label]
-                : prev.zona_trabajo.filter((p) => p !== provincia.label)
+                ? [...prev.zona_trabajo, provincia.value]
+                : prev.zona_trabajo.filter((p) => p !== provincia.value)
         }));
     };
 

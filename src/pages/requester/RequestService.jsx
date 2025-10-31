@@ -23,6 +23,8 @@ const RequestService = () => {
 
 
 
+
+
     const postulationSelected = servicio.applicationSelectedId;
 
     console.log(postulationSelected)

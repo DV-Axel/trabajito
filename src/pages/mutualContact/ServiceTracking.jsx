@@ -1,96 +1,91 @@
 import React, { useMemo, useState } from 'react';
 import {useParams} from "react-router-dom";
+import useGetJobRequest from "../../data/hooks/useGetJobRequest.js";
+import useGetWorkerById from "../../data/hooks/useGetWorkerById.js";
+import {formatDate, formatearLocacion} from "../../data/helpers.js";
+import useGetApplicationById from "../../data/hooks/useGetApplicationById.js";
 
 const WorkerJobRequestContact = () => {
-    // Datos hardcodeados
-    const jobRequest = {
-        title: 'Limpieza de Departamento en Recoleta',
-        description: 'Solicito limpieza profunda para un departamento de 2 ambientes.',
-        date: '2024-07-15',
-        budget: '$10.000',
-        location: 'Recoleta, CABA',
-        requester: {
-            firstName: 'Lucía',
-            lastName: 'Martínez',
-            email: 'lucia.martinez@email.com',
-            phone: '+54 9 11 9876-5432'
-        },
-        photos: [
-            { url: '/uploads/limpieza1.jpg', name: 'Cocina', note: 'Cocina antes de la limpieza' },
-            { url: '/uploads/limpieza2.jpg', name: 'Baño', note: 'Baño a limpiar' }
-        ]
-    };
+    const { id } = useParams();
 
-    const worker = {
-        profilePicture: 'uploads/worker2.jpg',
-        user: {
-            firstName: 'Marcos',
-            lastName: 'Fernández'
-        },
-        rating: 4.9,
-        description: 'Experto en limpieza y mantenimiento de hogares.',
-        subtitle: 'Limpieza profesional',
-        workLocation: ['Recoleta', 'Belgrano'],
-        workingDays: ['Martes', 'Jueves', 'Sábado'],
-        workingHours: ['09:00-13:00', '15:00-19:00']
-    };
+    const { servicio, loadingServicio, errorServicio } = useGetJobRequest(id);
+
+    // TODO: esta hardcodeado el workerId, hay que traerlo de la application seleccionada en el servicio
+    const { worker, loadingWorker, errorWorker } = useGetWorkerById(1)
+
+    const applicationSelectedId = servicio?.applicationSelectedId ?? null;
+    const { application, loadingApplication, errorApplication } = useGetApplicationById(applicationSelectedId);
 
 
 
-
+    // Estado y funciones para el modal de foto
     const [modalFoto, setModalFoto] = useState(null);
     const handleExpandirFoto = (foto) => setModalFoto(foto);
     const handleCerrarModal = () => setModalFoto(null);
 
-    // Calcula los días restantes
-    const daysLeft = useMemo(() => {
-        const today = new Date();
-        const serviceDate = new Date(jobRequest.date);
-        const diff = Math.ceil((serviceDate - today) / (1000 * 60 * 60 * 24));
-        return diff > 0 ? diff : 0;
-    }, [jobRequest.date]);
+
+
+
+    if (loadingServicio) return <div>Cargando solicitud...</div>;
+    if (errorServicio) return <div>Error al obtener la solicitud</div>;
+    if (!servicio) return null;
+
+    if(loadingWorker) return <div>Cargando worker...</div>
+    if(errorWorker) return <div>Error al obtener la worker...</div>
+    if(!worker) return null;
+
+    if(loadingApplication) return <div>Cargando postulacion</div>
+    if(errorApplication) return <div>Error al obtener la postulacion</div>
+    if(!application) return null;
+
+    console.log('servicio',servicio);
+    console.log('worker', worker);
+    console.log('postulacion', application);
+
 
     return (
         <div>
-            <h1 className="text-3xl font-bold text-center mb-8">{jobRequest.title}</h1>
+            <h1 className="text-3xl font-bold text-center py-6">¡Hay un acuerdo de servicio!</h1>
             <div className="flex flex-row gap-8 bg-white p-8 rounded shadow items-stretch">
                 {/* Columna izquierda: JobRequest */}
                 <div className="flex-1 p-8 flex flex-col items-center border-r">
                     <h2 className="text-xl font-bold mb-2">Solicitud</h2>
-                    <p className="text-gray-700 text-center mb-2">{jobRequest.description}</p>
+                    <p className="text-gray-700 text-center mb-2">{servicio.description}</p>
                     <div className="mb-1">
                         <span className="font-semibold">Fecha:</span>
-                        <span className="ml-1">{jobRequest.date}</span>
+                        <span className="ml-1">{formatDate(servicio.date)}</span>
                     </div>
                     <div className="mb-1">
                         <span className="font-semibold">Presupuesto:</span>
-                        <span className="ml-1">{jobRequest.budget}</span>
+                        {/*TODO: verificar todos los datos que se muestran*/}
+                        <span className="ml-1">ESTE DATO PONERLO MEJOR</span>
                     </div>
                     <div className="mb-1">
                         <span className="font-semibold">Ubicación:</span>
-                        <span className="ml-1">{jobRequest.location}</span>
+                        <span className="ml-1">{formatearLocacion(servicio.address)}</span>
                     </div>
                     <div className="mb-1">
                         <span className="font-semibold">Solicitante:</span>
-                        <span className="ml-1">{jobRequest.requester.firstName} {jobRequest.requester.lastName}</span>
+                        <span className="ml-1">{servicio.user.firstName} {servicio.user.lastName}</span>
                     </div>
                     <div className="mb-1">
                         <span className="font-semibold">Email:</span>
-                        <span className="ml-1">{jobRequest.requester.email}</span>
+                        <span className="ml-1">{servicio.user.email}</span>
                     </div>
                     <div>
                         <span className="font-semibold">Teléfono:</span>
-                        <span className="ml-1">{jobRequest.requester.phone}</span>
+                        <span className="ml-1">{servicio.user.phone}</span>
                     </div>
                     <div className="mt-6 mb-4 text-center">
-                        <span className="font-semibold text-indigo-700">Faltan {daysLeft} días para el servicio</span>
+                        {/*TODO: hacer la funcionm para calcular los dias*/}
+                        <span className="font-semibold text-indigo-700">Faltan X días para el servicio</span>
                     </div>
                     {/* Fotos */}
                     <div className="w-full mt-4">
                         <span className="font-semibold">Fotos:</span>
                         <div className="flex gap-4 mt-2 flex-wrap">
-                            {jobRequest.photos && jobRequest.photos.length > 0 ? (
-                                jobRequest.photos.map((foto, idx) => (
+                            {servicio.photos && servicio.photos.length > 0 ? (
+                                servicio.photos.map((foto, idx) => (
                                     <div key={idx} className="flex flex-col items-center mb-2">
                                         <img
                                             src={`http://localhost:3000${foto.url}`}
@@ -134,7 +129,7 @@ const WorkerJobRequestContact = () => {
                         alt="Foto de perfil"
                         className="w-40 h-40 rounded-full object-cover border-2 border-[#00b4d8] mb-3 shadow-2xl"
                     />
-                    <h2 className="text-xl font-bold mb-1">{worker.user.firstName} {worker.user.lastName}</h2>
+                    <h2 className="text-xl font-bold mb-1">{application.worker.user.firstName} {application.worker.user.lastName}</h2>
                     <p className="text-yellow-500 mb-1 flex items-center gap-1">
                         <span>⭐</span> {worker.rating}
                     </p>
