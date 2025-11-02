@@ -1,22 +1,22 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import {useParams} from "react-router-dom";
 import useGetJobRequest from "../../data/hooks/useGetJobRequest.js";
 import useGetWorkerById from "../../data/hooks/useGetWorkerById.js";
-import {formatDate, formatearLocacion} from "../../data/helpers.js";
+import {formatDate, formatearLocacion, getUserIdFromToken} from "../../data/helpers.js";
 import useGetApplicationById from "../../data/hooks/useGetApplicationById.js";
 
 const WorkerJobRequestContact = () => {
     const { id } = useParams();
+    const idLogeado = getUserIdFromToken();
+
 
     const { servicio, loadingServicio, errorServicio } = useGetJobRequest(id);
-
-    // TODO: esta hardcodeado el workerId, hay que traerlo de la application seleccionada en el servicio
-    const { worker, loadingWorker, errorWorker } = useGetWorkerById(1)
-
     const applicationSelectedId = servicio?.applicationSelectedId ?? null;
     const { application, loadingApplication, errorApplication } = useGetApplicationById(applicationSelectedId);
 
-
+    // Siempre llama al hook, aunque application aún no esté cargada
+    const workerId = application?.workerId ?? null;
+    const { worker, loadingWorker, errorWorker } = useGetWorkerById(workerId);
 
     // Estado y funciones para el modal de foto
     const [modalFoto, setModalFoto] = useState(null);
@@ -108,6 +108,7 @@ const WorkerJobRequestContact = () => {
                         </div>
                     </div>
                     <div className="flex flex-col gap-4 mt-6 w-full items-center">
+                        {/*TODO: hacer logica de los botones*/}
                         <button
                             className="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-2 font-semibold shadow w-48"
                             onClick={() => alert('Servicio confirmado')}
