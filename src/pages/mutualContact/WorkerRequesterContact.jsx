@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import useGetJobRequest from '../../data/hooks/useGetJobRequest';
 import useGetApplicationById from '../../data/hooks/useGetApplicationById';
 import useSetAgreementUserWorkerTrue from "../../data/hooks/useSetAgreementUserWorkerTrue.js";
+import useSetAgreementUserWorkerFalse from "../../data/hooks/useSetAgreementUserWorkerFalse.js";
 import useGetWorkerById from '../../data/hooks/useGetWorkerById';
 import { formatDate, formatearLocacion, getUserIdFromToken } from '../../data/helpers';
 
@@ -14,6 +15,7 @@ const WorkerRequesterContact = () => {
     const idLogeado = getUserIdFromToken();
 
     const { setAgreementUserWorkerTrue } = useSetAgreementUserWorkerTrue();
+    const { setAgreementUserWorkerFalse } = useSetAgreementUserWorkerFalse();
     const { servicio, loadingServicio, errorServicio } = useGetJobRequest(id);
     const applicationSelectedId = servicio?.applicationSelectedId ?? null;
     const { application, loadingApplication, errorApplication } = useGetApplicationById(applicationSelectedId);
@@ -70,7 +72,7 @@ const WorkerRequesterContact = () => {
                     ) : (
                         <button
                             className="mt-6 bg-red-500 hover:bg-red-700 text-white rounded-full px-6 py-2 font-semibold shadow"
-                            onClick={() => setAgreementUserWorkerTrue(servicio.id, 'user')}
+                            onClick={() => setAgreementUserWorkerFalse(servicio.id, 'user')}
                         >
                             Cancelar acuerdo
                         </button>
@@ -144,7 +146,7 @@ const WorkerRequesterContact = () => {
                         ) : (
                             <button
                                 className="mt-6 bg-red-500 hover:bg-red-700 text-white rounded-full px-6 py-2 font-semibold shadow"
-                                onClick={() => setAgreementUserWorkerTrue(servicio.id, 'worker')}
+                                onClick={() => setAgreementUserWorkerFalse(servicio.id, 'worker')}
                             >
                                 Cancelar acuerdo
                             </button>
