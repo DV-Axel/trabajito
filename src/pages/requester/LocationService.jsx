@@ -71,7 +71,8 @@ const LocationService = () => {
             <div className="flex flex-col md:flex-row gap-8">
                 {/* Formulario */}
                 <div className="flex-1 flex flex-col space-y-4">
-                    <label className="mb-1 font-medium">Ubicación</label>
+                    {/* <label className="mb-1 font-medium">Ubicación</label> */}
+                    <label className="mb-3 font-semibold text-lg text-[#02283A] flex items-center gap-2"> <span className="w-1 h-6 bg-[#00b4d8] rounded mr-2 inline-block" /> Ubicación </label>
                     <div className="relative">
                         <input
                             type="text"
@@ -149,7 +150,11 @@ const LocationService = () => {
                 </div>
                 {/* Mapa */}
                 <div className="flex-1">
-                    <label className="mb-1 font-medium block">Vista previa en el mapa</label>
+                    {/* <label className="mb-1 font-medium block">Vista previa en el mapa</label> */}
+                    <label className="mb-3 font-semibold text-lg text-[#02283A] flex items-center gap-2">
+                    <span className="w-1 h-6 bg-[#00b4d8] rounded mr-2 inline-block" />
+                    Vista previa en el mapa
+                    </label>
                     <div className="rounded-lg overflow-hidden border border-gray-200" style={{ height: 400 }}>
                         <MapContainer
                             center={position || [-34.6037, -58.3816]}
@@ -173,12 +178,12 @@ const LocationService = () => {
                 </div>
             </div>
             {address && (
-                <div className="mt-6 text-center text-gray-600 space-y-4">
+                <div className="mt-7 text-center space-y-4 text-base text-[#ef476f]">
                     <p>Por favor, verifica que la dirección y los detalles proporcionados sean correctos antes de continuar.</p>
                     <button
                         type="button"
                         onClick={handleContinue}
-                        className="bg-blue-600 text-white font-semibold py-2 px-6 rounded hover:bg-blue-700 transition"
+                        className="bg-[#82E1A1] hover:bg-[#6EBF8A] text-black font-semibold py-2 px-6 rounded transition"
                     >
                         Continuar
                     </button>

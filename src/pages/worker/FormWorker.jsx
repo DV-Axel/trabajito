@@ -171,7 +171,7 @@ const FormWorker = () => {
     };
 
     return (
-        <div className="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-8 mt-8">
+        <div className="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-8 mt-8 mb-8 border border-gray-300">
             <h1 className="text-2xl font-bold mb-6 text-center">¡Completa tu perfil de WORKER!</h1>
             <form className="space-y-5" onSubmit={handleSubmit}>
                 {/* Foto de perfil */}
@@ -241,7 +241,7 @@ const FormWorker = () => {
                             </label>
                         ))}
                     </div>
-                    <small className="text-gray-500">Seleccioná una o varias provincias</small>
+                    <small className="text-black-700 mt-3">* Seleccioná una o varias provincias</small>
                 </div>
 
                 {/* Días disponibles */}
@@ -401,7 +401,7 @@ const FormWorker = () => {
                 </div>
                 <button
                     type="submit"
-                    className="w-full bg-[#02283A] hover:bg-[#03506f] text-white font-semibold py-2 rounded transition"
+                    className="w-full bg-[#82E1A1] hover:bg-[#6EBF8A] text-black font-semibold py-2 rounded transition"
                 >
                     Continuar
                 </button>

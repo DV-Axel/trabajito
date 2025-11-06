@@ -3,6 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 import {formatDate} from '../../data/helpers';
 import { FaIdCard, FaEnvelope, FaBirthdayCake, FaPhone, FaMapMarkerAlt, FaHashtag, FaCamera } from 'react-icons/fa';
 import {showSuccessAlert, showErrorAlert} from "../../components/alerts/sweetAlertsComponents.jsx";
+import avatar from '../../assets/images/avatar.jpeg';
 
 const PerfilRequester = () => {
     const [user, setUser] = useState(null);
@@ -94,25 +95,26 @@ const PerfilRequester = () => {
     };
 
     return (
-        <div className="flex items-center justify-center bg-[#f4fbfd]">
-            <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-10 border-4 m-5">
-                <div className="flex flex-col items-center mb-8">
+        <div className="min-h-screen flex items-center justify-center bg-[#f4fbfd]">
+            <div className="w-full max-w-2xl bg-white mt-8 mb-8 rounded-lg shadow-lg p-10 border border-gray-300">
+                <div className="flex flex-col items-center mb-9">
                     <div className="mb-4 text-center">
                         <span className="text-2xl font-bold text-[#02283A]">
                             {user.firstName} {user.lastName}
                         </span>
                     </div>
-                    <div className="relative">
+                    <div className="relative w-52 h-52 mb-3">
                         <img
-                            src={user.profilePicture}
+                            src={preview || user.profilePicture || avatar}
                             alt="Foto de perfil"
                             className="w-52 h-52 rounded-full object-cover border-2 border-[#00b4d8] mb-3 shadow-2xl"
                         />
 
+                    
                         <button
                             onClick={handleChangePhoto}
                             className="absolute bottom-4 right-4 bg-[#00b4d8] text-white p-2 rounded-full shadow hover:bg-[#0288a7] transition"
-                            title="Cambiar foto de perfil"
+                            title="Actualizar foto de perfil"
                         >
                             <FaCamera />
                         </button>
@@ -124,7 +126,7 @@ const PerfilRequester = () => {
                             onChange={handleFileChange}
                         />
                     </div>
-                    <span className="text-lg text-[#00b4d8] mt-1">Solicitante de servicios</span>
+                    <span className="text-lg text-[#00b4d8] mt-1 bg-[#e8fbff] px-3 py-1 rounded-full font-medium">Solicitante de servicios</span>
                 </div>
                 <div className="space-y-5">
                     <div className="flex items-center gap-3">

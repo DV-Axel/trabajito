@@ -39,15 +39,15 @@ const Signup = () => {
     };
 
     return (
-        <div className="flex flex-1 min-h-screen items-center justify-center bg-white">
-            <div className="max-w-3xl w-full px-8 py-6">
+        <div className="flex flex-1 min-h-screen items-center justify-center bg-[#f4fbfd]">
+            <div className="max-w-3xl w-full px-8 py-6 ">
                 <div className="flex justify-center mb-4">
                     <FaRegHandshake className="text-9xl text-[#02283A]" />
                 </div>
                 <h2 className="text-3xl md:text-4xl font-semibold text-[#0c3444] mb-8 text-center">
                     Estas a un paso de encontrar la solución que tanto buscas
                 </h2>
-                <form className="bg-white shadow-md rounded-lg p-8 space-y-6 border border-gray-300" onSubmit={handleSubmit}>
+                <form className="bg-white shadow-lg rounded-lg p-8 space-y-6 border border-gray-300" onSubmit={handleSubmit}>
                     <div>
                         <label htmlFor="nombre" className="block text-lg font-medium text-gray-700 mb-1">
                             Nombre
@@ -259,9 +259,9 @@ const Signup = () => {
                     </div>
                     <button
                         type="submit"
-                        className="w-full bg-[#0c7fcf] hover:bg-[#095a8e] text-white font-semibold py-2 rounded-md transition-all"
+                        className="w-full bg-[#82E1A1] hover:bg-[#6EBF8A] text-black font-semibold py-2 rounded-md transition-all"
                     >
-                        REGISTRARME
+                        Registrar
                     </button>
                     <div className="text-right text-sm text-gray-600 mt-2">
                         ¿Ya tienes cuenta?{" "}

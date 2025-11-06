@@ -77,7 +77,7 @@ const UploadFilesService = () => {
                 <button
                     type="button"
                     onClick={handleContinue}
-                    className="mt-8 w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition"
+                    className="mt-8 w-full bg-[#82E1A1] hover:bg-[#6EBF8A] text-black font-semibold py-2 rounded  transition"
                 >
                     {photos.length > 0 ? "Continuar" : "Continuar sin fotos"}
                 </button>

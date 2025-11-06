@@ -34,7 +34,7 @@ const Formservice = () => {
     /*TODO: validar las input y controlar*/
 
     return (
-        <div className="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-8 mt-8">
+        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8 md:p-10 mt-8 mb-8 border border-gray-200">
             <h1 className="text-2xl font-bold mb-6 text-center">Formulario para: {service.name}</h1>
             <form className="space-y-5" >
 
@@ -172,7 +172,7 @@ const Formservice = () => {
                 <button
                     type="submit"
                     onClick={handleContinue}
-                    className="w-full bg-[#02283A] hover:bg-[#03506f] text-white font-semibold py-2 rounded transition"
+                    className="w-full bg-[#82E1A1] hover:bg-[#6EBF8A] text-black font-semibold py-2 rounded transition"
                 >
                     Continuar
                 </button>
