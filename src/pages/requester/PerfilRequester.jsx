@@ -1,50 +1,120 @@
+import { useRef, useState, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
 import {formatDate} from '../../data/helpers';
 import { FaIdCard, FaEnvelope, FaBirthdayCake, FaPhone, FaMapMarkerAlt, FaHashtag, FaCamera } from 'react-icons/fa';
-import { showSuccessAlert, showErrorAlert } from "../../components/alerts/sweetAlertsComponents.jsx";
-import useSetNewProfilePictureUser from '../../data/hooks/useSetNewProfilePictureUser.js';
-import useGetUserById from '../../data/hooks/useGetUserById.js'
-import { getUserIdFromToken } from "../../data/helpers.js";
-import React, {useRef} from "react";
+import {showSuccessAlert, showErrorAlert} from "../../components/alerts/sweetAlertsComponents.jsx";
+import avatar from '../../assets/images/avatar.jpeg';
 
 const PerfilRequester = () => {
-    const id = getUserIdFromToken();
-    const { user, loadingUser, errorUser } = useGetUserById(id);
-    const { cambiarFotoPerfilUser } = useSetNewProfilePictureUser(id);
-
+    const [user, setUser] = useState(null);
+    const [preview, setPreview] = useState('');
     const fileInputRef = useRef(null);
+
+    // Obtener userId del token
+    const getUserIdFromToken = () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const decoded = jwtDecode(token);
+                return decoded.id || decoded.userId || decoded.sub;
+            } catch {
+                return null;
+            }
+        }
+        return null;
+    };
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const token = localStorage.getItem('token');
+            const userId = getUserIdFromToken();
+            if (!userId) return;
+
+            try {
+                const res = await fetch(`http://localhost:3000/users/${userId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    setUser(data.user);
+
+                    console.log(data.user);
+                    setPreview(data.profilePicture);
+                }
+            } catch {
+                // Manejo de error opcional
+            }
+        };
+        fetchUser();
+    }, []);
+
+    if (!user) {
+        return <div className="text-center mt-10 text-lg text-gray-600">Cargando perfil...</div>;
+    }
 
     const handleChangePhoto = () => {
         fileInputRef.current.click();
     };
 
-    if (loadingUser) return <div>Cargando solicitud...</div>;
-    if (errorUser) return <div>Error al obtener la solicitud</div>;
-    if (!user) return null;
 
-    console.log(user)
 
-    // TODO: Tengo que poner para cambiar datos del perfil (solo direccion, telefono, email y codigo postal)
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append('profilePicture', file);
+
+            const token = localStorage.getItem('token');
+            const userId = getUserIdFromToken();
+
+            try {
+                //const response = await fetch(`/api/usuario/${userId}/foto`
+                const response = await fetch(`http://localhost:3000/users/profile-picture/${userId}`, {
+                    method: 'PUT',
+                    body: formData,
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setPreview(data.profilePicture);
+                    showSuccessAlert('¡Foto actualizada!', 'Tu foto de perfil se actualizó correctamente.')
+                        .then(() => window.location.reload());
+                } else {
+                    showErrorAlert('Error al subir la foto', 'No se pudo actualizar la foto de perfil.');
+                }
+
+            } catch {
+                showErrorAlert('Error al subir la foto','Error de red al subir la foto' )
+            }
+        }
+    };
 
     return (
-        <div className="flex mt-10 items-center justify-center bg-[#f4fbfd]">
-            <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-10 border-4">
-                <div className="flex flex-col items-center mb-8 uppercase">
+        <div className="min-h-screen flex items-center justify-center bg-[#f4fbfd]">
+            <div className="w-full max-w-2xl bg-white mt-8 mb-8 rounded-lg shadow-lg p-10 border border-gray-300">
+                <div className="flex flex-col items-center mb-9">
                     <div className="mb-4 text-center">
                         <span className="text-2xl font-bold text-[#02283A]">
                             {user.firstName} {user.lastName}
                         </span>
                     </div>
-                    <div className="relative">
+                    <div className="relative w-52 h-52 mb-3">
                         <img
-                            src={`http://localhost:3000${user.profilePicture}`}
+                            src={preview || user.profilePicture || avatar}
                             alt="Foto de perfil"
                             className="w-52 h-52 rounded-full object-cover border-2 border-[#00b4d8] mb-3 shadow-2xl"
                         />
 
+                    
                         <button
                             onClick={handleChangePhoto}
                             className="absolute bottom-4 right-4 bg-[#00b4d8] text-white p-2 rounded-full shadow hover:bg-[#0288a7] transition"
-                            title="Cambiar foto de perfil"
+                            title="Actualizar foto de perfil"
                         >
                             <FaCamera />
                         </button>
@@ -53,10 +123,10 @@ const PerfilRequester = () => {
                             accept="image/*"
                             ref={fileInputRef}
                             style={{ display: 'none' }}
-                            onChange={cambiarFotoPerfilUser}
+                            onChange={handleFileChange}
                         />
                     </div>
-                    <span className="text-sm text-[#00b4d8] mt-1">Solicitante de servicios</span>
+                    <span className="text-lg text-[#00b4d8] mt-1 bg-[#e8fbff] px-3 py-1 rounded-full font-medium">Solicitante de servicios</span>
                 </div>
                 <div className="space-y-5">
                     <div className="flex items-center gap-3">
@@ -73,6 +143,7 @@ const PerfilRequester = () => {
                         <FaBirthdayCake className="text-[#00b4d8] text-xl" />
                         <span className="font-semibold text-[#02283A]">Fecha de nacimiento:</span>
                         <span>{formatDate(user.birthDate)}</span>
+
                     </div>
                     <div className="flex items-center gap-3">
                         <FaPhone className="text-[#00b4d8] text-xl" />

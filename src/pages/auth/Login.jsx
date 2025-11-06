@@ -76,7 +76,7 @@ const Login = () => {
                     <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-8 space-y-6 border border-gray-300">
                         <div>
                             <label htmlFor="email" className="block text-lg font-medium text-gray-700 mb-1">
-                                Correo electronico
+                                Correo electrónico
                             </label>
                             <input
                                 id="email"
@@ -107,7 +107,7 @@ const Login = () => {
                         </div>
                         <button
                             type="submit"
-                            className="w-full bg-[#0c7fcf] hover:bg-[#095a8e] text-white font-semibold py-2 rounded-md transition-all"
+                            className="w-full bg-[#0c7fcf] hover:bg-[#095a8e] text-white font-semibold h-12 rounded-md transition-all flex items-center justify-center"
                         >
                             INICIAR SESION
                         </button>

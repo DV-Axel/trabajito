@@ -10,6 +10,9 @@ export default {
                 'mdplus': '824px',
                 'smplus': '361px',
             },
+            fontFamily: {
+                sans: ['"Josefin Sans"', 'ui-sans-serif', 'system-ui'],
+            },
         },
     },
     plugins: [],

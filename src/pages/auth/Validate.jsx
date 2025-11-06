@@ -28,7 +28,7 @@ const Validate = () => {
             try {
                 await axios.get(`http://localhost:3000/auth/confirm?token=${token}`);
                 setStatus("success");
-                setMessage("¡Correo validado con exito!");
+                setMessage("¡Correo validado con éxito!");
             } catch (err) {
                 if (err.response && err.response.status === 400) {
                     setStatus("expired");

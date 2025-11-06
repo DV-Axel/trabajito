@@ -79,7 +79,7 @@ const CheckRequestService = () => {
     /*TODO: Ser minuscioso con las validaciones del resumen*/
 
     return (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="min-h-screen bg-[#f4fbfd] flex items-center justify-center">
             <div className="max-w-2xl w-full bg-white shadow-lg rounded-lg p-8 my-8 border border-gray-300 animate-fadeIn transition-all duration-500">
                 <h1 className="text-3xl font-extrabold mb-8 text-center tracking-wide drop-shadow-lg animate-fadeIn transition-all duration-500">
                     📝 Resumen de tu solicitud
@@ -169,9 +169,9 @@ const CheckRequestService = () => {
                 <button
                     type="submit"
                     onClick={handleSubmit}
-                    className="w-full bg-[#02283A] hover:bg-[#03506f] text-white font-semibold py-2 rounded  transition"
+                    className="w-full bg-[#82E1A1] hover:bg-[#6EBF8A] text-black font-semibold py-2 rounded  transition"
                 >
-                    Confirmar solicitud
+                    Confirmar Solicitud
                 </button>
 
 

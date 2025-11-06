@@ -20,8 +20,8 @@ const RequesterIndex = () => {
     const selectedService = services.find(s => s.key === selected); // Encuentra el servicio seleccionado
 
     return (
-        <div className="flex flex-col items-center py-8">
-            <h2 className="text-2xl font-bold mb-6 text-[#0c3444]">Elige un tipo de servicio</h2>
+        <div className="min-h-screen flex flex-col items-center py-8 bg-[#f4fbfd] justify-center">
+            <h2 className="text-2xl font-bold mb-7 text-[#0c3444]">Elige un tipo de servicio</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
                 {services.map(service => (
                     <button

@@ -144,7 +144,7 @@ const ViewJobRequest = () => {
                             {jobRequest.photos.map((foto, idx) => (
                                 <div key={idx} className="flex flex-col items-center mb-2">
                                     <img
-                                        src={`http://localhost:3000${foto.url}`}
+                                        src={foto.url}
                                         alt={foto.name || `Foto ${idx + 1}`}
                                         className="w-52 h-36 object-cover rounded shadow mb-1 cursor-pointer"
                                         onClick={() => handleExpandirFoto(foto)}
