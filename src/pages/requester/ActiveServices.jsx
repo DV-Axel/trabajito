@@ -1,67 +1,41 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { getUserIdFromToken, formatearLocacion  } from '../../data/helpers';
 import { traerIdServicio } from '../../data/services.js'
 import {showConfirmAlert, showErrorAlert, showSuccessAlert} from "../../components/alerts/sweetAlertsComponents.jsx";
+import useGetJobRequestsByUserId from "../../data/hooks/useGetJobRequestsByUserId.js";
+import React from "react";
 
 const ActiveServices = () => {
-    const [solicitudes, setSolicitudes] = useState([]);
-    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
 
     const userId = getUserIdFromToken();
-    const token = localStorage.getItem('token');
+
+    const { jobRequests, loadingJobRequests, errorJobRequests } = useGetJobRequestsByUserId(userId);
 
 
 
-    useEffect(() => {
-        const fetchSolicitudes = async () => {
-
-            if (!userId) return;
-
+    const handleCancel = async (id) => {
+        const result = await showConfirmAlert(
+            '¿Cancelar solicitud?',
+            `¿Estás seguro de cancelar esta solicitud? Esta acción no se puede deshacer. ${id}`   ,
+            'Sí, cancelar',
+            'No'
+        );
+        if (result) {
             try {
-                const response = await fetch(`http://localhost:3000/job-requests/${userId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-                if (!response.ok) throw new Error('Error al obtener solicitudes');
-                const data = await response.json();
-                setSolicitudes(data);
-            } catch (error) {
-                setSolicitudes([]);
-            } finally {
-                setLoading(false);
+                // Ejemplo de uso del id para cancelar la solicitud
+                await showSuccessAlert('Cancelado', 'La solicitud fue cancelada.');
+            } catch (e) {
+                await showErrorAlert('No se pudo cancelar la solicitud', e);
             }
-        };
-        if (userId && token) fetchSolicitudes();
-    }, [userId, token]);
-
-        const handleCancel = async (id) => {
-            const result = await showConfirmAlert(
-                '¿Cancelar solicitud?',
-                '¿Estás seguro de cancelar esta solicitud? Esta acción no se puede deshacer.',
-                'Sí, cancelar',
-                'No'
-            );
-            if (result) {
-                try {
-                    // Aquí tu lógica para borrar/cancelar
-                    await showSuccessAlert('Cancelado', 'La solicitud fue cancelada.');
-                } catch (e) {
-                    await showErrorAlert('Error', 'No se pudo cancelar la solicitud.');
-                }
-            }
+        }
     };
 
-    if (loading) {
-        return <div className="text-center mt-10 text-lg text-gray-600">Cargando solicitudes...</div>;
-    }
 
-    if (!solicitudes || solicitudes.length === 0) {
-        return <div className="text-center mt-10 text-lg text-gray-600">No tienes solicitudes activas.</div>;
-    }
+    if (loadingJobRequests) return <div>Cargando solicitudes...</div>;
+    if (errorJobRequests) return <div>Error al obtener las solicitudes del usuario</div>;
+    if (!jobRequests) return null;
 
     const handleServiceDetails = (id) => {
         navigate(`/servicio/${id}`);
@@ -72,7 +46,7 @@ const ActiveServices = () => {
         <div className="max-w-4xl mx-auto my-10 p-6 bg-white rounded-3xl shadow-2xl border-4 border-[#00b4d8]">
             <h2 className="text-2xl font-bold text-[#02283A] mb-6">Solicitudes activas</h2>
             <ul className="space-y-6">
-                {solicitudes.map(solicitud => (
+                {jobRequests.map(solicitud => (
                     <li key={solicitud.id} className="p-6 rounded-xl bg-[#f4fbfd] shadow flex flex-col md:flex-row md:items-center md:justify-between border border-[#00b4d8]">
                         <div>
                             <h3 className="text-xl font-bold text-[#02283A] mb-2">{solicitud.title}</h3>
@@ -96,10 +70,11 @@ const ActiveServices = () => {
 
                             <button
                                 className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full font-semibold shadow transition"
-                                onClick={handleCancel}
+                                onClick={() => handleCancel(solicitud.id)}
                             >
                                 Cancelar
                             </button>
+
                         </div>
                     </li>
                 ))}
