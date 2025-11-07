@@ -29,8 +29,8 @@ const RequestService = () => {
 
     const postulationSelected = servicio.applicationSelectedId;
 
-    console.log(postulationSelected)
-    console.log(servicio)
+    console.log('servicio', servicio)
+    console.log('postulaciones', applications)
 
     return (
         <div className="min-h-[120px] bg-background">
@@ -139,11 +139,12 @@ const RequestService = () => {
                                                 aria-label={`Abrir foto ${idx + 1}`}
                                             >
                                                 <img
-                                                    src={foto.url || '/placeholder.svg'}
+                                                    src={foto.url ? `http://localhost:3000${foto.url}` : '/placeholder.svg'}
                                                     alt={foto.name || `Foto ${idx + 1}`}
                                                     loading="lazy"
                                                     className="aspect-[16/9] w-full object-cover transition-transform group-hover:scale-105"
                                                 />
+
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                                                 <div className="bg-black absolute bottom-0 left-0 right-0 p-3 text-white opacity-0 transition-opacity group-hover:opacity-100">
                                                     <p className="text-xs font-medium line-clamp-2">{foto.note}</p>
@@ -207,11 +208,16 @@ const RequestService = () => {
                                             <article key={app.id} className="bg-background border border-border rounded-lg p-3">
                                                 <div className="flex items-start gap-3">
                                                     <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-800 overflow-hidden">
-                                                        {app.worker?.user?.avatar ? (
-                                                            <img src={app.worker.user.avatar} alt={`${app.worker.user.name} avatar`} className="h-full w-full object-cover" />
+                                                        {app.worker?.user?.profilePicture ? (
+                                                            <img
+                                                                src={`http://localhost:3000${app.worker.user.profilePicture}`}
+                                                                alt={`${app.worker.user.firstName} avatar`}
+                                                                className="h-full w-full object-cover"
+                                                            />
                                                         ) : (
-                                                            `${app.worker?.user?.name?.[0] || ''}${app.worker?.user?.lastName?.[0] || ''}`
+                                                            `${app.worker?.user?.firstName?.[0] || ''}${app.worker?.user?.lastName?.[0] || ''}`
                                                         )}
+
                                                     </div>
                                                     <div className="flex-1 min-w-0">
                                                         <h3 className="text-base font-semibold truncate">
@@ -226,7 +232,7 @@ const RequestService = () => {
                                                 </div>
 
                                                 <div className="mt-3">
-                                                    <p className="text-sm font-semibold text-accent">{app.budget}</p>
+                                                    <p className="text-sm font-semibold text-accent">${app.budget}</p>
                                                     <p className="text-sm mt-1 text-muted-foreground line-clamp-3">{app.description}</p>
                                                 </div>
 
