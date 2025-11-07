@@ -26,7 +26,8 @@ const CheckRequestService = () => {
         tipoPropiedad,
         piso,
         numeroDepto,
-        photos = []
+        photos = [],
+        position
     } = location.state || {};
 
     // Buscar el servicio actual y crear un mapa de key a label
@@ -49,7 +50,10 @@ const CheckRequestService = () => {
         formData.append("numeroDepto", numeroDepto || "");
         formData.append("address", JSON.stringify(address || {}));
         formData.append("form", JSON.stringify(form || {}));
-        formData.append("position", JSON.stringify(form || {}));
+        formData.append("position", JSON.stringify(position || {}));
+
+
+
 
         // Agrega las fotos
         (photos || []).forEach((photo, idx) => {
@@ -72,6 +76,7 @@ const CheckRequestService = () => {
             console.error(error);
         }
     };
+
 
 
 
