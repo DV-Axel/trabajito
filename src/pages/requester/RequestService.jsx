@@ -224,7 +224,7 @@ const RequestService = () => {
                                                     <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-800 overflow-hidden">
                                                         {app.worker?.user?.profilePicture ? (
                                                             <img
-                                                                src={`http://localhost:3000${app.worker.user.profilePicture}`}
+                                                                src={`http://localhost:3000/${app.worker.profilePicture}`}
                                                                 alt={`${app.worker.user.firstName} avatar`}
                                                                 className="h-full w-full object-cover"
                                                             />
@@ -235,7 +235,7 @@ const RequestService = () => {
                                                     </div>
                                                     <div className="flex-1 min-w-0">
                                                         <h3 className="text-base font-semibold truncate">
-                                                            {app.worker?.user?.name} {app.worker?.user?.lastName}
+                                                            {app.worker?.user?.firstName} {app.worker?.user?.lastName}
                                                         </h3>
                                                         <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
                                                             <span>⭐ {app.rating ?? '-'}</span>
