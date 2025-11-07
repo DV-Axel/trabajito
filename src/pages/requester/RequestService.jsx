@@ -6,7 +6,8 @@ import useGetApplicationsById from '../../data/hooks/useGetApplicationsById.js';
 import { FaRegCalendarAlt, FaRegClock } from 'react-icons/fa';
 import { FiImage as ImageIcon } from 'react-icons/fi';
 import { AiOutlineCheckCircle as CheckCircle } from 'react-icons/ai';
-import { FaRegUser as User } from 'react-icons/fa';
+import { FaRegUser as User, FaRegCompass as CompassIcon } from 'react-icons/fa';
+
 
 const RequestService = () => {
     const { id } = useParams();
@@ -160,13 +161,26 @@ const RequestService = () => {
                             {/* Botones de acción */}
                             <div className="mt-6 flex flex-wrap gap-3">
                                 {postulationSelected ? (
-                                    <button
-                                        className="inline-flex items-center gap-2 rounded-full bg-[#02283A] hover:bg-[#03506f] text-white px-6 py-2 font-semibold"
-                                        onClick={() => navigate(`/contacto-laboral/${servicio?.id}`)}
-                                    >
-                                        <CheckCircle className="h-4 w-4" />
-                                        Comenzar contacto
-                                    </button>
+                                    <>
+                                        {servicio.agreementUser && servicio.agreementWorker ? (
+                                            <button
+                                                className="inline-flex items-center gap-2 rounded-full bg-[#02283A] hover:bg-[#03506f] text-white px-6 py-2 font-semibold"
+                                                onClick={() => navigate(`/seguimiento-servicio/${servicio.id}`)}
+                                            >
+                                                <CompassIcon className="h-4 w-4" />
+                                                Tracking service
+                                            </button>
+
+                                        ) : (
+                                            <button
+                                                className="inline-flex items-center gap-2 rounded-full bg-[#02283A] hover:bg-[#03506f] text-white px-6 py-2 font-semibold"
+                                                onClick={() => navigate(`/contacto-laboral/${servicio.id}`)}
+                                            >
+                                                <CheckCircle className="h-4 w-4" />
+                                                Comenzar contacto
+                                            </button>
+                                        )}
+                                    </>
                                 ) : (
                                     <>
                                         <button className="rounded-full bg-[#02283A] hover:bg-[#03506f] text-white px-6 py-2 font-semibold">
