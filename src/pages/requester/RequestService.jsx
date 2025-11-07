@@ -207,8 +207,8 @@ const RequestService = () => {
                                             <article key={app.id} className="bg-background border border-border rounded-lg p-3">
                                                 <div className="flex items-start gap-3">
                                                     <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-800 overflow-hidden">
-                                                        {app.worker?.user?.avatar ? (
-                                                            <img src={app.worker.user.avatar} alt={`${app.worker.user.name} avatar`} className="h-full w-full object-cover" />
+                                                        {app.worker?.user?.profilePicture ? (
+                                                            <img src={app.worker.user.profilePicture} alt={`${app.worker.user.name} avatar`} className="h-full w-full object-cover" />
                                                         ) : (
                                                             `${app.worker?.user?.name?.[0] || ''}${app.worker?.user?.lastName?.[0] || ''}`
                                                         )}
