@@ -9,22 +9,16 @@ const WorkerJobRequestContact = () => {
     const { id } = useParams();
     const idLogeado = getUserIdFromToken();
 
-
     const { servicio, loadingServicio, errorServicio } = useGetJobRequest(id);
     const applicationSelectedId = servicio?.applicationSelectedId ?? null;
     const { application, loadingApplication, errorApplication } = useGetApplicationById(applicationSelectedId);
 
-    // Siempre llama al hook, aunque application aún no esté cargada
     const workerId = application?.workerId ?? null;
     const { worker, loadingWorker, errorWorker } = useGetWorkerById(workerId);
 
-    // Estado y funciones para el modal de foto
     const [modalFoto, setModalFoto] = useState(null);
     const handleExpandirFoto = (foto) => setModalFoto(foto);
     const handleCerrarModal = () => setModalFoto(null);
-
-
-
 
     if (loadingServicio) return <div>Cargando solicitud...</div>;
     if (errorServicio) return <div>Error al obtener la solicitud</div>;
@@ -38,10 +32,9 @@ const WorkerJobRequestContact = () => {
     if(errorApplication) return <div>Error al obtener la postulacion</div>
     if(!application) return null;
 
-    console.log('servicio',servicio);
+    console.log('servicio', servicio);
+    console.log('application', application);
     console.log('worker', worker);
-    console.log('postulacion', application);
-
 
     return (
         <div>
@@ -57,7 +50,6 @@ const WorkerJobRequestContact = () => {
                     </div>
                     <div className="mb-1">
                         <span className="font-semibold">Presupuesto:</span>
-                        {/*TODO: verificar todos los datos que se muestran*/}
                         <span className="ml-1">ESTE DATO PONERLO MEJOR</span>
                     </div>
                     <div className="mb-1">
@@ -77,9 +69,9 @@ const WorkerJobRequestContact = () => {
                         <span className="ml-1">{servicio.user.phone}</span>
                     </div>
                     <div className="mt-6 mb-4 text-center">
-                        {/*TODO: hacer la funcionm para calcular los dias*/}
                         <span className="font-semibold text-indigo-700">Faltan X días para el servicio</span>
                     </div>
+
                     {/* Fotos */}
                     <div className="w-full mt-4">
                         <span className="font-semibold">Fotos:</span>
@@ -107,22 +99,44 @@ const WorkerJobRequestContact = () => {
                             )}
                         </div>
                     </div>
+
+                    {/* Acciones solicitante */}
                     <div className="flex flex-col gap-4 mt-6 w-full items-center">
-                        {/*TODO: hacer logica de los botones*/}
-                        <button
-                            className="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-2 font-semibold shadow w-48"
-                            onClick={() => alert('Servicio confirmado')}
-                        >
-                            Confirmar
-                        </button>
-                        <button
-                            className="bg-red-500 hover:bg-red-600 text-white rounded-full px-6 py-2 font-semibold shadow w-48"
-                            onClick={() => alert('Servicio cancelado')}
-                        >
-                            Cancelar servicio
-                        </button>
+                        {servicio.userId === idLogeado ? (
+                            <>
+                                {!servicio.workFinishedUser ? (
+                                    <button
+                                        className="mt-6 bg-[#00b4d8] hover:bg-[#0096c7] text-white rounded-full px-6 py-2 font-semibold shadow"
+                                        // onClick={() => setAgreementUserWorkerTrue(servicio.id, 'user')}
+                                    >
+                                        Confirmar trabajo finalizado
+                                    </button>
+                                ) : (
+                                    <div className="mt-6 px-4 py-2 rounded-full bg-green-100 text-green-700 font-semibold shadow text-center w-64">
+                                        Ya declaraste el trabajo como finalizado
+                                    </div>
+                                )}
+
+                                <button
+                                    className="mt-4 bg-red-500 hover:bg-red-600 text-white rounded-full px-6 py-2 font-semibold shadow w-48"
+                                    onClick={() => alert('Trabajo cancelado por el solicitante')}
+                                >
+                                    Cancelar servicio
+                                </button>
+                            </>
+                        ) : servicio.workFinishedUser ? (
+                            <div className="mt-6 px-4 py-2 rounded-full bg-green-100 text-green-700 font-semibold shadow text-center w-64">
+                                El solicitante declaró el trabajo como finalizado
+                            </div>
+                        ) : (
+                            <div className="mt-6 px-4 py-2 rounded-full bg-yellow-100 text-yellow-700 font-semibold shadow text-center w-64">
+                                El solicitante aún no ha declarado el trabajo como finalizado
+                            </div>
+                        )}
                     </div>
+
                 </div>
+
                 {/* Columna derecha: Worker */}
                 <div className="flex-1 p-8 flex flex-col items-center border-l">
                     <img
@@ -148,22 +162,45 @@ const WorkerJobRequestContact = () => {
                         <span className="font-semibold">Horarios:</span>
                         <span className="ml-1">{worker.workingHours.join(", ")}</span>
                     </div>
+
+                    {/* Acciones trabajador */}
                     <div className="flex flex-col gap-4 mt-8 w-full items-center">
-                        <button
-                            className="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-2 font-semibold shadow w-48"
-                            onClick={() => alert('Trabajo confirmado por el trabajador')}
-                        >
-                            Confirmar
-                        </button>
-                        <button
-                            className="bg-red-500 hover:bg-red-600 text-white rounded-full px-6 py-2 font-semibold shadow w-48"
-                            onClick={() => alert('Trabajo cancelado por el trabajador')}
-                        >
-                            Cancelar servicio
-                        </button>
+                        {worker.userId === idLogeado ? (
+                            <>
+                                {!servicio.workFinishedWorker ? (
+                                    <button
+                                        className="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-2 font-semibold shadow w-48"
+                                        // onClick={() => setAgreementUserWorkerTrue(servicio.id, 'worker')}
+                                    >
+                                        Confirmar trabajo finalizado
+                                    </button>
+                                ) : (
+                                    <div className="mt-6 px-4 py-2 rounded-full bg-green-100 text-green-700 font-semibold shadow text-center w-64">
+                                        Ya declaraste el trabajo como finalizado
+                                    </div>
+                                )}
+
+                                <button
+                                    className="mt-4 bg-red-500 hover:bg-red-600 text-white rounded-full px-6 py-2 font-semibold shadow w-48"
+                                    onClick={() => alert('Trabajo cancelado por el trabajador')}
+                                >
+                                    Cancelar servicio
+                                </button>
+                            </>
+                        ) : servicio.workFinishedWorker ? (
+                            <div className="mt-6 px-4 py-2 rounded-full bg-green-100 text-green-700 font-semibold shadow text-center w-64">
+                                El trabajador declaró el trabajo como finalizado
+                            </div>
+                        ) : (
+                            <div className="mt-6 px-4 py-2 rounded-full bg-yellow-100 text-yellow-700 font-semibold shadow text-center w-64">
+                                El trabajador aún no ha declarado el trabajo como finalizado
+                            </div>
+                        )}
                     </div>
+
                 </div>
             </div>
+
             {/* Modal para expandir foto */}
             {modalFoto && (
                 <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
