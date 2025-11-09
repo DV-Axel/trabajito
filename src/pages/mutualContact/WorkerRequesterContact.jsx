@@ -1,3 +1,4 @@
+// javascript
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import useGetJobRequest from '../../data/hooks/useGetJobRequest';
@@ -6,6 +7,10 @@ import useSetAgreementUserWorkerTrue from "../../data/hooks/useSetAgreementUserW
 import useSetAgreementUserWorkerFalse from "../../data/hooks/useSetAgreementUserWorkerFalse.js";
 import useGetWorkerById from '../../data/hooks/useGetWorkerById';
 import { formatDate, formatearLocacion, getUserIdFromToken } from '../../data/helpers';
+import useEditBudget from '../../data/hooks/useEditBudget.js';
+
+import { FiEdit } from 'react-icons/fi';
+
 
 // TODO: revisar que el diseño y los datos queden bien.
 // TODO: implementar funcionalidad de cancelar acuerdo
@@ -14,6 +19,7 @@ const WorkerRequesterContact = () => {
     const { id } = useParams();
     const idLogeado = getUserIdFromToken();
 
+    const { editBudget } = useEditBudget();
     const { setAgreementUserWorkerTrue } = useSetAgreementUserWorkerTrue();
     const { setAgreementUserWorkerFalse } = useSetAgreementUserWorkerFalse();
     const { servicio, loadingServicio, errorServicio } = useGetJobRequest(id);
@@ -39,6 +45,10 @@ const WorkerRequesterContact = () => {
     console.log('servicio', servicio);
     console.log('application', application);
     console.log('worker', worker);
+
+    const canEditBudget = idLogeado === worker.userId;
+
+
 
     return (
         <div className="grid grid-cols-3 gap-8 bg-white p-8 rounded shadow items-stretch">
@@ -96,9 +106,21 @@ const WorkerRequesterContact = () => {
                     <span className="font-semibold">Fecha:</span>
                     <span className="ml-2">{formatDate(servicio.date)}</span>
                 </div>
-                <div className="mb-2">
+                <div className="mb-2 flex items-center">
                     <span className="font-semibold">Presupuesto:</span>
                     <span className="ml-2">${application.budget}</span>
+                    {canEditBudget && (
+                        <button
+                            type="button"
+                            onClick={() => editBudget({ applicationId: application.id, currentBudget: application.budget, onSuccess: () => window.location.reload() })}
+                            className="ml-2 text-[#00b4d8] hover:text-[#0096c7] p-1 rounded"
+                            aria-label="Editar presupuesto"
+                        >
+                            <FiEdit className="h-5 w-5" />
+                        </button>
+                    )}
+
+
                 </div>
                 <div className="mb-2">
                     <span className="font-semibold">Tipo:</span>
