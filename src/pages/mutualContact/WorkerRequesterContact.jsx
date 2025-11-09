@@ -15,6 +15,7 @@ const WorkerRequesterContact = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const idLogeado = getUserIdFromToken();
+    const redirectedRef = useRef(false);
 
     const { editBudget } = useEditBudget();
     const { editServiceDate } = useEditServiceDate();
@@ -30,8 +31,9 @@ const WorkerRequesterContact = () => {
     console.log('servicio.agreementUser', servicio?.agreementUser);
     console.log('servicio.agreementWorker', servicio?.agreementWorker);
 
-    const redirectedRef = useRef(false);
 
+
+    //Validacion de redireccionmiento
     useEffect(() => {
         if (redirectedRef.current) return;
         if (loadingServicio) return;

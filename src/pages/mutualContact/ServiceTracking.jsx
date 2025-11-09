@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import {useParams} from "react-router-dom";
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate } from "react-router-dom";
 import useGetJobRequest from "../../data/hooks/useGetJobRequest.js";
 import useGetWorkerById from "../../data/hooks/useGetWorkerById.js";
 import {formatDate, formatearLocacion, getUserIdFromToken} from "../../data/helpers.js";
@@ -7,7 +7,10 @@ import useGetApplicationById from "../../data/hooks/useGetApplicationById.js";
 
 const WorkerJobRequestContact = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const idLogeado = getUserIdFromToken();
+    const redirectedRef = useRef(false);
+
 
     const { servicio, loadingServicio, errorServicio } = useGetJobRequest(id);
     const applicationSelectedId = servicio?.applicationSelectedId ?? null;
@@ -20,12 +23,32 @@ const WorkerJobRequestContact = () => {
     const handleExpandirFoto = (foto) => setModalFoto(foto);
     const handleCerrarModal = () => setModalFoto(null);
 
+
+
+
+    //Validacion de redireccionmiento
+    useEffect(() => {
+        if (redirectedRef.current) return;
+        if (loadingServicio) return;
+        if (!servicio) return;
+        // esperar que ambos campos estén definidos para evitar null/undefined
+        if (servicio.agreementUser == null || servicio.agreementWorker == null) return;
+
+        const toBool = (v) => v === true || v === 'true' || v === 1 || v === '1';
+        const isFalse = (v) => !toBool(v);
+
+        if (isFalse(servicio.agreementUser) || isFalse(servicio.agreementWorker)) {
+            redirectedRef.current = true;
+            navigate(`/contacto-laboral/${id}`);
+        }
+    }, [loadingServicio, servicio?.agreementUser, servicio?.agreementWorker, navigate, id]);
+
     if (loadingServicio) return <div>Cargando solicitud...</div>;
     if (errorServicio) return <div>Error al obtener la solicitud</div>;
     if (!servicio) return null;
 
     if(loadingWorker) return <div>Cargando worker...</div>
-    if(errorWorker) return <div>Error al obtener la worker...</div>
+    if(errorWorker) return <div>Error al obtener la worker</div>
     if(!worker) return null;
 
     if(loadingApplication) return <div>Cargando postulacion</div>
@@ -35,7 +58,6 @@ const WorkerJobRequestContact = () => {
     console.log('servicio', servicio);
     console.log('application', application);
     console.log('worker', worker);
-
     return (
         <div>
             <h1 className="text-3xl font-bold text-center py-6">¡Hay un acuerdo de servicio!</h1>
