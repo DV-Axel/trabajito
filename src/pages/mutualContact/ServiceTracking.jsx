@@ -50,7 +50,7 @@ const WorkerJobRequestContact = () => {
                     </div>
                     <div className="mb-1">
                         <span className="font-semibold">Presupuesto:</span>
-                        <span className="ml-1">ESTE DATO PONERLO MEJOR</span>
+                        <span className="ml-1">${servicio.finalBudget}</span>
                     </div>
                     <div className="mb-1">
                         <span className="font-semibold">Ubicación:</span>
