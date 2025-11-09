@@ -1,11 +1,9 @@
-// javascript
-// File: `src/pages/mutualContact/WorkerRequesterContact.jsx`
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import useGetJobRequest from '../../data/hooks/useGetJobRequest';
 import useGetApplicationById from '../../data/hooks/useGetApplicationById';
 import useSetAgreementUserWorkerTrue from "../../data/hooks/useSetAgreementUserWorkerTrue.js";
-import useSetAgreementUserWorkerFalse from "../../data/hooks/useSetAgreementUserWorkerFalse.js";
+import useSetAgreementUserWorkerFalse from '../../data/hooks/useSetAgreementUserWorkerFalse.js';
 import useGetWorkerById from '../../data/hooks/useGetWorkerById';
 import { formatDate, formatearLocacion, getUserIdFromToken } from '../../data/helpers';
 import useEditBudget from '../../data/hooks/useEditBudget.js';
@@ -15,6 +13,7 @@ import { FiEdit } from 'react-icons/fi';
 
 const WorkerRequesterContact = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const idLogeado = getUserIdFromToken();
 
     const { editBudget } = useEditBudget();
@@ -25,9 +24,26 @@ const WorkerRequesterContact = () => {
     const applicationSelectedId = servicio?.applicationSelectedId ?? null;
     const { application, loadingApplication, errorApplication } = useGetApplicationById(applicationSelectedId);
 
-    // Siempre llama al hook, aunque application aún no esté cargada
     const workerId = application?.workerId ?? null;
     const { worker, loadingWorker, errorWorker } = useGetWorkerById(workerId);
+
+    console.log('servicio.agreementUser', servicio?.agreementUser);
+    console.log('servicio.agreementWorker', servicio?.agreementWorker);
+
+    const redirectedRef = useRef(false);
+
+    useEffect(() => {
+        if (redirectedRef.current) return;
+        if (loadingServicio) return;
+        if (!servicio) return;
+
+        const toBool = (v) => v === true || v === 'true' || v === 1 || v === '1';
+
+        if (toBool(servicio.agreementUser) && toBool(servicio.agreementWorker)) {
+            redirectedRef.current = true;
+            navigate(`/seguimiento-servicio/${id}`);
+        }
+    }, [loadingServicio, servicio?.agreementUser, servicio?.agreementWorker, navigate, id]);
 
     if (loadingServicio) return <div>Cargando solicitud...</div>;
     if (errorServicio) return <div>Error al obtener la solicitud</div>;
@@ -42,8 +58,12 @@ const WorkerRequesterContact = () => {
     if (!worker) return null;
 
     const canEditBudget = idLogeado === worker.userId;
-    const canEditDate = idLogeado === servicio.userId; // solo el solicitante puede cambiar la fecha
+    const canEditDate = idLogeado === servicio.userId;
 
+    const agreementsConfirmed = {
+        agreementUser: servicio.agreementUser,
+        agreementWorker: servicio.agreementWorker
+    };
     return (
         <div className="grid grid-cols-3 gap-8 bg-white p-8 rounded shadow items-stretch">
 
@@ -69,7 +89,7 @@ const WorkerRequesterContact = () => {
                     !servicio.agreementUser ? (
                         <button
                             className="mt-6 bg-[#00b4d8] hover:bg-[#0096c7] text-white rounded-full px-6 py-2 font-semibold shadow"
-                            onClick={() => setAgreementUserWorkerTrue(servicio.id, 'user')}
+                            onClick={() => setAgreementUserWorkerTrue(servicio.id, 'user', agreementsConfirmed,application.budget)}
                         >
                             Confirmar acuerdo
                         </button>
@@ -165,7 +185,7 @@ const WorkerRequesterContact = () => {
                         !servicio.agreementWorker ? (
                             <button
                                 className="mt-6 bg-[#00b4d8] hover:bg-[#0096c7] text-white rounded-full px-6 py-2 font-semibold shadow"
-                                onClick={() => setAgreementUserWorkerTrue(servicio.id, 'worker')}
+                                onClick={() => setAgreementUserWorkerTrue(servicio.id, 'worker', agreementsConfirmed, application.budget)}
                             >
                                 Confirmar acuerdo
                             </button>
