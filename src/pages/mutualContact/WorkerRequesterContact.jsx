@@ -1,4 +1,5 @@
 // javascript
+// File: `src/pages/mutualContact/WorkerRequesterContact.jsx`
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import useGetJobRequest from '../../data/hooks/useGetJobRequest';
@@ -8,18 +9,16 @@ import useSetAgreementUserWorkerFalse from "../../data/hooks/useSetAgreementUser
 import useGetWorkerById from '../../data/hooks/useGetWorkerById';
 import { formatDate, formatearLocacion, getUserIdFromToken } from '../../data/helpers';
 import useEditBudget from '../../data/hooks/useEditBudget.js';
+import useEditServiceDate from '../../data/hooks/useEditServiceDate.js';
 
 import { FiEdit } from 'react-icons/fi';
-
-
-// TODO: revisar que el diseño y los datos queden bien.
-// TODO: implementar funcionalidad de cancelar acuerdo
 
 const WorkerRequesterContact = () => {
     const { id } = useParams();
     const idLogeado = getUserIdFromToken();
 
     const { editBudget } = useEditBudget();
+    const { editServiceDate } = useEditServiceDate();
     const { setAgreementUserWorkerTrue } = useSetAgreementUserWorkerTrue();
     const { setAgreementUserWorkerFalse } = useSetAgreementUserWorkerFalse();
     const { servicio, loadingServicio, errorServicio } = useGetJobRequest(id);
@@ -42,13 +41,8 @@ const WorkerRequesterContact = () => {
     if (errorWorker) return <div>Error al obtener la worker...</div>;
     if (!worker) return null;
 
-    console.log('servicio', servicio);
-    console.log('application', application);
-    console.log('worker', worker);
-
     const canEditBudget = idLogeado === worker.userId;
-
-
+    const canEditDate = idLogeado === servicio.userId; // solo el solicitante puede cambiar la fecha
 
     return (
         <div className="grid grid-cols-3 gap-8 bg-white p-8 rounded shadow items-stretch">
@@ -99,12 +93,23 @@ const WorkerRequesterContact = () => {
                     )
                 )}
             </div>
+
             {/* Columna central: Servicio */}
             <div className="flex flex-col justify-center items-center px-10">
                 <h2 className="text-2xl font-bold mb-4">{servicio.title}</h2>
                 <div className="mb-2">
                     <span className="font-semibold">Fecha:</span>
                     <span className="ml-2">{formatDate(servicio.date)}</span>
+                    {canEditDate && (
+                        <button
+                            type="button"
+                            onClick={() => editServiceDate({ jobRequestId: servicio.id, currentDate: servicio.date, onSuccess: () => window.location.reload() })}
+                            className="ml-2 text-[#00b4d8] hover:text-[#0096c7] p-1 rounded"
+                            aria-label="Editar fecha"
+                        >
+                            <FiEdit className="h-5 w-5" />
+                        </button>
+                    )}
                 </div>
                 <div className="mb-2 flex items-center">
                     <span className="font-semibold">Presupuesto:</span>
@@ -119,8 +124,6 @@ const WorkerRequesterContact = () => {
                             <FiEdit className="h-5 w-5" />
                         </button>
                     )}
-
-
                 </div>
                 <div className="mb-2">
                     <span className="font-semibold">Tipo:</span>
@@ -131,6 +134,7 @@ const WorkerRequesterContact = () => {
                     <span className="ml-2">{formatearLocacion(servicio.address)}</span>
                 </div>
             </div>
+
             {/* Columna derecha: Worker */}
             <div className="p-8 flex flex-col items-center border-l">
                 <img
