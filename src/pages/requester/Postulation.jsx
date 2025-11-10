@@ -101,7 +101,7 @@ const Postulation = () => {
                 <div className="flex-1 p-8 flex flex-col items-center">
 
                     <img
-                        src={worker.profilePicture}
+                        src={worker.profilePicture ? `http://localhost:3000/${worker.profilePicture}` : '/placeholder.svg'}
                         alt="Foto de perfil"
                         className="w-52 h-52 rounded-full object-cover border-2 border-[#00b4d8] mb-3 shadow-2xl"
                     />

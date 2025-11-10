@@ -59,13 +59,17 @@ const FormWorker = () => {
 
     const handleZonaTrabajoChange = (e) => {
         const { value, checked } = e.target;
+        const provincia = provinciasArgentina.find(p => p.value === value);
+        if (!provincia) return;
         setForm((prev) => ({
             ...prev,
             zona_trabajo: checked
-                ? [...prev.zona_trabajo, value]
-                : prev.zona_trabajo.filter((p) => p !== value)
+                ? [...prev.zona_trabajo, provincia.value]
+                : prev.zona_trabajo.filter((p) => p !== provincia.value)
         }));
     };
+
+    // TODO: Verificar como se guardan los datos de horarios de trabajo, dias de trabajo y locaciones.
 
     const handleRubrosChange = (e) => {
         const { value, checked } = e.target;

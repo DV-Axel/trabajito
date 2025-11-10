@@ -6,7 +6,8 @@ import useGetApplicationsById from '../../data/hooks/useGetApplicationsById.js';
 import { FaRegCalendarAlt, FaRegClock } from 'react-icons/fa';
 import { FiImage as ImageIcon } from 'react-icons/fi';
 import { AiOutlineCheckCircle as CheckCircle } from 'react-icons/ai';
-import { FaRegUser as User } from 'react-icons/fa';
+import { FaRegUser as User, FaRegCompass as CompassIcon } from 'react-icons/fa';
+
 
 const RequestService = () => {
     const { id } = useParams();
@@ -29,8 +30,8 @@ const RequestService = () => {
 
     const postulationSelected = servicio.applicationSelectedId;
 
-    console.log(postulationSelected)
-    console.log(servicio)
+    console.log('servicio', servicio)
+    console.log('postulaciones', applications)
 
     return (
         <div className="min-h-[120px] bg-background">
@@ -139,11 +140,12 @@ const RequestService = () => {
                                                 aria-label={`Abrir foto ${idx + 1}`}
                                             >
                                                 <img
-                                                    src={foto.url || '/placeholder.svg'}
+                                                    src={foto.url ? `http://localhost:3000${foto.url}` : '/placeholder.svg'}
                                                     alt={foto.name || `Foto ${idx + 1}`}
                                                     loading="lazy"
                                                     className="aspect-[16/9] w-full object-cover transition-transform group-hover:scale-105"
                                                 />
+
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                                                 <div className="bg-black absolute bottom-0 left-0 right-0 p-3 text-white opacity-0 transition-opacity group-hover:opacity-100">
                                                     <p className="text-xs font-medium line-clamp-2">{foto.note}</p>
@@ -159,13 +161,26 @@ const RequestService = () => {
                             {/* Botones de acción */}
                             <div className="mt-6 flex flex-wrap gap-3">
                                 {postulationSelected ? (
-                                    <button
-                                        className="inline-flex items-center gap-2 rounded-full bg-[#02283A] hover:bg-[#03506f] text-white px-6 py-2 font-semibold"
-                                        onClick={() => navigate(`/contacto-laboral/${servicio?.id}`)}
-                                    >
-                                        <CheckCircle className="h-4 w-4" />
-                                        Comenzar contacto
-                                    </button>
+                                    <>
+                                        {servicio.agreementUser && servicio.agreementWorker ? (
+                                            <button
+                                                className="inline-flex items-center gap-2 rounded-full bg-[#02283A] hover:bg-[#03506f] text-white px-6 py-2 font-semibold"
+                                                onClick={() => navigate(`/seguimiento-servicio/${servicio.id}`)}
+                                            >
+                                                <CompassIcon className="h-4 w-4" />
+                                                Tracking service
+                                            </button>
+
+                                        ) : (
+                                            <button
+                                                className="inline-flex items-center gap-2 rounded-full bg-[#02283A] hover:bg-[#03506f] text-white px-6 py-2 font-semibold"
+                                                onClick={() => navigate(`/contacto-laboral/${servicio.id}`)}
+                                            >
+                                                <CheckCircle className="h-4 w-4" />
+                                                Comenzar contacto
+                                            </button>
+                                        )}
+                                    </>
                                 ) : (
                                     <>
                                         <button className="rounded-full bg-[#02283A] hover:bg-[#03506f] text-white px-6 py-2 font-semibold">
@@ -209,13 +224,19 @@ const RequestService = () => {
                                                     <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-800 overflow-hidden">
                                                         {app.worker?.user?.profilePicture ? (
                                                             <img src={app.worker.user.profilePicture} alt={`${app.worker.user.name} avatar`} className="h-full w-full object-cover" />
+                                                            // <img
+                                                            //     src={`http://localhost:3000/${app.worker.profilePicture}`}
+                                                            //     alt={`${app.worker.user.firstName} avatar`}
+                                                            //     className="h-full w-full object-cover"
+                                                            // />
                                                         ) : (
-                                                            `${app.worker?.user?.name?.[0] || ''}${app.worker?.user?.lastName?.[0] || ''}`
+                                                            `${app.worker?.user?.firstName?.[0] || ''}${app.worker?.user?.lastName?.[0] || ''}`
                                                         )}
+
                                                     </div>
                                                     <div className="flex-1 min-w-0">
                                                         <h3 className="text-base font-semibold truncate">
-                                                            {app.worker?.user?.name} {app.worker?.user?.lastName}
+                                                            {app.worker?.user?.firstName} {app.worker?.user?.lastName}
                                                         </h3>
                                                         <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
                                                             <span>⭐ {app.rating ?? '-'}</span>
@@ -226,7 +247,7 @@ const RequestService = () => {
                                                 </div>
 
                                                 <div className="mt-3">
-                                                    <p className="text-sm font-semibold text-accent">{app.budget}</p>
+                                                    <p className="text-sm font-semibold text-accent">${app.budget}</p>
                                                     <p className="text-sm mt-1 text-muted-foreground line-clamp-3">{app.description}</p>
                                                 </div>
 

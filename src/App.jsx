@@ -24,6 +24,7 @@ import ActiveServices from "./pages/requester/ActiveServices.jsx";
 import PerfilRequester from "./pages/requester/PerfilRequester.jsx";
 import RequestService from "./pages/requester/RequestService.jsx";
 import Postulation from "./pages/requester/Postulation.jsx";
+import ServiceCompleted from "./pages/requester/ServiceCompleted.jsx";
 
 import WorkerRequesterContact from "./pages/mutualContact/WorkerRequesterContact.jsx"
 import ServiceTracking from "./pages/mutualContact/ServiceTracking.jsx"
@@ -79,6 +80,8 @@ function App() {
                                 <Route path="/perfil" element={<PerfilRequester />}/>
                                 <Route path="/mis-servicios" element={<ActiveServices />} />
                                 <Route path="/postulacion/:id" element={<Postulation />}/>
+                                <Route path="/servicio-completado/:id" element={<ServiceCompleted />}/>
+
 
                                 {/* Rutas de los workers */}
                                 <Route path="/seUnWorker" element={<BeWorker />} />

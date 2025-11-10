@@ -19,7 +19,9 @@ const useSetAgreementUserWorkerTrue = () => {
                 body: JSON.stringify({ entidad })
             });
             if (res.ok) {
-                showSuccessAlert('¡Éxito!', 'Acuerdo confirmado correctamente.');
+                await showSuccessAlert('¡Éxito!', 'Acuerdo confirmado correctamente.');
+                window.location.reload();
+
             } else {
                 const data = await res.json();
                 showErrorAlert('Error', data.error || 'No se pudo confirmar el acuerdo.');

@@ -38,6 +38,8 @@ const Signup = () => {
         }
     };
 
+    // TODO: cuando toco en registrar tengo que poner algo para que se de cuenta quie esta pensando.
+
     return (
         <div className="flex flex-1 min-h-screen items-center justify-center bg-[#f4fbfd]">
             <div className="max-w-3xl w-full px-8 py-6 ">

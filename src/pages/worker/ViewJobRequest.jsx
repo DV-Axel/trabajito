@@ -108,6 +108,8 @@ const ViewJobRequest = () => {
         }
     };
 
+    console.log(jobRequest)
+
     return (
         <div className="flex max-w-5xl mx-auto mt-8 bg-white rounded-lg shadow-lg p-0 overflow-hidden min-h-[600px]">
             {/* Izquierda: Detalle de la solicitud */}
@@ -144,11 +146,12 @@ const ViewJobRequest = () => {
                             {jobRequest.photos.map((foto, idx) => (
                                 <div key={idx} className="flex flex-col items-center mb-2">
                                     <img
-                                        src={foto.url}
+                                        src={`http://localhost:3000${foto.url}`}
                                         alt={foto.name || `Foto ${idx + 1}`}
                                         className="w-52 h-36 object-cover rounded shadow mb-1 cursor-pointer"
                                         onClick={() => handleExpandirFoto(foto)}
                                     />
+
                                     <span className="text-xs text-gray-600">{foto.note}</span>
                                     <button
                                         className="mt-1 text-blue-600 underline text-xs"
