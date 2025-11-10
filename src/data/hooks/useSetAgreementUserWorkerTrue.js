@@ -1,5 +1,3 @@
-// javascript
-// File: `src/data/hooks/useSetAgreementUserWorkerTrue.js`
 import { showConfirmAlert, showErrorAlert, showSuccessAlert } from '../../components/alerts/sweetAlertsComponents';
 
 const useSetAgreementUserWorkerTrue = () => {
