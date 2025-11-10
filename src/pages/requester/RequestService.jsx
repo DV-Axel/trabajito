@@ -140,7 +140,8 @@ const RequestService = () => {
                                                 aria-label={`Abrir foto ${idx + 1}`}
                                             >
                                                 <img
-                                                    src={foto.url ? `http://localhost:3000${foto.url}` : '/placeholder.svg'}
+                                                    //src={foto.url ? `http://localhost:3000${foto.url}` : '/placeholder.svg'}
+                                                    src={foto.url ? `${foto.url}` : '/placeholder.svg'}
                                                     alt={foto.name || `Foto ${idx + 1}`}
                                                     loading="lazy"
                                                     className="aspect-[16/9] w-full object-cover transition-transform group-hover:scale-105"
@@ -224,7 +225,8 @@ const RequestService = () => {
                                                     <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-800 overflow-hidden">
                                                         {app.worker?.user?.profilePicture ? (
                                                             <img
-                                                                src={`http://localhost:3000${app.worker.user.profilePicture}`}
+                                                                //src={`http://localhost:3000${app.worker.user.profilePicture}`}
+                                                                src={`${app.worker.user.profilePicture}`}
                                                                 alt={`${app.worker.user.firstName} avatar`}
                                                                 className="h-full w-full object-cover"
                                                             />
