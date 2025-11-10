@@ -4,6 +4,7 @@ import useGetJobRequest from "../../data/hooks/useGetJobRequest.js";
 import useGetWorkerById from "../../data/hooks/useGetWorkerById.js";
 import {formatDate, formatearLocacion, getUserIdFromToken} from "../../data/helpers.js";
 import useGetApplicationById from "../../data/hooks/useGetApplicationById.js";
+import useSetFinishedService from "../../data/hooks/useSetFinishedService.js";
 
 const WorkerJobRequestContact = () => {
     const { id } = useParams();
@@ -11,6 +12,7 @@ const WorkerJobRequestContact = () => {
     const idLogeado = getUserIdFromToken();
     const redirectedRef = useRef(false);
 
+    const {setFinishedService} = useSetFinishedService()
 
     const { servicio, loadingServicio, errorServicio } = useGetJobRequest(id);
     const applicationSelectedId = servicio?.applicationSelectedId ?? null;
@@ -22,9 +24,6 @@ const WorkerJobRequestContact = () => {
     const [modalFoto, setModalFoto] = useState(null);
     const handleExpandirFoto = (foto) => setModalFoto(foto);
     const handleCerrarModal = () => setModalFoto(null);
-
-
-
 
     //Validacion de redireccionmiento
     useEffect(() => {
@@ -129,7 +128,7 @@ const WorkerJobRequestContact = () => {
                                 {!servicio.workFinishedUser ? (
                                     <button
                                         className="mt-6 bg-[#00b4d8] hover:bg-[#0096c7] text-white rounded-full px-6 py-2 font-semibold shadow"
-                                        // onClick={() => setAgreementUserWorkerTrue(servicio.id, 'user')}
+                                        onClick={() => setFinishedService(servicio.id, 'user')}
                                     >
                                         Confirmar trabajo finalizado
                                     </button>
@@ -192,7 +191,7 @@ const WorkerJobRequestContact = () => {
                                 {!servicio.workFinishedWorker ? (
                                     <button
                                         className="bg-blue-500 hover:bg-blue-600 text-white rounded-full px-6 py-2 font-semibold shadow w-48"
-                                        // onClick={() => setAgreementUserWorkerTrue(servicio.id, 'worker')}
+                                        onClick={() => setFinishedService(servicio.id, 'worker')}
                                     >
                                         Confirmar trabajo finalizado
                                     </button>
