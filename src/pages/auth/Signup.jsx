@@ -38,8 +38,10 @@ const Signup = () => {
         }
     };
 
+    // TODO: cuando toco en registrar tengo que poner algo para que se de cuenta quie esta pensando.
+
     return (
-        <div className="flex flex-1 min-h-screen items-center justify-center bg-[#f4fbfd]">
+        <div className="flex flex-1 min-h-screen items-center justify-center bg-[#E8F6F9]">
             <div className="max-w-3xl w-full px-8 py-6 ">
                 <div className="flex justify-center mb-4">
                     <FaRegHandshake className="text-9xl text-[#02283A]" />

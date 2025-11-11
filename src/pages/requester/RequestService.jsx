@@ -26,6 +26,8 @@ const RequestService = () => {
     if (loadingApplications) return <div>Cargando Postulaciones</div>;
     if (errorApplications) return <div>Error al obtener las postulaciones</div>;
 
+    // TODO: implementar los botones
+
 
 
     const postulationSelected = servicio.applicationSelectedId;
@@ -69,7 +71,7 @@ const RequestService = () => {
                 <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
                     {/* Left column (detalle del servicio) */}
                     <div className="space-y-6">
-                        <div className="rounded-lg bg-white border border-gray-100 shadow-lg p-6 dark:bg-card">
+                        <div className="rounded-lg bg-white border border-gray-300 shadow-lg p-6 dark:bg-card">
                             <div className="flex items-start justify-between gap-4">
                                 <div className="flex-1 min-w-0">
                                     <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
@@ -140,7 +142,10 @@ const RequestService = () => {
                                                 aria-label={`Abrir foto ${idx + 1}`}
                                             >
                                                 <img
+                                                    // AXEL
                                                     src={foto.url ? `http://localhost:3000${foto.url}` : '/placeholder.svg'}
+                                                    // JOEL
+                                                    // src={foto.url ? `${foto.url}` : '/placeholder.svg'}
                                                     alt={foto.name || `Foto ${idx + 1}`}
                                                     loading="lazy"
                                                     className="aspect-[16/9] w-full object-cover transition-transform group-hover:scale-105"
@@ -148,7 +153,7 @@ const RequestService = () => {
 
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                                                 <div className="bg-black absolute bottom-0 left-0 right-0 p-3 text-white opacity-0 transition-opacity group-hover:opacity-100">
-                                                    <p className="text-xs font-medium line-clamp-2">{foto.note}</p>
+                                                    <p className="text-xs font-medium line-clamp-2">{foto.note || 'Sin descripción'}</p>
                                                 </div>
                                             </button>
                                         ))
@@ -201,7 +206,7 @@ const RequestService = () => {
                     {/* Right column (postulaciones) */}
                     <aside className="space-y-4">
                         <div className="sticky top-6">
-                            <div className="rounded-lg bg-white border border-gray-100 p-4 shadow-lg dark:bg-card">
+                            <div className="rounded-lg bg-white border border-gray-300 p-4 shadow-lg dark:bg-card">
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <h2 className="text-lg font-bold">Postulaciones</h2>
@@ -224,7 +229,10 @@ const RequestService = () => {
                                                     <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-800 overflow-hidden">
                                                         {app.worker?.user?.profilePicture ? (
                                                             <img
-                                                                src={`http://localhost:3000${app.worker.user.profilePicture}`}
+                                                                // AXEL
+                                                                src={`http://localhost:3000/${app.worker.profilePicture}`}
+                                                                // JOEL
+                                                                //src={`${app.worker.profilePicture}`}
                                                                 alt={`${app.worker.user.firstName} avatar`}
                                                                 className="h-full w-full object-cover"
                                                             />
@@ -235,7 +243,7 @@ const RequestService = () => {
                                                     </div>
                                                     <div className="flex-1 min-w-0">
                                                         <h3 className="text-base font-semibold truncate">
-                                                            {app.worker?.user?.name} {app.worker?.user?.lastName}
+                                                            {app.worker?.user?.firstName} {app.worker?.user?.lastName}
                                                         </h3>
                                                         <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
                                                             <span>⭐ {app.rating ?? '-'}</span>
@@ -273,7 +281,10 @@ const RequestService = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded shadow-lg max-w-lg w-full flex flex-col items-center">
                         <img
+                            // AXEL
                             src={`http://localhost:3000${modalFoto.url}`}
+                            // JOEL
+                            //src={`${modalFoto.url}`}
                             alt={modalFoto.name}
                             className="max-w-full max-h-[70vh] rounded mb-4"
                         />

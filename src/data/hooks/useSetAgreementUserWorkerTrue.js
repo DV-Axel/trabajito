@@ -1,8 +1,9 @@
 import { showConfirmAlert, showErrorAlert, showSuccessAlert } from '../../components/alerts/sweetAlertsComponents';
 
 const useSetAgreementUserWorkerTrue = () => {
-    const setAgreementUserWorkerTrue = async (idJobRequest, entidad) => {
-        if (!idJobRequest || !entidad) return;
+    // ahora acepta finalBudget opcional
+    const setAgreementUserWorkerTrue = async (idJobRequest, entidad, agreementsConfirmed, finalBudget) => {
+        if (!idJobRequest || !entidad || !agreementsConfirmed) return;
 
         const confirmado = await showConfirmAlert(
             'Confirmar Acuerdo Mutuo',
@@ -12,21 +13,57 @@ const useSetAgreementUserWorkerTrue = () => {
         );
         if (!confirmado) return;
 
+
         try {
             const res = await fetch(`http://localhost:3000/job-requests/acuerdo-mutuo/${idJobRequest}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ entidad })
             });
-            if (res.ok) {
-                await showSuccessAlert('¡Éxito!', 'Acuerdo confirmado correctamente.');
-                window.location.reload();
 
+            if (res.ok) {
+
+                await showSuccessAlert('¡Éxito!', 'Acuerdo confirmado correctamente.');
+
+
+                // actualizar estado local del objeto pasado por referencia
+                if(entidad === 'user') {
+                    agreementsConfirmed.agreementUser = true;
+                } else if(entidad === 'worker') {
+                    agreementsConfirmed.agreementWorker = true;
+                } else {
+                    showErrorAlert('Error', 'Entidad no válida.');
+                    return;
+                }
+
+                console.log('agreementosConfirmed después de setear:', agreementsConfirmed);
+
+                // Si ambos confirmaron, intentar setear presupuesto final (si se pasó)
+                if (agreementsConfirmed.agreementUser && agreementsConfirmed.agreementWorker) {
+                    if (finalBudget != null) {
+                        try {
+                            const resFinal = await fetch(`http://localhost:3000/job-requests/establecer-presupuesto-final/${idJobRequest}`, {
+                                method: 'PUT', // ajustar según backend
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ finalBudget })
+                            });
+
+                            if (!resFinal.ok) {
+                                const data = await resFinal.json().catch(() => ({}));
+                            }
+                        } catch (err) {
+                            console.error(err);
+                        }
+                    }
+                }
+
+                window.location.reload();
             } else {
-                const data = await res.json();
+                const data = await res.json().catch(() => ({}));
                 showErrorAlert('Error', data.error || 'No se pudo confirmar el acuerdo.');
             }
-        } catch {
+        } catch (err) {
+            console.error(err);
             showErrorAlert('Error', 'No se pudo confirmar el acuerdo. Inténtalo de nuevo más tarde.');
         }
     };

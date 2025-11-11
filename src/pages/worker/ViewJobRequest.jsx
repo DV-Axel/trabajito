@@ -146,7 +146,10 @@ const ViewJobRequest = () => {
                             {jobRequest.photos.map((foto, idx) => (
                                 <div key={idx} className="flex flex-col items-center mb-2">
                                     <img
+                                        // AXEL
                                         src={`http://localhost:3000${foto.url}`}
+                                        // JOEL
+                                        //src={`${foto.url}`}
                                         alt={foto.name || `Foto ${idx + 1}`}
                                         className="w-52 h-36 object-cover rounded shadow mb-1 cursor-pointer"
                                         onClick={() => handleExpandirFoto(foto)}
@@ -233,7 +236,10 @@ const ViewJobRequest = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded shadow-lg max-w-lg w-full flex flex-col items-center">
                         <img
+                            // AXEL
                             src={`http://localhost:3000${modalFoto.url}`}
+                            // JOEL
+                            //src={`${modalFoto.url}`}
                             alt={modalFoto.name}
                             className="max-w-full max-h-[70vh] rounded mb-4"
                         />
