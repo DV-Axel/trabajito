@@ -24,8 +24,6 @@ const WorkerJobRequestContact = () => {
     const handleCerrarModal = () => setModalFoto(null);
 
 
-
-
     if (loadingServicio) return <div>Cargando solicitud...</div>;
     if (errorServicio) return <div>Error al obtener la solicitud</div>;
     if (!servicio) return null;
