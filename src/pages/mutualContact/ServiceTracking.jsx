@@ -25,22 +25,29 @@ const WorkerJobRequestContact = () => {
     const handleExpandirFoto = (foto) => setModalFoto(foto);
     const handleCerrarModal = () => setModalFoto(null);
 
-    //Validacion de redireccionmiento
+    // Validaciones de redireccionamiento
     useEffect(() => {
         if (redirectedRef.current) return;
         if (loadingServicio) return;
         if (!servicio) return;
-        // esperar que ambos campos estén definidos para evitar null/undefined
-        if (servicio.agreementUser == null || servicio.agreementWorker == null) return;
+
+        // asegurarse que los campos estén definidos
+        if (servicio.workFinishedUser == null || servicio.workFinishedWorker == null) return;
 
         const toBool = (v) => v === true || v === 'true' || v === 1 || v === '1';
-        const isFalse = (v) => !toBool(v);
 
-        if (isFalse(servicio.agreementUser) || isFalse(servicio.agreementWorker)) {
-            redirectedRef.current = true;
-            navigate(`/contacto-laboral/${id}`);
+        if (toBool(servicio.workFinishedUser) && toBool(servicio.workFinishedWorker)) {
+            redirectedRef.current = true; // evitar re-ejecuciones/redirecciones
+            navigate(`/servicio/${id}`);
         }
-    }, [loadingServicio, servicio?.agreementUser, servicio?.agreementWorker, navigate, id]);
+    }, [
+        loadingServicio,
+        servicio?.workFinishedUser,
+        servicio?.workFinishedWorker,
+        navigate,
+        id
+    ]);
+
 
     if (loadingServicio) return <div>Cargando solicitud...</div>;
     if (errorServicio) return <div>Error al obtener la solicitud</div>;

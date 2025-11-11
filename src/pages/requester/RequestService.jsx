@@ -26,6 +26,8 @@ const RequestService = () => {
     if (loadingApplications) return <div>Cargando Postulaciones</div>;
     if (errorApplications) return <div>Error al obtener las postulaciones</div>;
 
+    // TODO: implementar los botones
+
 
 
     const postulationSelected = servicio.applicationSelectedId;
