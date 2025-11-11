@@ -143,9 +143,9 @@ const RequestService = () => {
                                             >
                                                 <img
                                                     // AXEL
-                                                    //src={foto.url ? `http://localhost:3000${foto.url}` : '/placeholder.svg'}
+                                                    src={foto.url ? `http://localhost:3000${foto.url}` : '/placeholder.svg'}
                                                     // JOEL
-                                                    src={foto.url ? `${foto.url}` : '/placeholder.svg'}
+                                                    // src={foto.url ? `${foto.url}` : '/placeholder.svg'}
                                                     alt={foto.name || `Foto ${idx + 1}`}
                                                     loading="lazy"
                                                     className="aspect-[16/9] w-full object-cover transition-transform group-hover:scale-105"
@@ -230,9 +230,9 @@ const RequestService = () => {
                                                         {app.worker?.user?.profilePicture ? (
                                                             <img
                                                                 // AXEL
-                                                                //src={`http://localhost:3000/${app.worker.profilePicture}`}
+                                                                src={`http://localhost:3000/${app.worker.profilePicture}`}
                                                                 // JOEL
-                                                                src={`${app.worker.profilePicture}`}
+                                                                //src={`${app.worker.profilePicture}`}
                                                                 alt={`${app.worker.user.firstName} avatar`}
                                                                 className="h-full w-full object-cover"
                                                             />
@@ -282,9 +282,9 @@ const RequestService = () => {
                     <div className="bg-white p-6 rounded shadow-lg max-w-lg w-full flex flex-col items-center">
                         <img
                             // AXEL
-                            //src={`http://localhost:3000${modalFoto.url}`}
+                            src={`http://localhost:3000${modalFoto.url}`}
                             // JOEL
-                            src={`${modalFoto.url}`}
+                            //src={`${modalFoto.url}`}
                             alt={modalFoto.name}
                             className="max-w-full max-h-[70vh] rounded mb-4"
                         />
