@@ -41,3 +41,39 @@ export const showConfirmAlert = (
         cancelButtonText
     }).then(result => result.isConfirmed);
 };
+
+
+export const showInputAlert = async (title, inputTypeOrOptions = {}) => {
+    const options = typeof inputTypeOrOptions === 'string'
+        ? { inputType: inputTypeOrOptions }
+        : (inputTypeOrOptions || {});
+
+    const {
+        label = 'Ingrese un valor',
+        inputType = 'text',
+        inputValue = '',
+        confirmButtonText = 'Aceptar',
+        cancelButtonText = 'Cancelar'
+    } = options;
+
+    const result = await Swal.fire({
+        title,
+        input: inputType,
+        inputLabel: label,
+        inputValue,
+        showCancelButton: true,
+        confirmButtonText,
+        cancelButtonText,
+        confirmButtonColor: '#02283A',
+        cancelButtonColor: '#d33',
+        preConfirm: (value) => {
+            if (value === '' || value == null) {
+                Swal.showValidationMessage('El campo no puede estar vacío');
+                return false;
+            }
+            return value;
+        }
+    });
+
+    return result.isConfirmed ? result.value : null;
+};

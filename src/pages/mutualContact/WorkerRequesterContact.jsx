@@ -1,28 +1,51 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import useGetJobRequest from '../../data/hooks/useGetJobRequest';
 import useGetApplicationById from '../../data/hooks/useGetApplicationById';
 import useSetAgreementUserWorkerTrue from "../../data/hooks/useSetAgreementUserWorkerTrue.js";
-import useSetAgreementUserWorkerFalse from "../../data/hooks/useSetAgreementUserWorkerFalse.js";
+import useSetAgreementUserWorkerFalse from '../../data/hooks/useSetAgreementUserWorkerFalse.js';
 import useGetWorkerById from '../../data/hooks/useGetWorkerById';
 import { formatDate, formatearLocacion, getUserIdFromToken } from '../../data/helpers';
+import useEditBudget from '../../data/hooks/useEditBudget.js';
+import useEditServiceDate from '../../data/hooks/useEditServiceDate.js';
 
-// TODO: revisar que el diseño y los datos queden bien.
-// TODO: implementar funcionalidad de cancelar acuerdo
+import { FiEdit } from 'react-icons/fi';
 
 const WorkerRequesterContact = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const idLogeado = getUserIdFromToken();
+    const redirectedRef = useRef(false);
 
+    const { editBudget } = useEditBudget();
+    const { editServiceDate } = useEditServiceDate();
     const { setAgreementUserWorkerTrue } = useSetAgreementUserWorkerTrue();
     const { setAgreementUserWorkerFalse } = useSetAgreementUserWorkerFalse();
     const { servicio, loadingServicio, errorServicio } = useGetJobRequest(id);
     const applicationSelectedId = servicio?.applicationSelectedId ?? null;
     const { application, loadingApplication, errorApplication } = useGetApplicationById(applicationSelectedId);
 
-    // Siempre llama al hook, aunque application aún no esté cargada
     const workerId = application?.workerId ?? null;
     const { worker, loadingWorker, errorWorker } = useGetWorkerById(workerId);
+
+    console.log('servicio.agreementUser', servicio?.agreementUser);
+    console.log('servicio.agreementWorker', servicio?.agreementWorker);
+
+
+
+    //Validacion de redireccionmiento
+    useEffect(() => {
+        if (redirectedRef.current) return;
+        if (loadingServicio) return;
+        if (!servicio) return;
+
+        const toBool = (v) => v === true || v === 'true' || v === 1 || v === '1';
+
+        if (toBool(servicio.agreementUser) && toBool(servicio.agreementWorker)) {
+            redirectedRef.current = true;
+            navigate(`/seguimiento-servicio/${id}`);
+        }
+    }, [loadingServicio, servicio?.agreementUser, servicio?.agreementWorker, navigate, id]);
 
     if (loadingServicio) return <div>Cargando solicitud...</div>;
     if (errorServicio) return <div>Error al obtener la solicitud</div>;
@@ -36,10 +59,13 @@ const WorkerRequesterContact = () => {
     if (errorWorker) return <div>Error al obtener la worker...</div>;
     if (!worker) return null;
 
-    console.log('servicio', servicio);
-    console.log('application', application);
-    console.log('worker', worker);
+    const canEditBudget = idLogeado === worker.userId;
+    const canEditDate = idLogeado === servicio.userId;
 
+    const agreementsConfirmed = {
+        agreementUser: servicio.agreementUser,
+        agreementWorker: servicio.agreementWorker
+    };
     return (
         <div className="grid grid-cols-3 gap-8 bg-white p-8 rounded shadow items-stretch">
 
@@ -65,7 +91,7 @@ const WorkerRequesterContact = () => {
                     !servicio.agreementUser ? (
                         <button
                             className="mt-6 bg-[#00b4d8] hover:bg-[#0096c7] text-white rounded-full px-6 py-2 font-semibold shadow"
-                            onClick={() => setAgreementUserWorkerTrue(servicio.id, 'user')}
+                            onClick={() => setAgreementUserWorkerTrue(servicio.id, 'user', agreementsConfirmed,application.budget)}
                         >
                             Confirmar acuerdo
                         </button>
@@ -89,16 +115,37 @@ const WorkerRequesterContact = () => {
                     )
                 )}
             </div>
+
             {/* Columna central: Servicio */}
             <div className="flex flex-col justify-center items-center px-10">
                 <h2 className="text-2xl font-bold mb-4">{servicio.title}</h2>
                 <div className="mb-2">
                     <span className="font-semibold">Fecha:</span>
                     <span className="ml-2">{formatDate(servicio.date)}</span>
+                    {canEditDate && (
+                        <button
+                            type="button"
+                            onClick={() => editServiceDate({ jobRequestId: servicio.id, currentDate: servicio.date, onSuccess: () => window.location.reload() })}
+                            className="ml-2 text-[#00b4d8] hover:text-[#0096c7] p-1 rounded"
+                            aria-label="Editar fecha"
+                        >
+                            <FiEdit className="h-5 w-5" />
+                        </button>
+                    )}
                 </div>
-                <div className="mb-2">
+                <div className="mb-2 flex items-center">
                     <span className="font-semibold">Presupuesto:</span>
                     <span className="ml-2">${application.budget}</span>
+                    {canEditBudget && (
+                        <button
+                            type="button"
+                            onClick={() => editBudget({ applicationId: application.id, currentBudget: application.budget, onSuccess: () => window.location.reload() })}
+                            className="ml-2 text-[#00b4d8] hover:text-[#0096c7] p-1 rounded"
+                            aria-label="Editar presupuesto"
+                        >
+                            <FiEdit className="h-5 w-5" />
+                        </button>
+                    )}
                 </div>
                 <div className="mb-2">
                     <span className="font-semibold">Tipo:</span>
@@ -109,6 +156,7 @@ const WorkerRequesterContact = () => {
                     <span className="ml-2">{formatearLocacion(servicio.address)}</span>
                 </div>
             </div>
+
             {/* Columna derecha: Worker */}
             <div className="p-8 flex flex-col items-center border-l">
                 <img
@@ -139,7 +187,7 @@ const WorkerRequesterContact = () => {
                         !servicio.agreementWorker ? (
                             <button
                                 className="mt-6 bg-[#00b4d8] hover:bg-[#0096c7] text-white rounded-full px-6 py-2 font-semibold shadow"
-                                onClick={() => setAgreementUserWorkerTrue(servicio.id, 'worker')}
+                                onClick={() => setAgreementUserWorkerTrue(servicio.id, 'worker', agreementsConfirmed, application.budget)}
                             >
                                 Confirmar acuerdo
                             </button>
