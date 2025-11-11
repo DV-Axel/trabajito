@@ -71,7 +71,7 @@ const RequestService = () => {
                 <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
                     {/* Left column (detalle del servicio) */}
                     <div className="space-y-6">
-                        <div className="rounded-lg bg-white border border-gray-100 shadow-lg p-6 dark:bg-card">
+                        <div className="rounded-lg bg-white border border-gray-300 shadow-lg p-6 dark:bg-card">
                             <div className="flex items-start justify-between gap-4">
                                 <div className="flex-1 min-w-0">
                                     <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
@@ -153,7 +153,7 @@ const RequestService = () => {
 
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                                                 <div className="bg-black absolute bottom-0 left-0 right-0 p-3 text-white opacity-0 transition-opacity group-hover:opacity-100">
-                                                    <p className="text-xs font-medium line-clamp-2">{foto.note}</p>
+                                                    <p className="text-xs font-medium line-clamp-2">{foto.note || 'Sin descripción'}</p>
                                                 </div>
                                             </button>
                                         ))
@@ -206,7 +206,7 @@ const RequestService = () => {
                     {/* Right column (postulaciones) */}
                     <aside className="space-y-4">
                         <div className="sticky top-6">
-                            <div className="rounded-lg bg-white border border-gray-100 p-4 shadow-lg dark:bg-card">
+                            <div className="rounded-lg bg-white border border-gray-300 p-4 shadow-lg dark:bg-card">
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <h2 className="text-lg font-bold">Postulaciones</h2>

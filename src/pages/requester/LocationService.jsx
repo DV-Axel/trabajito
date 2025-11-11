@@ -66,7 +66,7 @@ const LocationService = () => {
 
 
     return (
-        <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-8 mt-8 ">
+        <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-8 mt-8 border border-gray-400 mb-8">
             <h1 className="text-2xl font-bold mb-6 text-center">Selecciona la ubicación de tu servicio</h1>
             <div className="flex flex-col md:flex-row gap-8">
                 {/* Formulario */}

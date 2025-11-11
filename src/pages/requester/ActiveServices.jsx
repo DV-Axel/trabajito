@@ -43,7 +43,7 @@ const ActiveServices = () => {
 
 
     return (
-        <div className="max-w-4xl mx-auto my-10 p-6 bg-white rounded-3xl shadow-2xl border-4 border-[#00b4d8]">
+        <div className="max-w-4xl mx-auto my-10 p-6 bg-white rounded-3xl shadow-2xl border-2 border-gray-300">
             <h2 className="text-2xl font-bold text-[#02283A] mb-6">Solicitudes activas</h2>
             <ul className="space-y-6">
                 {jobRequests.map(solicitud => (

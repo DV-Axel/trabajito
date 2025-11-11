@@ -71,10 +71,10 @@ export const getUserIdFromToken = () => {
 
 // Formatear Locacion
 export const formatearLocacion = (location) => {
-    const {road, house_number, town, state_district, state, postcode} = location;
+    const {road, house_number, suburb, town, state_district, state, postcode} = location;
     if (!location) return 'Ubicación no disponible';
-
-    return `${road} ${house_number}, ${postcode} - ${town}, ${state_district}, ${state} `;
+    //console.log(location);
+    return `${road} ${house_number}, ${postcode} - ${suburb}, ${state_district}, ${state} `;
 }
 
 // Formatear fecha DD-MM-YYYY

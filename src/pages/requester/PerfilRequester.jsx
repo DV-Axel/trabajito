@@ -26,7 +26,7 @@ const PerfilRequester = () => {
     // TODO: Tengo que poner para cambiar datos del perfil (solo direccion, telefono, email y codigo postal)
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#f4fbfd]">
+        <div className="min-h-screen flex items-center justify-center bg-[#F4FBFD]">
             <div className="w-full max-w-2xl bg-white mt-8 mb-8 rounded-lg shadow-lg p-10 border border-gray-300">
                 <div className="flex flex-col items-center mb-9">
                     <div className="mb-4 text-center">
