@@ -2,49 +2,49 @@ import { jwtDecode } from 'jwt-decode';
 
 // Provincias de Argentina.
 export const provinciasArgentina = [
-    { value: "capital_federal", label: "Ciudad Autónoma de Buenos Aires" },
-    { value: "buenos_aires", label: "Buenos Aires" },
-    { value: "catamarca", label: "Catamarca" },
-    { value: "chaco", label: "Chaco" },
-    { value: "chubut", label: "Chubut" },
-    { value: "cordoba", label: "Córdoba" },
-    { value: "corrientes", label: "Corrientes" },
-    { value: "entre_rios", label: "Entre Ríos" },
-    { value: "formosa", label: "Formosa" },
-    { value: "jujuy", label: "Jujuy" },
-    { value: "la_pampa", label: "La Pampa" },
-    { value: "la_rioja", label: "La Rioja" },
-    { value: "mendoza", label: "Mendoza" },
-    { value: "misiones", label: "Misiones" },
-    { value: "neuquen", label: "Neuquén" },
-    { value: "rio_negro", label: "Río Negro" },
-    { value: "salta", label: "Salta" },
-    { value: "san_juan", label: "San Juan" },
-    { value: "san_luis", label: "San Luis" },
-    { value: "santa_cruz", label: "Santa Cruz" },
-    { value: "santa_fe", label: "Santa Fe" },
-    { value: "santiago_del_estero", label: "Santiago del Estero" },
-    { value: "tierra_del_fuego", label: "Tierra del Fuego" },
-    { value: "tucuman", label: "Tucumán" }
+    { value: "Ciudad Autónoma de Buenos Aires", label: "Ciudad Autónoma de Buenos Aires" },
+    { value: "Buenos Aires", label: "Buenos Aires" },
+    { value: "Catamarca", label: "Catamarca" },
+    { value: "Chaco", label: "Chaco" },
+    { value: "Chubut", label: "Chubut" },
+    { value: "Córdoba", label: "Córdoba" },
+    { value: "Corrientes", label: "Corrientes" },
+    { value: "Entre Ríos", label: "Entre Ríos" },
+    { value: "Formosa", label: "Formosa" },
+    { value: "Jujuy", label: "Jujuy" },
+    { value: "La Pampa", label: "La Pampa" },
+    { value: "La Rioja", label: "La Rioja" },
+    { value: "Mendoza", label: "Mendoza" },
+    { value: "Misiones", label: "Misiones" },
+    { value: "Neuquén", label: "Neuquén" },
+    { value: "Río Negro", label: "Río Negro" },
+    { value: "Salta", label: "Salta" },
+    { value: "San Juan", label: "San Juan" },
+    { value: "San Luis", label: "San Luis" },
+    { value: "Santa Cruz", label: "Santa Cruz" },
+    { value: "Santa Fe", label: "Santa Fe" },
+    { value: "Santiago del Estero", label: "Santiago del Estero" },
+    { value: "Tierra del Fuego", label: "Tierra del Fuego" },
+    { value: "Tucumán", label: "Tucumán" }
 ];
 
 
 //Dias de la semana.
 export const diasSemana = [
-    { value: "lunes", label: "Lunes" },
-    { value: "martes", label: "Martes" },
-    { value: "miercoles", label: "Miércoles" },
-    { value: "jueves", label: "Jueves" },
-    { value: "viernes", label: "Viernes" },
-    { value: "sabado", label: "Sábado" },
-    { value: "domingo", label: "Domingo" },
+    { value: "Lunes", label: "Lunes" },
+    { value: "Martes", label: "Martes" },
+    { value: "Miércoles", label: "Miércoles" },
+    { value: "Jueves", label: "Jueves" },
+    { value: "Viernes", label: "Viernes" },
+    { value: "Sábado", label: "Sábado" },
+    { value: "Domingo", label: "Domingo" },
 ];
 
 //Horarios disponibles
 export const horarios = [
-    { value: "manana", label: "Mañana (8-12)" },
-    { value: "tarde", label: "Tarde (12-18)" },
-    { value: "noche", label: "Noche (18-22)" },
+    { value: "Mañana (8-12)", label: "Mañana (8-12)" },
+    { value: "Tarde (12-18)", label: "Tarde (12-18)" },
+    { value: "Noche (18-22)", label: "Noche (18-22)" },
 ];
 
 //Calculo de feha minima de servicio
