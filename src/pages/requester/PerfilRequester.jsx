@@ -36,7 +36,10 @@ const PerfilRequester = () => {
                     </div>
                     <div className="relative w-52 h-52 mb-3">
                         <img
-                            src={`http://localhost:3000${user.profilePicture}`}
+                            // AXEL
+                            //src={`http://localhost:3000${user.profilePicture}`}
+                            // JOEL
+                            src={`${user.profilePicture}`}
                             alt="Foto de perfil"
                             className="w-52 h-52 rounded-full object-cover border-2 border-[#00b4d8] mb-3 shadow-2xl"
                         />

@@ -140,7 +140,10 @@ const RequestService = () => {
                                                 aria-label={`Abrir foto ${idx + 1}`}
                                             >
                                                 <img
-                                                    src={foto.url ? `http://localhost:3000${foto.url}` : '/placeholder.svg'}
+                                                    // AXEL
+                                                    //src={foto.url ? `http://localhost:3000${foto.url}` : '/placeholder.svg'}
+                                                    // JOEL
+                                                    src={foto.url ? `${foto.url}` : '/placeholder.svg'}
                                                     alt={foto.name || `Foto ${idx + 1}`}
                                                     loading="lazy"
                                                     className="aspect-[16/9] w-full object-cover transition-transform group-hover:scale-105"
@@ -224,7 +227,10 @@ const RequestService = () => {
                                                     <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-800 overflow-hidden">
                                                         {app.worker?.user?.profilePicture ? (
                                                             <img
-                                                                src={`http://localhost:3000/${app.worker.profilePicture}`}
+                                                                // AXEL
+                                                                //src={`http://localhost:3000/${app.worker.profilePicture}`}
+                                                                // JOEL
+                                                                src={`${app.worker.profilePicture}`}
                                                                 alt={`${app.worker.user.firstName} avatar`}
                                                                 className="h-full w-full object-cover"
                                                             />
@@ -273,7 +279,10 @@ const RequestService = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded shadow-lg max-w-lg w-full flex flex-col items-center">
                         <img
-                            src={`http://localhost:3000${modalFoto.url}`}
+                            // AXEL
+                            //src={`http://localhost:3000${modalFoto.url}`}
+                            // JOEL
+                            src={`${modalFoto.url}`}
                             alt={modalFoto.name}
                             className="max-w-full max-h-[70vh] rounded mb-4"
                         />
