@@ -1,4 +1,5 @@
-import { FaRegQuestionCircle, FaSignInAlt,FaToolbox , FaBars, FaUserCircle, FaClipboardList } from 'react-icons/fa';
+// javascript
+import { FaRegQuestionCircle, FaSignInAlt, FaToolbox, FaBars, FaUserCircle, FaClipboardList, FaClipboardCheck } from 'react-icons/fa';
 import { GiStoneCrafting } from "react-icons/gi";
 import { LiaToolsSolid } from 'react-icons/lia';
 import { RiToolsFill } from 'react-icons/ri';
@@ -45,15 +46,11 @@ const Header = () => {
             <div className="hidden mdplus:flex gap-10 text-white items-center">
                 <Link to="/ayuda" className="flex flex-col items-center hover:text-[#00b4d8] transition-colors">
                     <FaRegQuestionCircle title="Ayuda" className="text-3xl" />
-                    {/* <span className="text-base mt-0">Ayuda</span> */}
                 </Link>
                 {user ? (
                     <>
                         <Link to="/solicitar" className="flex flex-col items-center hover:text-[#00b4d8] transition-colors">
-                            {/* <GiStoneCrafting title='Pedir un servicio' className="text-2xl" /> */}
                             <RiToolsFill title='Pedir un servicio' className="text-3xl" />
-                            {/* <LiaToolsSolid title='Pedir un servicio' className="text-2xl" /> */}
-                            {/* <span className="text-base mt-2">Pedir un servicio</span> */}
                         </Link>
                         <div className="relative flex flex-col items-center">
                             <button
@@ -61,9 +58,6 @@ const Header = () => {
                                 className="flex flex-col items-center gap-0 focus:outline-none"
                             >
                                 <FaUserCircle title={`${user.nombre} ${user.apellido}`} className="text-3xl" />
-                                {/* <span className="text-base mt-2 uppercase">
-                                    {user.nombre} {user.apellido}
-                                </span> */}
                             </button>
                             {userMenuOpen && (
                                 <div
@@ -77,6 +71,7 @@ const Header = () => {
                                         <FaUserCircle className="text-2xl" />
                                         <span>Ver perfil</span>
                                     </Link>
+
                                     <Link
                                         to="/mis-servicios"
                                         className="flex items-center gap-3 px-5 py-3 hover:bg-[#095a8e] transition-colors"
@@ -84,15 +79,36 @@ const Header = () => {
                                         <FaClipboardList className="text-2xl" />
                                         <span>Mis servicios</span>
                                     </Link>
-                                    <Link
-                                        to={user.isWorker ? "/trabajos" : "/seUnWorker"}
-                                        className="flex items-center gap-3 px-5 py-3 hover:bg-[#095a8e] transition-colors"
-                                    >
-                                        {user.isWorker ? <MdDashboard className="text-2xl" /> : <FaToolbox className="text-2xl" />}
 
-                                        <span>{user.isWorker ? "Panel Worker" : "Se un WORKER!"}</span>
-                                    </Link>
+                                    {user.isWorker && (
+                                        <>
+                                            <Link
+                                                to="/mis-postulaciones"
+                                                className="flex items-center gap-3 px-5 py-3 hover:bg-[#095a8e] transition-colors"
+                                            >
+                                                <FaClipboardCheck className="text-2xl" />
+                                                <span>Postulaciones</span>
+                                            </Link>
 
+                                            <Link
+                                                to="/trabajos"
+                                                className="flex items-center gap-3 px-5 py-3 hover:bg-[#095a8e] transition-colors"
+                                            >
+                                                <MdDashboard className="text-2xl" />
+                                                <span>Panel Worker</span>
+                                            </Link>
+                                        </>
+                                    )}
+
+                                    {!user.isWorker && (
+                                        <Link
+                                            to="/seUnWorker"
+                                            className="flex items-center gap-3 px-5 py-3 hover:bg-[#095a8e] transition-colors"
+                                        >
+                                            <FaToolbox className="text-2xl" />
+                                            <span>Se un WORKER!</span>
+                                        </Link>
+                                    )}
 
                                     <div className="border-t border-[#095a8e] my-1"></div>
                                     <button
@@ -109,13 +125,11 @@ const Header = () => {
                 ) : (
                     <Link to="/login" className="flex flex-col items-center hover:text-[#00b4d8] transition-colors">
                         <FaSignInAlt title="Iniciar sesión" className="text-2xl" />
-                        <span className="text-base mt-0"></span>
                     </Link>
                 )}
             </div>
 
             {/* Menú hamburguesa en móvil */}
-            {/*TODO: Mejorar el menu hamburguesa en el movil*/}
             {menuOpen && (
                 <div className="absolute top-full right-0 bg-[#02283A] w-56 rounded-xl shadow-2xl flex flex-col items-center py-4 mdplus:hidden z-50 border border-[#095a8e] animate-fade-in">
                     {!user ? (
@@ -127,9 +141,7 @@ const Header = () => {
                         <>
                             <div className="flex flex-col items-center mb-2">
                                 <FaUserCircle className="text-white text-3xl" />
-                                <span className="text-base mt-2 text-white">
-                                    
-                                </span>
+                                <span className="text-base mt-2 text-white"></span>
                             </div>
                             <Link to="/solicitar" className="flex flex-col items-center mb-2 hover:text-[#00b4d8] transition-colors">
                                 <GiStoneCrafting className="text-white text-3xl" />
@@ -139,18 +151,25 @@ const Header = () => {
                                 <FaClipboardList className="text-white text-3xl" />
                                 <span className="text-base mt-2 uppercase text-white">Mis servicios</span>
                             </Link>
-                            <Link
-                                to={user.isWorker ? "/trabajos" : "/seUnWorker"}
-                                className="flex flex-col items-center mb-2 hover:text-[#00b4d8] transition-colors"
-                            >
-                                {user.isWorker
-                                    ? <MdDashboard className="text-white text-3xl" />
-                                    : <FaToolbox className="text-white text-3xl" />}
 
-                                <span className="text-base mt-2 uppercase text-white">
-                                    {user.isWorker ? "Panel Worker" : "Se un Worker!"}
-                                </span>
-                            </Link>
+                            {user.isWorker ? (
+                                <>
+                                    <Link to="/mis-postulaciones" className="flex flex-col items-center mb-2 hover:text-[#00b4d8] transition-colors">
+                                        <FaClipboardCheck className="text-white text-3xl" />
+                                        <span className="text-base mt-2 uppercase text-white">Postulaciones</span>
+                                    </Link>
+                                    <Link to="/trabajos" className="flex flex-col items-center mb-2 hover:text-[#00b4d8] transition-colors">
+                                        <MdDashboard className="text-white text-3xl" />
+                                        <span className="text-base mt-2 uppercase text-white">Panel Worker</span>
+                                    </Link>
+                                </>
+                            ) : (
+                                <Link to="/seUnWorker" className="flex flex-col items-center mb-2 hover:text-[#00b4d8] transition-colors">
+                                    <FaToolbox className="text-white text-3xl" />
+                                    <span className="text-base mt-2 uppercase text-white">Se un Worker!</span>
+                                </Link>
+                            )}
+
                             <Link to="/ayuda" className="flex flex-col items-center mb-2 hover:text-[#00b4d8] transition-colors">
                                 <FaRegQuestionCircle className="text-white text-3xl" />
                                 <span className="text-base mt-2 uppercase text-white">Ayuda</span>
