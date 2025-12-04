@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 export default function useGetWorkerApplicationsByWorkerId(id) {
-    const [applicationsWorker, setapplicationsWorker] = useState();
-    const [loadingapplicationsWorker, setLoadingapplicationsWorker] = useState(true);
-    const [errorapplicationsWorker, setErrorapplicationsWorker] = useState(null);
+    const [jobRequestsAppliedsByWorker, setJobRequestsAppliedsByWorker] = useState();
+    const [loadingJobRequestsAppliedsByWorker, setLoadingJobRequestsAppliedsByWorker] = useState(true);
+    const [errorJobRequestsAppliedsByWorker, setErrorJobRequestsAppliedsByWorker] = useState(null);
 
     async function traerPostulaciones(id) {
         if (!id) return null;
@@ -19,20 +19,20 @@ export default function useGetWorkerApplicationsByWorkerId(id) {
 
     useEffect(() => {
         let mounted = true;
-        setLoadingapplicationsWorker(true);
+        setLoadingJobRequestsAppliedsByWorker(true);
         traerPostulaciones(id)
             .then(data => {
-                if (mounted) setapplicationsWorker(data);
+                if (mounted) setJobRequestsAppliedsByWorker(data);
             })
             .catch(err => {
-                if (mounted) setErrorapplicationsWorker(err);
+                if (mounted) setErrorJobRequestsAppliedsByWorker(err);
             })
             .finally(() => {
-                if (mounted) setLoadingapplicationsWorker(false);
+                if (mounted) setLoadingJobRequestsAppliedsByWorker(false);
             });
         return () => { mounted = false; };
     }, [id]);
 
-    return { applicationsWorker, loadingapplicationsWorker, errorapplicationsWorker };
+    return { jobRequestsAppliedsByWorker, loadingJobRequestsAppliedsByWorker, errorJobRequestsAppliedsByWorker };
 
 }
