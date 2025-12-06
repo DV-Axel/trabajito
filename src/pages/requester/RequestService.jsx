@@ -1,21 +1,40 @@
+// javascript
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { formatDate, formatearLocacion } from '../../data/helpers';
+import {formatDate, formatearLocacion, getUserIdFromToken} from '../../data/helpers';
 import useGetJobRequest from '../../data/hooks/useGetJobRequest';
 import useGetApplicationsById from '../../data/hooks/useGetApplicationsById.js';
+import useGetApplicationById from '../../data/hooks/useGetApplicationById.js';
 import { FaRegCalendarAlt, FaRegClock } from 'react-icons/fa';
 import { FiImage as ImageIcon } from 'react-icons/fi';
-import { AiOutlineCheckCircle as CheckCircle } from 'react-icons/ai';
+import { AiOutlineCheckCircle as CheckCircle, AiOutlineStar as StarIcon } from 'react-icons/ai';
 import { FaRegUser as User, FaRegCompass as CompassIcon } from 'react-icons/fa';
-
+import useSubmitRating from '../../data/hooks/useSubmitRating';
+import RatingModal from '../../components/RatingModel.jsx';
 
 const RequestService = () => {
+
+    const {
+        open: showRating,
+        openRating,
+        closeRating,
+        loading: submitting,
+        submitRating,
+    } = useSubmitRating();
+
+
     const { id } = useParams();
     const [modalFoto, setModalFoto] = useState(null);
     const navigate = useNavigate();
 
     const { servicio, loadingServicio, errorServicio } = useGetJobRequest(id);
     const { applications, loadingApplications, errorApplications } = useGetApplicationsById(id);
+
+    // proteger acceso: servicio puede ser null durante la carga
+    const postulationSelected = servicio?.applicationSelectedId || servicio?.postulationSelected;
+
+    // llamar siempre al hook en el mismo orden; pasar undefined está bien
+    const { application, loadingApplication, errorApplication } = useGetApplicationById(postulationSelected);
 
     const handleExpandirFoto = (foto) => setModalFoto(foto);
     const handleCerrarModal = () => setModalFoto(null);
@@ -26,14 +45,27 @@ const RequestService = () => {
     if (loadingApplications) return <div>Cargando Postulaciones</div>;
     if (errorApplications) return <div>Error al obtener las postulaciones</div>;
 
-    // TODO: implementar los botones
+    if (loadingApplication) return <div>Cargando Postulaciones</div>;
+    if (errorApplication) return <div>Error al obtener las postulaciones</div>;
 
+    const handleSubmitRating = async ({ rating, comment }) => {
+        try {
+            await submitRating({ serviceId: servicio.id, rating, comment });
+            // aquí puedes mostrar un toast o actualizar estado local si hace falta
+        } catch (err) {
+            console.error('Error al enviar calificación:', err);
+        }
+    };
 
+    //identifiacion de usuarios
+    const idUserLogeado = getUserIdFromToken(localStorage.getItem('token'));
 
-    const postulationSelected = servicio.applicationSelectedId;
+    const idWorker = application?.worker?.user?.id;
+    const requesterId = servicio?.user.id
 
-    console.log('servicio', servicio)
-    console.log('postulaciones', applications)
+    console.log('idUserloggeado', idUserLogeado);
+    console.log('idworker',idWorker);
+    console.log('idsolicitante',requesterId);
 
     return (
         <div className="min-h-[120px] bg-background">
@@ -48,28 +80,21 @@ const RequestService = () => {
                             <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                                 <div className="flex items-center gap-1.5">
                                     <FaRegCalendarAlt className="h-4 w-4" />
-                                    <span>Creado {formatDate(servicio.jobCreationDate)}</span>
+                                    <span>Creado {formatDate(servicio?.jobCreationDate)}</span>
                                 </div>
 
                                 <div className="flex items-center gap-1.5">
                                     <FaRegClock className="h-4 w-4" />
-                                    <span>Fecha solicitada: {formatDate(servicio.date)}</span>
+                                    <span>Fecha solicitada: {formatDate(servicio?.date)}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>  
+                </div>
             </div>
 
-            {/* <div className="text-black px-12 text-left">
-                <h1 className="m-0 text-3xl font-bold tracking-tight">Detalle de Solicitud de Servicio</h1>
-                <h1 className="m-0 text-3xl font-bold tracking-tight">{servicio.title}</h1>
-            </div> */}
-
-            {/* Grid cards (Opción B): left detail card + right applications card */}
             <div className="container mx-auto px-4 py-8 md:px-6 lg:px-8">
                 <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
-                    {/* Left column (detalle del servicio) */}
                     <div className="space-y-6">
                         <div className="rounded-lg bg-white border border-gray-300 shadow-lg p-6 dark:bg-card">
                             <div className="flex items-start justify-between gap-4">
@@ -77,21 +102,6 @@ const RequestService = () => {
                                     <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
                                         Detalle del Servicio
                                     </h1>
-                                    {/* <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                                        <div className="flex items-center gap-1.5">
-                                            <FaRegCalendarAlt className="h-4 w-4" />
-                                            <span>Creado {formatDate(servicio.jobCreationDate)}</span>
-                                        </div>
-                                        <div className="flex items-center gap-1.5">
-                                            <FaRegClock className="h-4 w-4" />
-                                            <span>Fecha solicitada: {formatDate(servicio.date)}</span>
-                                        </div>
-                                        {servicio?.urgency && (
-                                            <span className="ml-2 inline-flex items-center rounded-full bg-red-100 text-red-700 text-xs font-semibold px-2.5 py-1">
-                                                Urgente
-                                            </span>
-                                        )}
-                                    </div> */}
                                 </div>
                             </div>
 
@@ -118,14 +128,12 @@ const RequestService = () => {
                             <div className="mt-6 space-y-2">
                                 <p className="text-lg font-bold text-[#0c7fcf] text-muted-foreground">Urgencia:</p>
                                 <p className="text-medium font-sm leading-relaxed whitespace-pre-line text-foreground">
-                                    {servicio?.urgency? 'Si' : 'No' || 'Sin descripción'}
+                                    {typeof servicio?.urgency === 'boolean' ? (servicio.urgency ? 'Sí' : 'No') : 'Sin descripción'}
                                 </p>
                             </div>
 
-                            {/* Galería de fotos */}
                             <div className="mt-6">
                                 <div className="flex items-center gap-2">
-                                    {/* <ImageIcon className="h-4 w-4 text-muted-foreground text-[#0c7fcf]" /> */}
                                     <p className="text-lg font-bold text-[#0c7fcf] text-muted-foreground">
                                         Fotos ({servicio?.photos?.length || 0})
                                     </p>
@@ -142,10 +150,7 @@ const RequestService = () => {
                                                 aria-label={`Abrir foto ${idx + 1}`}
                                             >
                                                 <img
-                                                    // AXEL
                                                     src={foto.url ? `http://localhost:3000${foto.url}` : '/placeholder.svg'}
-                                                    // JOEL
-                                                    // src={foto.url ? `${foto.url}` : '/placeholder.svg'}
                                                     alt={foto.name || `Foto ${idx + 1}`}
                                                     loading="lazy"
                                                     className="aspect-[16/9] w-full object-cover transition-transform group-hover:scale-105"
@@ -163,47 +168,34 @@ const RequestService = () => {
                                 </div>
                             </div>
 
-                            {/* Botones de acción */}
-                            <div className="mt-6 flex flex-wrap gap-3">
-                                {postulationSelected ? (
-                                    <>
-                                        {servicio.agreementUser && servicio.agreementWorker ? (
-                                            <button
-                                                className="inline-flex items-center gap-2 rounded-full bg-[#02283A] hover:bg-[#03506f] text-white px-6 py-2 font-semibold"
-                                                onClick={() => navigate(`/seguimiento-servicio/${servicio.id}`)}
-                                            >
-                                                <CompassIcon className="h-4 w-4" />
-                                                Tracking service
-                                            </button>
+                            <div className="flex mt-10 w-full flex-col md:flex-row items-center md:items-center justify-between gap-3">
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        className="inline-flex items-center gap-2 rounded-full bg-[#02283A] hover:bg-[#03506f] text-white px-6 py-2 font-semibold"
+                                        onClick={openRating}
+                                    >
+                                        <StarIcon className="h-4 w-4" />
+                                        Calificar servicio
+                                    </button>
+                                </div>
 
-                                        ) : (
-                                            <button
-                                                className="inline-flex items-center gap-2 rounded-full bg-[#02283A] hover:bg-[#03506f] text-white px-6 py-2 font-semibold"
-                                                onClick={() => navigate(`/contacto-laboral/${servicio.id}`)}
-                                            >
-                                                <CheckCircle className="h-4 w-4" />
-                                                Comenzar contacto
-                                            </button>
-                                        )}
-                                    </>
-                                ) : (
-                                    <>
-                                        <button className="rounded-full bg-[#02283A] hover:bg-[#03506f] text-white px-6 py-2 font-semibold">
-                                            Editar Servicio
-                                        </button>
-                                        <button
-                                            className="rounded-full border border-border bg-transparent px-6 py-2 text-sm font-medium text-muted-foreground hover:bg-gray-50"
-                                            onClick={() => { /* ver estado */ }}
-                                        >
-                                            Ver estado
-                                        </button>
-                                    </>
-                                )}
+                                <div className="flex-shrink-0">
+                                    <span
+                                        className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-semibold px-4 py-2 rounded-full shadow-lg ring-1 ring-green-300"
+                                        aria-label="Trabajo completado"
+                                        title="Trabajo completado"
+                                    >
+                                      <CheckCircle className="h-5 w-5" />
+                                      Trabajo completado
+                                    </span>
+                                </div>
                             </div>
+
                         </div>
                     </div>
 
-                    {/* Right column (postulaciones) */}
+                    <RatingModal open={showRating} onClose={closeRating} onSubmit={handleSubmitRating} loading={submitting} />
+
                     <aside className="space-y-4">
                         <div className="sticky top-6">
                             <div className="rounded-lg bg-white border border-gray-300 p-4 shadow-lg dark:bg-card">
@@ -229,10 +221,7 @@ const RequestService = () => {
                                                     <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-800 overflow-hidden">
                                                         {app.worker?.user?.profilePicture ? (
                                                             <img
-                                                                // AXEL
                                                                 src={`http://localhost:3000/${app.worker.profilePicture}`}
-                                                                // JOEL
-                                                                //src={`${app.worker.profilePicture}`}
                                                                 alt={`${app.worker.user.firstName} avatar`}
                                                                 className="h-full w-full object-cover"
                                                             />
@@ -276,15 +265,12 @@ const RequestService = () => {
                     </aside>
                 </div>
             </div>
-            {/* Modal para expandir foto */}
+
             {modalFoto && (
                 <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded shadow-lg max-w-lg w-full flex flex-col items-center">
                         <img
-                            // AXEL
                             src={`http://localhost:3000${modalFoto.url}`}
-                            // JOEL
-                            //src={`${modalFoto.url}`}
                             alt={modalFoto.name}
                             className="max-w-full max-h-[70vh] rounded mb-4"
                         />
