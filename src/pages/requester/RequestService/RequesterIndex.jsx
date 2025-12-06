@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
-import { services } from "../../data/services.js";
+import { services } from "../../../data/services.js";
 
 const RequesterIndex = () => {
     const [selected, setSelected] = useState(null);
