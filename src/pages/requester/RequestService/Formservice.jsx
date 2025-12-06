@@ -1,8 +1,8 @@
 // src/pages/requester/Formservice.jsx
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { services } from "../../data/services.js";
-import {fechaMinima} from "../../data/helpers.js";
+import { services } from "../../../data/services.js";
+import {fechaMinima} from "../../../data/helpers.js";
 
 const Formservice = () => {
     const { state } = useLocation();

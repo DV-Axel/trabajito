@@ -1,7 +1,7 @@
 // javascript
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import MapboxLocation from "../../components/MapboxLocation";
+import MapboxLocation from "../../../components/MapboxLocation.jsx";
 
 const LocationService = () => {
     const [position, setPosition] = useState(null); // formato: [lat, lng]

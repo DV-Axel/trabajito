@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { jwtDecode } from 'jwt-decode';
-import { services } from "../../data/services";
-import { showSuccessAlert, showErrorAlert } from '../../components/alerts/sweetAlertsComponents.jsx';
+import { services } from "../../../data/services.js";
+import { showSuccessAlert, showErrorAlert } from '../../../components/alerts/sweetAlertsComponents.jsx';
 
 
 const CheckRequestService = () => {

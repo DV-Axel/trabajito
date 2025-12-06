@@ -15,19 +15,21 @@ import RestartPassword from "./pages/auth/RestartPassword.jsx";
 import NewPassword from "./pages/auth/NewPassword.jsx";
 
 // Rutas de solicitantes de servicios
-import IndexRequester from "./pages/requester/RequesterIndex.jsx";
-import Formservice from "./pages/requester/Formservice.jsx";
-import LocationService from "./pages/requester/LocationService.jsx";
-import UploadFilesService from "./pages/requester/UploadFilesService.jsx";
-import CheckRequestService from "./pages/requester/CheckRequestService.jsx";
+import IndexRequester from "./pages/requester/RequestService/RequesterIndex.jsx";
+import Formservice from "./pages/requester/RequestService/Formservice.jsx";
+import LocationService from "./pages/requester/RequestService/LocationService.jsx";
+import UploadFilesService from "./pages/requester/RequestService/UploadFilesService.jsx";
+import CheckRequestService from "./pages/requester/RequestService/CheckRequestService.jsx";
 import ActiveServices from "./pages/requester/ActiveServices.jsx";
 import PerfilRequester from "./pages/requester/PerfilRequester.jsx";
 import RequestService from "./pages/requester/RequestService.jsx";
 import Postulation from "./pages/requester/Postulation.jsx";
 import ServiceCompleted from "./pages/requester/ServiceCompleted.jsx";
 
+//Rutas en comun Worker - Requester
 import WorkerRequesterContact from "./pages/mutualContact/WorkerRequesterContact.jsx"
 import ServiceTracking from "./pages/mutualContact/ServiceTracking.jsx"
+
 
 //Rutas para registro worker
 import BeWorker from "./pages/worker/BeWorker.jsx";
@@ -69,7 +71,6 @@ function App() {
                                 {/*Ruta en comun Worker - Requester */}
                                 <Route path="/contacto-laboral/:id" element={<WorkerRequesterContact />}/>
                                 <Route path="/seguimiento-servicio/:id" element={<ServiceTracking />}/>
-
 
 
 
