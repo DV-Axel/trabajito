@@ -1,71 +1,79 @@
 // javascript
+// File: `src/pages/requester/RequestService.jsx`
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import {formatDate, formatearLocacion, getUserIdFromToken} from '../../data/helpers';
+import { useParams } from 'react-router-dom';
+import { formatDate, formatearLocacion, getUserIdFromToken } from '../../data/helpers';
 import useGetJobRequest from '../../data/hooks/useGetJobRequest';
 import useGetApplicationsById from '../../data/hooks/useGetApplicationsById.js';
 import useGetApplicationById from '../../data/hooks/useGetApplicationById.js';
-import { FaRegCalendarAlt, FaRegClock } from 'react-icons/fa';
-import { FiImage as ImageIcon } from 'react-icons/fi';
+import { FaRegCalendarAlt, FaRegClock, FaRegUser as User } from 'react-icons/fa';
 import { AiOutlineCheckCircle as CheckCircle, AiOutlineStar as StarIcon } from 'react-icons/ai';
-import { FaRegUser as User, FaRegCompass as CompassIcon } from 'react-icons/fa';
 import useSubmitRating from '../../data/hooks/useSubmitRating';
 import RatingModal from '../../components/RatingModel.jsx';
 
 const RequestService = () => {
-
-    const {
-        open: showRating,
-        openRating,
-        closeRating,
-        loading: submitting,
-        submitRating,
-    } = useSubmitRating();
-
-
+    // hooks (siempre en el mismo orden)
+    const { open: showRating, openRating, closeRating, loading: submitting, submitRating } = useSubmitRating();
     const { id } = useParams();
     const [modalFoto, setModalFoto] = useState(null);
-    const navigate = useNavigate();
 
+    // datos
     const { servicio, loadingServicio, errorServicio } = useGetJobRequest(id);
     const { applications, loadingApplications, errorApplications } = useGetApplicationsById(id);
 
-    // proteger acceso: servicio puede ser null durante la carga
-    const postulationSelected = servicio?.applicationSelectedId || servicio?.postulationSelected;
-
-    // llamar siempre al hook en el mismo orden; pasar undefined está bien
+    // calcular postulationSelected (puede ser undefined) y llamar hook siempre
+    const postulationSelected = servicio?.applicationSelectedId ?? servicio?.postulationSelected;
     const { application, loadingApplication, errorApplication } = useGetApplicationById(postulationSelected);
 
+    // estados locales para calificaciones
+    const [submittedRating, setSubmittedRating] = useState(null);
+    const [submittedComment, setSubmittedComment] = useState('');
+
+    // normalizar aplicaciones (acepta array directo o wrappers)
+    const apps = Array.isArray(applications)
+        ? applications
+        : (applications?.data ?? applications?.applications ?? []);
+
+    // handlers
     const handleExpandirFoto = (foto) => setModalFoto(foto);
     const handleCerrarModal = () => setModalFoto(null);
 
+    const handleSubmitRating = async ({ rating, comment }) => {
+        try {
+            await submitRating({ serviceId: servicio?.id, rating, comment });
+            setSubmittedRating(rating);
+            setSubmittedComment(comment);
+        } catch (err) {
+            console.error('Error al enviar calificación:', err);
+        }
+    };
+
+    // estados de carga / errores (después de hooks)
     if (loadingServicio) return <div>Cargando...</div>;
     if (errorServicio) return <div>Error al obtener la solicitud</div>;
 
     if (loadingApplications) return <div>Cargando Postulaciones</div>;
     if (errorApplications) return <div>Error al obtener las postulaciones</div>;
 
-    if (loadingApplication) return <div>Cargando Postulaciones</div>;
-    if (errorApplication) return <div>Error al obtener las postulaciones</div>;
+    if (loadingApplication) return <div>Cargando Postulación seleccionada...</div>;
+    if (errorApplication) return <div>Error al obtener la postulación</div>;
 
-    const handleSubmitRating = async ({ rating, comment }) => {
-        try {
-            await submitRating({ serviceId: servicio.id, rating, comment });
-            // aquí puedes mostrar un toast o actualizar estado local si hace falta
-        } catch (err) {
-            console.error('Error al enviar calificación:', err);
-        }
-    };
-
-    //identifiacion de usuarios
+    // identificación / roles
     const idUserLogeado = getUserIdFromToken(localStorage.getItem('token'));
+    const idWorker = application?.worker?.user?.id ?? application?.workerId ?? application?.worker?.id;
+    const requesterId = servicio?.user?.id;
 
-    const idWorker = application?.worker?.user?.id;
-    const requesterId = servicio?.user.id
+    const isRequester = !!idUserLogeado && !!requesterId && idUserLogeado === requesterId;
+    const isWorker = !!idUserLogeado && !!idWorker && idUserLogeado === idWorker;
 
-    console.log('idUserloggeado', idUserLogeado);
-    console.log('idworker',idWorker);
-    console.log('idsolicitante',requesterId);
+    // calificaciones persistentes o locales
+    const ratingPersistente = servicio?.userRatingForWorker ?? null;
+    const commentPersistente = servicio?.userCommentForWorker ?? null;
+
+    const effectiveRating = ratingPersistente ?? submittedRating;
+    const effectiveComment = commentPersistente ?? submittedComment;
+
+
 
     return (
         <div className="min-h-[120px] bg-background">
@@ -155,7 +163,6 @@ const RequestService = () => {
                                                     loading="lazy"
                                                     className="aspect-[16/9] w-full object-cover transition-transform group-hover:scale-105"
                                                 />
-
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                                                 <div className="bg-black absolute bottom-0 left-0 right-0 p-3 text-white opacity-0 transition-opacity group-hover:opacity-100">
                                                     <p className="text-xs font-medium line-clamp-2">{foto.note || 'Sin descripción'}</p>
@@ -170,31 +177,56 @@ const RequestService = () => {
 
                             <div className="flex mt-10 w-full flex-col md:flex-row items-center md:items-center justify-between gap-3">
                                 <div className="flex items-center gap-3">
-                                    <button
-                                        className="inline-flex items-center gap-2 rounded-full bg-[#02283A] hover:bg-[#03506f] text-white px-6 py-2 font-semibold"
-                                        onClick={openRating}
-                                    >
-                                        <StarIcon className="h-4 w-4" />
-                                        Calificar servicio
-                                    </button>
+                                    {isRequester && (
+                                        <>
+                                            {effectiveRating ? (
+                                                <div className="bg-green-50 border border-green-200 rounded-lg px-4 py-2">
+                                                    <div className="text-sm font-semibold text-green-700">Calificaste con {effectiveRating} estrella{effectiveRating > 1 ? 's' : ''}</div>
+                                                    {effectiveComment ? <div className="text-sm text-gray-700 mt-1">Comentario: {effectiveComment}</div> : null}
+                                                </div>
+                                            ) : (
+                                                <button
+                                                    className="inline-flex items-center gap-2 rounded-full bg-[#02283A] hover:bg-[#03506f] text-white px-6 py-2 font-semibold"
+                                                    onClick={openRating}
+                                                    aria-label="Abrir modal para calificar servicio"
+                                                >
+                                                    <StarIcon className="h-4 w-4" />
+                                                    Calificar servicio
+                                                </button>
+                                            )}
+                                        </>
+                                    )}
+
+                                    {isWorker && (
+                                        <>
+                                            {effectiveRating ? (
+                                                <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
+                                                    <div className="text-sm font-semibold text-blue-700">Te calificaron con {effectiveRating} estrella{effectiveRating > 1 ? 's' : ''}</div>
+                                                    {effectiveComment ? <div className="text-sm text-gray-700 mt-1">Comentario: {effectiveComment}</div> : null}
+                                                </div>
+                                            ) : (
+                                                <div className="text-sm text-muted-foreground">Aún no te calificaron</div>
+                                            )}
+                                        </>
+                                    )}
                                 </div>
 
                                 <div className="flex-shrink-0">
-                                    <span
-                                        className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-semibold px-4 py-2 rounded-full shadow-lg ring-1 ring-green-300"
-                                        aria-label="Trabajo completado"
-                                        title="Trabajo completado"
-                                    >
-                                      <CheckCircle className="h-5 w-5" />
-                                      Trabajo completado
-                                    </span>
+                  <span
+                      className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-semibold px-4 py-2 rounded-full shadow-lg ring-1 ring-green-300"
+                      aria-label="Trabajo completado"
+                      title="Trabajo completado"
+                  >
+                    <CheckCircle className="h-5 w-5" />
+                    Trabajo completado
+                  </span>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
                     <RatingModal open={showRating} onClose={closeRating} onSubmit={handleSubmitRating} loading={submitting} />
+
 
                     <aside className="space-y-4">
                         <div className="sticky top-6">
@@ -203,66 +235,117 @@ const RequestService = () => {
                                     <div>
                                         <h2 className="text-lg font-bold">Postulaciones</h2>
                                         <p className="text-sm text-muted-foreground mt-1">
-                                            {Array.isArray(applications) ? applications.length : 0} profesionales interesados
+                                            {Array.isArray(applications) ? applications.length : apps.length} profesionales interesados
                                         </p>
                                     </div>
                                 </div>
 
                                 <div className="mt-4 max-h-[calc(100vh-240px)] overflow-y-auto pr-2 space-y-3">
-                                    {(!Array.isArray(applications) || applications.length === 0) ? (
-                                        <div className="text-center py-12">
-                                            <User className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                                            <p className="text-sm text-muted-foreground">Aún no hay postulaciones para este servicio</p>
-                                        </div>
-                                    ) : (
-                                        applications.map((app) => (
-                                            <article key={app.id} className="bg-background border border-border rounded-lg p-3">
+                                    {isWorker ? (
+                                        application ? (
+                                            <article key={application.id ?? application._id} className="bg-background border border-border rounded-lg p-3">
                                                 <div className="flex items-start gap-3">
                                                     <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-800 overflow-hidden">
-                                                        {app.worker?.user?.profilePicture ? (
+                                                        {application.worker?.user?.profilePicture ? (
                                                             <img
-                                                                src={`http://localhost:3000/${app.worker.profilePicture}`}
-                                                                alt={`${app.worker.user.firstName} avatar`}
+                                                                src={`http://localhost:3000/${application.worker.profilePicture}`}
+                                                                alt={`${application.worker.user.firstName} avatar`}
                                                                 className="h-full w-full object-cover"
                                                             />
                                                         ) : (
-                                                            `${app.worker?.user?.firstName?.[0] || ''}${app.worker?.user?.lastName?.[0] || ''}`
+                                                            `${application.worker?.user?.firstName?.[0] || ''}${application.worker?.user?.lastName?.[0] || ''}`
                                                         )}
-
                                                     </div>
+
                                                     <div className="flex-1 min-w-0">
                                                         <h3 className="text-base font-semibold truncate">
-                                                            {app.worker?.user?.firstName} {app.worker?.user?.lastName}
+                                                            {application.worker?.user?.firstName} {application.worker?.user?.lastName}
                                                         </h3>
                                                         <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-                                                            <span>⭐ {app.rating ?? '-'}</span>
+                                                            <span>⭐ {application.rating ?? '-'}</span>
                                                             <span>•</span>
-                                                            <span>{app.completedJobs ?? 0} trabajos</span>
+                                                            <span>{application.completedJobs ?? 0} trabajos</span>
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <div className="mt-3">
-                                                    <p className="text-sm font-semibold text-accent">${app.budget}</p>
-                                                    <p className="text-sm mt-1 text-muted-foreground line-clamp-3">{app.description}</p>
+                                                    <p className="text-sm font-semibold text-accent">${application.budget}</p>
+                                                    <p className="text-sm mt-1 text-muted-foreground line-clamp-3">{application.description}</p>
                                                 </div>
 
                                                 <div className="mt-3">
                                                     <button
                                                         className={`w-full rounded-full px-4 py-2 font-semibold ${postulationSelected ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-[#02283A] hover:bg-[#03506f] text-white'}`}
-                                                        onClick={() => navigate(`/postulacion/${app.id}`)}
+                                                        onClick={() => navigate(`/postulacion/${application.id}`)}
                                                         disabled={!!postulationSelected}
                                                     >
                                                         Ver perfil completo
                                                     </button>
                                                 </div>
                                             </article>
-                                        ))
+                                        ) : (
+                                            <div className="text-center py-12">
+                                                <User className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                                                <p className="text-sm text-muted-foreground">Aún no hay postulaciones para este servicio</p>
+                                            </div>
+                                        )
+                                    ) : (
+                                        (!Array.isArray(applications) || applications.length === 0) ? (
+                                            <div className="text-center py-12">
+                                                <User className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+                                                <p className="text-sm text-muted-foreground">Aún no hay postulaciones para este servicio</p>
+                                            </div>
+                                        ) : (
+                                            applications.map((app) => (
+                                                <article key={app.id} className="bg-background border border-border rounded-lg p-3">
+                                                    <div className="flex items-start gap-3">
+                                                        <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-800 overflow-hidden">
+                                                            {app.worker?.user?.profilePicture ? (
+                                                                <img
+                                                                    src={`http://localhost:3000/${app.worker.profilePicture}`}
+                                                                    alt={`${app.worker.user.firstName} avatar`}
+                                                                    className="h-full w-full object-cover"
+                                                                />
+                                                            ) : (
+                                                                `${app.worker?.user?.firstName?.[0] || ''}${app.worker?.user?.lastName?.[0] || ''}`
+                                                            )}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <h3 className="text-base font-semibold truncate">
+                                                                {app.worker?.user?.firstName} {app.worker?.user?.lastName}
+                                                            </h3>
+                                                            <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+                                                                <span>⭐ {app.rating ?? '-'}</span>
+                                                                <span>•</span>
+                                                                <span>{app.completedJobs ?? 0} trabajos</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="mt-3">
+                                                        <p className="text-sm font-semibold text-accent">${app.budget}</p>
+                                                        <p className="text-sm mt-1 text-muted-foreground line-clamp-3">{app.description}</p>
+                                                    </div>
+
+                                                    <div className="mt-3">
+                                                        <button
+                                                            className={`w-full rounded-full px-4 py-2 font-semibold ${postulationSelected ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-[#02283A] hover:bg-[#03506f] text-white'}`}
+                                                            onClick={() => navigate(`/postulacion/${app.id}`)}
+                                                            disabled={!!postulationSelected}
+                                                        >
+                                                            Ver perfil completo
+                                                        </button>
+                                                    </div>
+                                                </article>
+                                            ))
+                                        )
                                     )}
                                 </div>
                             </div>
                         </div>
                     </aside>
+
                 </div>
             </div>
 
