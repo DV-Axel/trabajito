@@ -11,9 +11,10 @@ import { AiFillStar } from 'react-icons/ai';
 import SelectWorkerNotice from '../../components/SelectWorkerNotice';
 import ServiceInProgressNotice from '../../components/ServiceInProgressNotice';
 import RatingModal from '../../components/RatingModel';
+import PostulacionesAside from '../../components/PostulacionesAside';
+
 
 //TODO: hay validacion de las paginas mutuales que no me dejan ir para atras.
-//TODO: El aside de las postulaciones hay que hacer un componente aparte y arreglarlo
 //TODO: Las las vaalidaciones de los botones pasarlos a componentes
 
 const RequestService = () => {
@@ -309,112 +310,13 @@ const RequestService = () => {
                         </div>
                     </div>
 
-                    <aside className="space-y-4">
-                        <div className="sticky top-6">
-                            <div className="rounded-lg bg-white border border-gray-300 p-4 shadow-lg dark:bg-card">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <h2 className="text-lg font-bold">Postulaciones</h2>
-                                        <p className="text-sm text-muted-foreground mt-1">
-                                            {console.log(applications)}
-                                            {Array.isArray(applications) ? applications.length : apps.length} profesionales interesados
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="mt-4 max-h-[calc(100vh-240px)] overflow-y-auto pr-2 space-y-3">
-                                    {isWorker ? (
-                                        application ? (
-                                            <article key={application.id ?? application._id} className="bg-background border border-border rounded-lg p-3">
-                                                <div className="flex items-start gap-3">
-                                                    <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-800 overflow-hidden">
-                                                        {application.worker?.profilePicture ? (
-                                                            <img src={`http://localhost:3000/${application.worker.profilePicture}`} alt="avatar" className="w-full h-full object-cover" />
-                                                        ) : (
-                                                            `${application.worker?.user?.firstName?.[0] || ''}${application.worker?.user?.lastName?.[0] || ''}`
-                                                        )}
-                                                    </div>
-
-                                                    <div className="flex-1 min-w-0">
-                                                        <h3 className="text-base font-semibold truncate">
-                                                            {application.worker?.user?.firstName} {application.worker?.user?.lastName}
-                                                        </h3>
-                                                        <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-                                                            <span>⭐ {application.worker?.rating ?? '-'}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className="mt-3">
-                                                    <p className="text-sm font-semibold text-accent">${application.budget}</p>
-                                                    <p className="text-sm mt-1 text-muted-foreground line-clamp-3">{application.description}</p>
-                                                </div>
-
-                                                <div className="mt-3">
-                                                    <button
-                                                        className={`w-full rounded-full px-4 py-2 font-semibold ${postulationSelected ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-[#02283A] hover:bg-[#03506f] text-white'}`}
-                                                        onClick={() => navigate(`/postulacion/${application.id}`)}
-                                                        disabled={!!postulationSelected}
-                                                    >
-                                                        Ver perfil completo
-                                                    </button>
-                                                </div>
-                                            </article>
-                                        ) : (
-                                            <div className="text-center py-12">
-                                                <User className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                                                <p className="text-sm text-muted-foreground">Aún no hay postulaciones para este servicio</p>
-                                            </div>
-                                        )
-                                    ) : (
-                                        (!Array.isArray(applications) || applications.length === 0) ? (
-                                            <div className="text-center py-12">
-                                                <User className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-                                                <p className="text-sm text-muted-foreground">Aún no hay postulaciones para este servicio</p>
-                                            </div>
-                                        ) : (
-                                            applications.map((app) => (
-                                                <article key={app.id} className="bg-background border border-border rounded-lg p-3">
-                                                    <div className="flex items-start gap-3">
-                                                        <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-800 overflow-hidden">
-                                                            {app.worker?.user?.profilePicture ? (
-                                                                <img src={`http://localhost:3000/${application.worker.profilePicture}`} alt="avatar" className="w-full h-full object-cover" />
-                                                            ) : (
-                                                                `${app.worker?.user?.firstName?.[0] || ''}${app.worker?.user?.lastName?.[0] || ''}`
-                                                            )}
-                                                        </div>
-                                                        <div className="flex-1 min-w-0">
-                                                            <h3 className="text-base font-semibold truncate">
-                                                                {app.worker?.user?.firstName} {app.worker?.user?.lastName}
-                                                            </h3>
-                                                            <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-                                                                <span>⭐ {app.worker?.rating ?? '-'}</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="mt-3">
-                                                        <p className="text-sm font-semibold text-accent">${app.budget}</p>
-                                                        <p className="text-sm mt-1 text-muted-foreground line-clamp-3">{app.description}</p>
-                                                    </div>
-
-                                                    <div className="mt-3">
-                                                        <button
-                                                            className={`w-full rounded-full px-4 py-2 font-semibold ${postulationSelected ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-[#02283A] hover:bg-[#03506f] text-white'}`}
-                                                            onClick={() => navigate(`/postulacion/${app.id}`)}
-                                                            disabled={!!postulationSelected}
-                                                        >
-                                                            Ver perfil completo
-                                                        </button>
-                                                    </div>
-                                                </article>
-                                            ))
-                                        )
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </aside>
+                    <PostulacionesAside
+                        applications={applications}
+                        apps={apps}
+                        isWorker={isWorker}
+                        application={application}
+                        postulationSelected={postulationSelected}
+                    />
 
                 </div>
             </div>
