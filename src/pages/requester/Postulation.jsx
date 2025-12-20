@@ -1,7 +1,7 @@
+// File: src/pages/requester/Postulation.jsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Swal from "sweetalert2";
-
+import { showConfirmAlert, showSuccessAlert, showErrorAlert } from '../../components/alerts/sweetAlertsComponents';
 
 const Postulation = () => {
     const { id } = useParams();
@@ -13,67 +13,57 @@ const Postulation = () => {
                 const res = await fetch(`http://localhost:3000/job-requests/postulacion-worker/${id}`);
                 const json = await res.json();
                 setData(json);
-            } catch (error) {
-                console.error("Error al obtener la postulación:", error);
+            } catch (err) {
+                console.error('Error al obtener la postulación:', err);
             }
         };
         fetchPostulacion();
     }, [id]);
 
-    //TODO: pasar el sweet alert al componente de alerts
-
     const handleSelect = async () => {
-        const result = await Swal.fire({
-            title: "¿Seleccionar a este worker?",
-            text: "Esta acción no se puede deshacer.",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#00b4d8",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Sí, seleccionar",
-            cancelButtonText: "Cancelar"
-        });
+        try {
+            const confirmed = await showConfirmAlert(
+                '¿Seleccionar a este worker?',
+                'Esta acción no se puede deshacer.',
+                'Sí, seleccionar',
+                'Cancelar'
+            );
 
-        if (result.isConfirmed) {
-            try {
-                const response = await fetch(`http://localhost:3000/users/seleccionar-worker`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        jobRequestId: data.jobRequestId, // asegúrate de tener este dato en `data`
-                        postulationId: id
-                    })
-                });
-                if (response.ok) {
-                    Swal.fire("¡Seleccionado!", "El worker ha sido seleccionado.", "success");
-                    //TODO: hacer que te mande al detalle del servicio
-                } else {
-                    Swal.fire("Error", "No se pudo seleccionar al worker.", "error");
-                }
-            } catch (error) {
-                Swal.fire("Error", "Ocurrió un error al seleccionar al worker.", "error");
+            if (!confirmed) return;
+
+            const response = await fetch(`http://localhost:3000/users/seleccionar-worker`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    jobRequestId: data?.jobRequestId,
+                    postulationId: id
+                })
+            });
+
+            if (response.ok) {
+                await showSuccessAlert('¡Seleccionado!', 'El worker ha sido seleccionado.');
+                // Redirigir a la ruta solicitada usando el jobRequestId
+                const targetId = data?.jobRequestId || id;
+                window.location.href = `http://localhost:5175/servicio/${targetId}`;
+            } else {
+                console.error('Respuesta no OK al seleccionar worker:', response.status, await response.text());
+                await showErrorAlert('Error', 'No se pudo seleccionar al worker.');
             }
+        } catch (err) {
+            console.error('Error al seleccionar worker:', err);
+            await showErrorAlert('Error', 'Ocurrió un error al seleccionar al worker.');
         }
     };
 
-
-
     if (!data) return <div>Cargando...</div>;
 
-    console.log(data)
-
     const { budget, description, submittedAt, worker, requireVisit } = data;
-
-
-    console.log('Worker', worker);
-
 
     return (
         <div className="flex justify-center bg-gray-50 py-10">
             <div className="flex flex-col md:flex-row bg-white rounded-xl shadow-lg w-full max-w-4xl">
-                {/* Columna izquierda: Detalles de la postulación */}
                 <div className="flex-1 p-8 border-b md:border-b-0 md:border-r border-gray-200">
                     <h2 className="text-2xl font-bold mb-4 text-center">Detalles de la Postulación</h2>
                     <p><span className="font-semibold">Presupuesto:</span> {budget}</p>
@@ -93,23 +83,14 @@ const Postulation = () => {
                     >
                         Seleccionar Worker
                     </button>
-
                 </div>
 
-
-                {/* Columna derecha: Perfil del worker */}
                 <div className="flex-1 p-8 flex flex-col items-center">
-
                     <img
-                        src={worker.profilePicture ? `http://localhost:3000/${worker.profilePicture}` : '/placeholder.svg'}
+                        src={worker?.profilePicture ? `http://localhost:3000/${worker.profilePicture}` : '/placeholder.svg'}
                         alt="Foto de perfil"
                         className="w-52 h-52 rounded-full object-cover border-2 border-[#00b4d8] mb-3 shadow-2xl"
                     />
-
-
-
-
-                    {/*TODO: formatear bien los datos del worker*/}
                     <h2 className="text-xl font-bold mb-1">{worker?.user?.firstName} {worker?.user?.lastName}</h2>
                     <p className="text-yellow-500 mb-1 flex items-center gap-1">
                         <span>⭐</span> {worker?.rating}

@@ -1,33 +1,89 @@
 // javascript
 // File: `src/pages/requester/RequestService.jsx`
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { formatDate, formatearLocacion, getUserIdFromToken } from '../../data/helpers';
 import useGetJobRequest from '../../data/hooks/useGetJobRequest';
 import useGetApplicationsById from '../../data/hooks/useGetApplicationsById.js';
-import useGetApplicationById from '../../data/hooks/useGetApplicationById.js';
-import { FaRegCalendarAlt, FaRegClock, FaRegUser as User } from 'react-icons/fa';
-import { AiOutlineCheckCircle as CheckCircle, AiOutlineStar as StarIcon } from 'react-icons/ai';
 import useSubmitRating from '../../data/hooks/useSubmitRating';
-import RatingModal from '../../components/RatingModel.jsx';
+import { FaRegCalendarAlt, FaRegClock, FaRegUser as User, FaPhoneAlt, FaCompass, FaCommentDots } from 'react-icons/fa';
+import { AiFillStar } from 'react-icons/ai';
+import SelectWorkerNotice from '../../components/SelectWorkerNotice';
+import ServiceInProgressNotice from '../../components/ServiceInProgressNotice';
+import RatingModal from '../../components/RatingModel';
+
+//TODO: hay validacion de las paginas mutuales que no me dejan ir para atras.
+//TODO: El aside de las postulaciones hay que hacer un componente aparte y arreglarlo
+//TODO: Las las vaalidaciones de los botones pasarlos a componentes
 
 const RequestService = () => {
-    // hooks (siempre en el mismo orden)
-    const { open: showRating, openRating, closeRating, loading: submitting, submitRating } = useSubmitRating();
     const { id } = useParams();
+    const navigate = useNavigate();
     const [modalFoto, setModalFoto] = useState(null);
 
-    // datos
+    // datos (custom hooks)
     const { servicio, loadingServicio, errorServicio } = useGetJobRequest(id);
     const { applications, loadingApplications, errorApplications } = useGetApplicationsById(id);
 
-    // calcular postulationSelected (puede ser undefined) y llamar hook siempre
+    // calcular postulationSelected
     const postulationSelected = servicio?.applicationSelectedId ?? servicio?.postulationSelected;
-    const { application, loadingApplication, errorApplication } = useGetApplicationById(postulationSelected);
 
-    // estados locales para calificaciones
-    const [submittedRating, setSubmittedRating] = useState(null);
-    const [submittedComment, setSubmittedComment] = useState('');
+    // Estado local para la postulación seleccionada
+    const [application, setApplication] = useState(null);
+    const [loadingApplication, setLoadingApplication] = useState(true);
+    const [errorApplication, setErrorApplication] = useState(null);
+
+    // rating hook (modal + submit)
+    const {
+        open: ratingOpen,
+        openRating,
+        closeRating,
+        loading: ratingLoading,
+        submitRating
+    } = useSubmitRating();
+
+    // handler: navegar a seguimiento de servicio (status 4)
+    const handleServiceTracking = () => {
+        navigate(`/seguimiento-servicio/${id}`);
+    };
+
+    // hook: obtiene la postulación seleccionada (si existe)
+    useEffect(() => {
+        let mounted = true;
+        const fetchApplication = async () => {
+            if (!postulationSelected) {
+                if (mounted) {
+                    setApplication(null);
+                    setLoadingApplication(false);
+                    setErrorApplication(null);
+                }
+                return;
+            }
+
+            setLoadingApplication(true);
+            setErrorApplication(null);
+
+            try {
+                const res = await fetch(`http://localhost:3000/job-requests/postulacion-worker/${postulationSelected}`);
+                if (!res.ok) {
+                    const text = await res.text();
+                    throw new Error(text || `Error al obtener postulación ${postulationSelected}`);
+                }
+                const json = await res.json();
+                if (mounted) setApplication(json);
+            } catch (err) {
+                if (mounted) setErrorApplication(err);
+            } finally {
+                if (mounted) setLoadingApplication(false);
+            }
+        };
+
+        fetchApplication();
+
+        return () => {
+            mounted = false;
+        };
+    }, [postulationSelected]);
 
     // normalizar aplicaciones (acepta array directo o wrappers)
     const apps = Array.isArray(applications)
@@ -38,17 +94,26 @@ const RequestService = () => {
     const handleExpandirFoto = (foto) => setModalFoto(foto);
     const handleCerrarModal = () => setModalFoto(null);
 
-    const handleSubmitRating = async ({ rating, comment }) => {
-        try {
-            await submitRating({ serviceId: servicio?.id, rating, comment });
-            setSubmittedRating(rating);
-            setSubmittedComment(comment);
-        } catch (err) {
-            console.error('Error al enviar calificación:', err);
-        }
-    };
+    // identificación / roles (no son hooks)
+    const idUserLogeado = getUserIdFromToken(localStorage.getItem('token'));
 
-    // estados de carga / errores (después de hooks)
+    // intentar obtener idWorker desde la application (si existe) y como fallback desde servicio
+    const idWorker = application?.worker?.user?.id
+        ?? application?.workerId
+        ?? application?.worker?.id
+        ?? servicio?.applicationSelected?.worker?.user?.id
+        ?? servicio?.applicationSelected?.workerId
+        ?? servicio?.worker?.user?.id
+        ?? servicio?.workerId;
+
+    const requesterId = servicio?.user?.id;
+
+    const isRequester = !!idUserLogeado && !!requesterId && idUserLogeado === requesterId;
+    const isWorker = !!idUserLogeado && !!idWorker && idUserLogeado === idWorker;
+
+    // Nota: se removieron las validaciones de redirección por rol según petición.
+
+    // estados de carga / errores (después de declarar todos los hooks)
     if (loadingServicio) return <div>Cargando...</div>;
     if (errorServicio) return <div>Error al obtener la solicitud</div>;
 
@@ -58,22 +123,20 @@ const RequestService = () => {
     if (loadingApplication) return <div>Cargando Postulación seleccionada...</div>;
     if (errorApplication) return <div>Error al obtener la postulación</div>;
 
-    // identificación / roles
-    const idUserLogeado = getUserIdFromToken(localStorage.getItem('token'));
-    const idWorker = application?.worker?.user?.id ?? application?.workerId ?? application?.worker?.id;
-    const requesterId = servicio?.user?.id;
+    // handler: contacto laboral (status 2)
+    const handleTracking = () => {
+        navigate(`/contacto-laboral/${id}`);
+    };
 
-    const isRequester = !!idUserLogeado && !!requesterId && idUserLogeado === requesterId;
-    const isWorker = !!idUserLogeado && !!idWorker && idUserLogeado === idWorker;
-
-    // calificaciones persistentes o locales
-    const ratingPersistente = servicio?.userRatingForWorker ?? null;
-    const commentPersistente = servicio?.userCommentForWorker ?? null;
-
-    const effectiveRating = ratingPersistente ?? submittedRating;
-    const effectiveComment = commentPersistente ?? submittedComment;
-
-
+    // submit del rating (envía rating + comentario junto al serviceId)
+    const handleSubmitRating = async ({ rating, comment }) => {
+        try {
+            await submitRating({ serviceId: servicio?.id, rating, comment });
+            // submitRating ya cierra modal y recarga en caso de éxito
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     return (
         <div className="min-h-[120px] bg-background">
@@ -151,8 +214,8 @@ const RequestService = () => {
                                     {Array.isArray(servicio?.photos) && servicio.photos.length > 0 ? (
                                         servicio.photos.map((foto, idx) => (
                                             <button
-                                                type="button"
                                                 key={idx}
+                                                type="button"
                                                 onClick={() => handleExpandirFoto(foto)}
                                                 className="group relative overflow-hidden rounded-lg border border-border bg-muted transition-shadow hover:shadow-lg focus:outline-none"
                                                 aria-label={`Abrir foto ${idx + 1}`}
@@ -163,10 +226,6 @@ const RequestService = () => {
                                                     loading="lazy"
                                                     className="aspect-[16/9] w-full object-cover transition-transform group-hover:scale-105"
                                                 />
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-                                                <div className="bg-black absolute bottom-0 left-0 right-0 p-3 text-white opacity-0 transition-opacity group-hover:opacity-100">
-                                                    <p className="text-xs font-medium line-clamp-2">{foto.note || 'Sin descripción'}</p>
-                                                </div>
                                             </button>
                                         ))
                                     ) : (
@@ -176,57 +235,79 @@ const RequestService = () => {
                             </div>
 
                             <div className="flex mt-10 w-full flex-col md:flex-row items-center md:items-center justify-between gap-3">
-                                <div className="flex items-center gap-3">
-                                    {isRequester && (
-                                        <>
-                                            {effectiveRating ? (
-                                                <div className="bg-green-50 border border-green-200 rounded-lg px-4 py-2">
-                                                    <div className="text-sm font-semibold text-green-700">Calificaste con {effectiveRating} estrella{effectiveRating > 1 ? 's' : ''}</div>
-                                                    {effectiveComment ? <div className="text-sm text-gray-700 mt-1">Comentario: {effectiveComment}</div> : null}
-                                                </div>
-                                            ) : (
-                                                <button
-                                                    className="inline-flex items-center gap-2 rounded-full bg-[#02283A] hover:bg-[#03506f] text-white px-6 py-2 font-semibold"
-                                                    onClick={openRating}
-                                                    aria-label="Abrir modal para calificar servicio"
-                                                >
-                                                    <StarIcon className="h-4 w-4" />
-                                                    Calificar servicio
-                                                </button>
-                                            )}
-                                        </>
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                                    {servicio?.statusId === 1 && isRequester && <SelectWorkerNotice />}
+
+                                    {servicio?.statusId === 2 && (isRequester || isWorker) && (
+                                        <ServiceInProgressNotice showIcon />
                                     )}
 
-                                    {isWorker && (
-                                        <>
-                                            {effectiveRating ? (
-                                                <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
-                                                    <div className="text-sm font-semibold text-blue-700">Te calificaron con {effectiveRating} estrella{effectiveRating > 1 ? 's' : ''}</div>
-                                                    {effectiveComment ? <div className="text-sm text-gray-700 mt-1">Comentario: {effectiveComment}</div> : null}
-                                                </div>
-                                            ) : (
-                                                <div className="text-sm text-muted-foreground">Aún no te calificaron</div>
-                                            )}
-                                        </>
+                                    {/* Mostrar calificación y comentario cuando statusId === 5 */}
+                                    {servicio?.statusId === 5 && (
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 bg-white border border-border rounded p-3">
+                                            <div className="flex items-center gap-2">
+                                                <AiFillStar className="text-yellow-400 w-5 h-5" />
+                                                <span className="font-semibold text-sm">
+                                                    {servicio?.userRatingForWorker ?? '-'} / 5
+                                                </span>
+                                            </div>
+
+                                            <div className="flex items-start gap-2 max-w-xl">
+                                                <FaCommentDots className="w-4 h-4 text-muted-foreground mt-1" />
+                                                <p className="text-sm text-muted-foreground break-words">
+                                                    {servicio?.userCommentForWorker || 'Sin comentario'}
+                                                </p>
+                                            </div>
+                                        </div>
                                     )}
                                 </div>
 
-                                <div className="flex-shrink-0">
-                  <span
-                      className="inline-flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-semibold px-4 py-2 rounded-full shadow-lg ring-1 ring-green-300"
-                      aria-label="Trabajo completado"
-                      title="Trabajo completado"
-                  >
-                    <CheckCircle className="h-5 w-5" />
-                    Trabajo completado
-                  </span>
+                                <div className="flex-shrink-0 flex items-center gap-2">
+                                    {servicio?.statusId === 2 && (isRequester || isWorker) && (
+                                        <button
+                                            onClick={handleTracking}
+                                            className="inline-flex items-center gap-2 bg-[#00b4d8] hover:bg-[#0096c7] text-white font-semibold py-2 px-4 rounded transition-colors"
+                                            aria-label="Establecer contacto"
+                                        >
+                                            <FaPhoneAlt className="w-4 h-4" />
+                                            <span>Establecer contacto</span>
+                                        </button>
+                                    )}
+
+                                    {servicio?.statusId === 3 && (isRequester || isWorker) && (
+                                        <button
+                                            onClick={handleServiceTracking}
+                                            className="inline-flex items-center gap-2 bg-[#00b4d8] hover:bg-[#0096c7] text-white font-semibold py-2 px-4 rounded transition-colors"
+                                            aria-label="Tracking service"
+                                        >
+                                            <FaCompass className="w-4 h-4" />
+                                            <span>Tracking service</span>
+                                        </button>
+                                    )}
+
+                                    {/* Botón de calificar: visible cuando el servicio ya está finalizado (status 4) y es el requester */}
+                                    {servicio?.statusId === 4 ? (
+                                        isRequester ? (
+                                            <button
+                                                onClick={openRating}
+                                                className="inline-flex items-center gap-2 bg-[#f6c21a] hover:bg-[#e6b10a] text-white font-semibold py-2 px-4 rounded transition-colors"
+                                                aria-label="Calificar servicio"
+                                            >
+                                                <AiFillStar className="w-4 h-4" />
+                                                <span>Calificar servicio</span>
+                                            </button>
+                                        ) : isWorker ? (
+                                            <div className="inline-flex items-center gap-2 bg-gray-100 text-gray-600 font-medium py-2 px-4 rounded">
+                                                <AiFillStar className="w-4 h-4 text-yellow-400" />
+                                                <span>Esperando calificación</span>
+                                            </div>
+                                        ) : null
+                                    ) : null}
+
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <RatingModal open={showRating} onClose={closeRating} onSubmit={handleSubmitRating} loading={submitting} />
-
 
                     <aside className="space-y-4">
                         <div className="sticky top-6">
@@ -235,6 +316,7 @@ const RequestService = () => {
                                     <div>
                                         <h2 className="text-lg font-bold">Postulaciones</h2>
                                         <p className="text-sm text-muted-foreground mt-1">
+                                            {console.log(applications)}
                                             {Array.isArray(applications) ? applications.length : apps.length} profesionales interesados
                                         </p>
                                     </div>
@@ -246,12 +328,8 @@ const RequestService = () => {
                                             <article key={application.id ?? application._id} className="bg-background border border-border rounded-lg p-3">
                                                 <div className="flex items-start gap-3">
                                                     <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-800 overflow-hidden">
-                                                        {application.worker?.user?.profilePicture ? (
-                                                            <img
-                                                                src={`http://localhost:3000/${application.worker.profilePicture}`}
-                                                                alt={`${application.worker.user.firstName} avatar`}
-                                                                className="h-full w-full object-cover"
-                                                            />
+                                                        {application.worker?.profilePicture ? (
+                                                            <img src={`http://localhost:3000/${application.worker.profilePicture}`} alt="avatar" className="w-full h-full object-cover" />
                                                         ) : (
                                                             `${application.worker?.user?.firstName?.[0] || ''}${application.worker?.user?.lastName?.[0] || ''}`
                                                         )}
@@ -262,9 +340,7 @@ const RequestService = () => {
                                                             {application.worker?.user?.firstName} {application.worker?.user?.lastName}
                                                         </h3>
                                                         <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-                                                            <span>⭐ {application.rating ?? '-'}</span>
-                                                            <span>•</span>
-                                                            <span>{application.completedJobs ?? 0} trabajos</span>
+                                                            <span>⭐ {application.worker?.rating ?? '-'}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -302,11 +378,7 @@ const RequestService = () => {
                                                     <div className="flex items-start gap-3">
                                                         <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-800 overflow-hidden">
                                                             {app.worker?.user?.profilePicture ? (
-                                                                <img
-                                                                    src={`http://localhost:3000/${app.worker.profilePicture}`}
-                                                                    alt={`${app.worker.user.firstName} avatar`}
-                                                                    className="h-full w-full object-cover"
-                                                                />
+                                                                <img src={`http://localhost:3000/${application.worker.profilePicture}`} alt="avatar" className="w-full h-full object-cover" />
                                                             ) : (
                                                                 `${app.worker?.user?.firstName?.[0] || ''}${app.worker?.user?.lastName?.[0] || ''}`
                                                             )}
@@ -316,9 +388,7 @@ const RequestService = () => {
                                                                 {app.worker?.user?.firstName} {app.worker?.user?.lastName}
                                                             </h3>
                                                             <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-                                                                <span>⭐ {app.rating ?? '-'}</span>
-                                                                <span>•</span>
-                                                                <span>{app.completedJobs ?? 0} trabajos</span>
+                                                                <span>⭐ {app.worker?.rating ?? '-'}</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -348,6 +418,14 @@ const RequestService = () => {
 
                 </div>
             </div>
+
+            {/* Modal de calificación */}
+            <RatingModal
+                open={ratingOpen}
+                onClose={closeRating}
+                onSubmit={handleSubmitRating}
+                loading={ratingLoading}
+            />
 
             {modalFoto && (
                 <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
