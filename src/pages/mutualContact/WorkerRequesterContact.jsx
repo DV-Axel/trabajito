@@ -1,3 +1,4 @@
+// File: src/pages/mutualContact/WorkerRequesterContact.jsx
 import React, { useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useGetJobRequest from '../../data/hooks/useGetJobRequest';
@@ -31,9 +32,7 @@ const WorkerRequesterContact = () => {
     console.log('servicio.agreementUser', servicio?.agreementUser);
     console.log('servicio.agreementWorker', servicio?.agreementWorker);
 
-
-
-    //Validacion de redireccionmiento
+    // Validacion de redireccion por acuerdos completos (mantener)
     useEffect(() => {
         if (redirectedRef.current) return;
         if (loadingServicio) return;
@@ -46,6 +45,15 @@ const WorkerRequesterContact = () => {
             navigate(`/seguimiento-servicio/${id}`);
         }
     }, [loadingServicio, servicio?.agreementUser, servicio?.agreementWorker, navigate, id]);
+
+    // Acceso: permitir solo si statusId === 2
+    useEffect(() => {
+        if (loadingServicio) return;
+        if (!servicio) return;
+        if (servicio.statusId !== 2) {
+            navigate(`/servicio/${id}`);
+        }
+    }, [loadingServicio, servicio?.statusId, navigate, id]);
 
     if (loadingServicio) return <div>Cargando solicitud...</div>;
     if (errorServicio) return <div>Error al obtener la solicitud</div>;
@@ -139,7 +147,7 @@ const WorkerRequesterContact = () => {
                     {canEditBudget && (
                         <button
                             type="button"
-                            onClick={() => editBudget({ applicationId: application.id, currentBudget: application.budget, onSuccess: () => window.location.reload() })}
+                            onClick={() => editBudget({ applicationId: application.id, currentBudget: application.budget, onSuccess: () => navigate(`/servicio/${id}`) })}
                             className="ml-2 text-[#00b4d8] hover:text-[#0096c7] p-1 rounded"
                             aria-label="Editar presupuesto"
                         >

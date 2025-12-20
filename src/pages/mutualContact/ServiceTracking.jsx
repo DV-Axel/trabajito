@@ -1,3 +1,4 @@
+// javascript
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from "react-router-dom";
 import useGetJobRequest from "../../data/hooks/useGetJobRequest.js";
@@ -10,7 +11,6 @@ const WorkerJobRequestContact = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const idLogeado = getUserIdFromToken();
-    const redirectedRef = useRef(false);
 
     const {setFinishedService} = useSetFinishedService()
 
@@ -25,29 +25,14 @@ const WorkerJobRequestContact = () => {
     const handleExpandirFoto = (foto) => setModalFoto(foto);
     const handleCerrarModal = () => setModalFoto(null);
 
-    // Validaciones de redireccionamiento
+    // Acceso: solo permitir si statusId === 3
     useEffect(() => {
-        if (redirectedRef.current) return;
         if (loadingServicio) return;
         if (!servicio) return;
-
-        // asegurarse que los campos estén definidos
-        if (servicio.workFinishedUser == null || servicio.workFinishedWorker == null) return;
-
-        const toBool = (v) => v === true || v === 'true' || v === 1 || v === '1';
-
-        if (toBool(servicio.workFinishedUser) && toBool(servicio.workFinishedWorker)) {
-            redirectedRef.current = true; // evitar re-ejecuciones/redirecciones
+        if (servicio.statusId !== 3) {
             navigate(`/servicio/${id}`);
         }
-    }, [
-        loadingServicio,
-        servicio?.workFinishedUser,
-        servicio?.workFinishedWorker,
-        navigate,
-        id
-    ]);
-
+    }, [loadingServicio, servicio?.statusId, navigate, id]);
 
     if (loadingServicio) return <div>Cargando solicitud...</div>;
     if (errorServicio) return <div>Error al obtener la solicitud</div>;
