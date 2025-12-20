@@ -1,5 +1,6 @@
 // File: src/data/hooks/useSubmitRating.js
 import { useCallback, useState } from 'react';
+import { showSuccessAlert } from '../../components/alerts/sweetAlertsComponents';
 
 export default function useSubmitRating(baseUrl = '') {
     const [open, setOpen] = useState(false);
@@ -29,7 +30,15 @@ export default function useSubmitRating(baseUrl = '') {
             }
 
             const data = await res.json();
+
+            // Cerrar el modal antes de mostrar la alerta
             setOpen(false);
+
+            // Mostrar alerta de éxito y después recargar la página
+            await showSuccessAlert('Calificación enviada', 'Se calificó correctamente');
+            // Recargar independientemente de cómo se cerró la alerta (confirmar o tocar fuera)
+            window.location.reload();
+
             return data;
         } finally {
             setLoading(false);
