@@ -14,7 +14,6 @@ import RatingModal from '../../components/RatingModel';
 import PostulacionesAside from '../../components/PostulacionesAside';
 
 
-//TODO: hay validacion de las paginas mutuales que no me dejan ir para atras.
 //TODO: Las las vaalidaciones de los botones pasarlos a componentes
 
 const RequestService = () => {
