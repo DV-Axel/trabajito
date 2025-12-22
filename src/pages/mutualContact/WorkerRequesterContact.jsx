@@ -1,4 +1,4 @@
-// File: src/pages/mutualContact/WorkerRequesterContact.jsx
+// javascript
 import React, { useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useGetJobRequest from '../../data/hooks/useGetJobRequest';
@@ -9,6 +9,7 @@ import useGetWorkerById from '../../data/hooks/useGetWorkerById';
 import { formatDate, formatearLocacion, getUserIdFromToken } from '../../data/helpers';
 import useEditBudget from '../../data/hooks/useEditBudget.js';
 import useEditServiceDate from '../../data/hooks/useEditServiceDate.js';
+import useEditServicePaymentMethod from '../../data/hooks/useEditServicePaymentMethod.js';
 
 import { FiEdit } from 'react-icons/fi';
 
@@ -20,6 +21,7 @@ const WorkerRequesterContact = () => {
 
     const { editBudget } = useEditBudget();
     const { editServiceDate } = useEditServiceDate();
+    const { editServicePaymentMethod } = useEditServicePaymentMethod();
     const { setAgreementUserWorkerTrue } = useSetAgreementUserWorkerTrue();
     const { setAgreementUserWorkerFalse } = useSetAgreementUserWorkerFalse();
     const { servicio, loadingServicio, errorServicio } = useGetJobRequest(id);
@@ -29,10 +31,6 @@ const WorkerRequesterContact = () => {
     const workerId = application?.workerId ?? null;
     const { worker, loadingWorker, errorWorker } = useGetWorkerById(workerId);
 
-    console.log('servicio.agreementUser', servicio?.agreementUser);
-    console.log('servicio.agreementWorker', servicio?.agreementWorker);
-
-    // Validacion de redireccion por acuerdos completos (mantener)
     useEffect(() => {
         if (redirectedRef.current) return;
         if (loadingServicio) return;
@@ -46,7 +44,6 @@ const WorkerRequesterContact = () => {
         }
     }, [loadingServicio, servicio?.agreementUser, servicio?.agreementWorker, navigate, id]);
 
-    // Acceso: permitir solo si statusId === 2
     useEffect(() => {
         if (loadingServicio) return;
         if (!servicio) return;
@@ -74,6 +71,10 @@ const WorkerRequesterContact = () => {
         agreementUser: servicio.agreementUser,
         agreementWorker: servicio.agreementWorker
     };
+
+    console.log('solicitud', servicio)
+
+
     return (
         <div className="grid grid-cols-3 gap-8 bg-white p-8 rounded shadow items-stretch">
 
@@ -136,6 +137,20 @@ const WorkerRequesterContact = () => {
                             onClick={() => editServiceDate({ jobRequestId: servicio.id, currentDate: servicio.date, onSuccess: () => window.location.reload() })}
                             className="ml-2 text-[#00b4d8] hover:text-[#0096c7] p-1 rounded"
                             aria-label="Editar fecha"
+                        >
+                            <FiEdit className="h-5 w-5" />
+                        </button>
+                    )}
+                </div>
+                <div className="mb-2">
+                    <span className="font-semibold">Metodo de pago:</span>
+                    <span className="ml-2">{servicio.paymentMethod.name}</span>
+                    {canEditDate && (
+                        <button
+                            type="button"
+                            onClick={() => editServicePaymentMethod({ jobRequestId: servicio.id, currentPaymentMethodId: servicio.paymentMethodId, onSuccess: () => window.location.reload() })}
+                            className="ml-2 text-[#00b4d8] hover:text-[#0096c7] p-1 rounded"
+                            aria-label="Editar método de pago"
                         >
                             <FiEdit className="h-5 w-5" />
                         </button>

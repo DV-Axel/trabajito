@@ -42,18 +42,19 @@ const CheckRequestService = () => {
     const handleSubmit = async () => {
         const formData = new FormData();
 
+        // Forzar paymentMethodId a 1
+        const paymentMethodId = 1;
+
         // Agrega los campos simples
         formData.append("userId", userId);
         formData.append("serviceKey", serviceKey);
+        formData.append("paymentMethodId", String(paymentMethodId));
         formData.append("tipoPropiedad", tipoPropiedad || "");
         formData.append("piso", piso || "");
         formData.append("numeroDepto", numeroDepto || "");
         formData.append("address", JSON.stringify(address || {}));
         formData.append("form", JSON.stringify(form || {}));
         formData.append("position", JSON.stringify(position || {}));
-
-
-
 
         // Agrega las fotos
         (photos || []).forEach((photo, idx) => {
@@ -76,6 +77,7 @@ const CheckRequestService = () => {
             console.error(error);
         }
     };
+
 
 
 
