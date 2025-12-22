@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
-import { services } from "../../data/services.js";
+import { services } from "../../../data/services.js";
 
 const RequesterIndex = () => {
     const [selected, setSelected] = useState(null);
@@ -14,20 +14,20 @@ const RequesterIndex = () => {
 
     const handleContinue = () => {
         setShowModal(false);
-        navigate("/formularioSolicitud", { state: { serviceKey: selectedService.key } });
+        navigate("/formularioSolicitud", { state: { serviceKey: selectedService.key, nameService: selectedService.name } });
     };
 
     const selectedService = services.find(s => s.key === selected); // Encuentra el servicio seleccionado
 
     return (
-        <div className="flex flex-col items-center py-8">
-            <h2 className="text-2xl font-bold mb-6 text-[#0c3444]">Elige un tipo de servicio</h2>
+        <div className="min-h-screen flex flex-col items-center py-8 bg-[#F4FBFD]] justify-center">
+            <h2 className="text-2xl font-bold mb-7 text-[#0c3444]">Elige un tipo de servicio</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
                 {services.map(service => (
                     <button
                         key={service.key}
                         onClick={() => handleServiceClick(service.key)}
-                        className={`flex flex-col items-center p-4 rounded-lg border-2 transition-all
+                        className={`flex flex-col items-center p-4 rounded-lg border-2 transition-all border border-gray-300
                             ${selected === service.key ? "border-[#0c7fcf] bg-blue-50" : "border-gray-200 bg-white"}
                             hover:border-[#008ED6] hover:bg-blue-100`}
                         type="button"

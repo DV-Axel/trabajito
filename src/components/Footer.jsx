@@ -8,9 +8,8 @@ const Footer = () => (
             <div className="flex items-center mb-4 md:mb-0">
                 <img src={logo} alt="Logo" className="h-10 w-10 mr-3" />
 
-                { /* TODO: Poner el nombre empresa */ }
 
-                <span className="text-xl font-bold">NombreEmpresa</span>
+                <span className="text-xl font-bold">TRABAJITO</span>
             </div>
             {/* Centro: Redes sociales */}
             <div className="flex space-x-6 mb-4 md:mb-0">
@@ -26,10 +25,9 @@ const Footer = () => (
             </div>
             {/* Derecha: Otros datos */}
             <div className="text-sm text-right">
-                { /* TODO: ver direcciones de contacto */ }
 
-                <div>Contacto: info@empresa.com</div>
-                <div>Tel: +54 11 1234-5678</div>
+                <div>Contacto: bonellitrabajo@gmail.com</div>
+                <div>Tel: +54 11 6360-6547</div>
                 <div>Buenos Aires, Argentina</div>
             </div>
         </div>
