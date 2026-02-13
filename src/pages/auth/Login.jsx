@@ -1,10 +1,14 @@
 import imagenLogin from '../../assets/images/image login.png'
-
+import { useAuth } from '../../context/useAuth';
 import axios from 'axios';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import {useNavigate} from "react-router-dom";
+import {ErrorAlert} from "../../components/alerts/ErrorAlert.jsx";
 
 const Login = () => {
+    const { login } = useAuth();
+    const navigate = useNavigate();
 
     //state de los inputs
     const [email, setEmail] = useState('');
@@ -40,9 +44,10 @@ const Login = () => {
         }
 
         try {
-            const res = await axios.post('http://localhost:8888/login', { email, password });
-            console.log(res);
-            // Aquí puedes redirigir o guardar el token si el login es exitoso
+            const res = await axios.post('http://localhost:3000/auth/login', { email, password });
+            login(res.data.user, res.data.token);
+            console.log(res.data.user)
+            navigate('/solicitar');
         } catch (error) {
             if (error.response && error.response.data && error.response.data.message) {
                 setErrorMessage(error.response.data.message);
@@ -71,7 +76,7 @@ const Login = () => {
                     <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-8 space-y-6 border border-gray-300">
                         <div>
                             <label htmlFor="email" className="block text-lg font-medium text-gray-700 mb-1">
-                                Correo electronico
+                                Correo electrónico
                             </label>
                             <input
                                 id="email"
@@ -100,22 +105,9 @@ const Login = () => {
                                 </Link>
                             </div>
                         </div>
-                        <div className="flex items-center">
-                            <input
-                                id="remember"
-                                type="checkbox"
-                                className="mr-2"
-                            />
-
-
-                            <label htmlFor="remember" className="text-gray-700 text-sm">
-                                Recordar contraseña
-                                { /* TODO: Implementar funcionalidad */}
-                            </label>
-                        </div>
                         <button
                             type="submit"
-                            className="w-full bg-[#0c7fcf] hover:bg-[#095a8e] text-white font-semibold py-2 rounded-md transition-all"
+                            className="w-full bg-[#0c7fcf] hover:bg-[#095a8e] text-white font-semibold h-12 rounded-md transition-all flex items-center justify-center"
                         >
                             INICIAR SESION
                         </button>
@@ -127,7 +119,8 @@ const Login = () => {
                         </div>
                     </form>
 
-                    {errorMessage && <p className="text-center text-l mdplus:my-2 my-4 text-red-500">{errorMessage}</p>}
+                    {errorMessage && <ErrorAlert message={errorMessage} />}
+
 
                 </div>
             </div>

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { MdPassword } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import {showErrorAlert, showSuccessAlert} from "../../components/alerts/sweetAlertsComponents.jsx";
 
 // Función para evaluar la seguridad de la contraseña
 const getPasswordStrength = (password) => {
@@ -19,24 +21,41 @@ const getPasswordStrength = (password) => {
 const NewPassword = () => {
     const [password, setPassword] = useState("");
     const [repeat, setRepeat] = useState("");
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState(false);
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const token = searchParams.get("token");
+    const navigate = useNavigate();
 
     const strength = getPasswordStrength(password);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!password || !repeat) {
-            setError("Por favor, completa ambos campos.");
+            showErrorAlert('Error', 'Todos los campos son obligatorios.');
             return;
         }
         if (password !== repeat) {
-            setError("Las contraseñas no coinciden.");
+            showErrorAlert('Error', 'Las contraseñas no coinciden.');
             return;
         }
-        setError("");
-        setSuccess(true);
-        //TODO: Aquí iría la lógica para guardar la nueva contraseña
+
+        try {
+            const response = await fetch(`http://localhost:3000/auth/reset-password?token=${token}`, {
+                method: 'POST',
+                body: JSON.stringify({ newPassword: password, confirmPassword: repeat }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+
+            if (response.ok) {
+                showSuccessAlert('Éxito', 'Contraseña cambiada correctamente.');
+                navigate('/login');
+            } else {
+                showErrorAlert('Error', 'Hubo un problema al cambiar la contraseña.');
+            }
+        } catch {
+            showErrorAlert('Error', 'Hubo un problema al cambiar la contraseña.');
+        }
     };
 
     return (
@@ -83,33 +102,7 @@ const NewPassword = () => {
                         Cambiar contraseña
                     </button>
                 </form>
-
-                {error && (
-                    <p className="text-center text-l my-4 text-red-500">
-                        {error}
-                    </p>
-                )}
             </div>
-            {success && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50 smplus:px-4">
-                    <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full flex flex-col items-center smplus:px-2">
-                        <MdPassword className="text-7xl mb-4 text-[#02283A]" />
-                        <h2 className="text-3xl font-extrabold text-[#0c3444] mb-4 text-center">
-                            ¡Contraseña cambiada!
-                        </h2>
-                        <p className="text-lg text-[#008ED6] text-center mb-2 font-semibold">
-                            Tu contraseña ha sido actualizada correctamente.
-                        </p>
-                        <Link to="/login" className="w-full flex justify-center">
-                            <button
-                                className="bg-[#0c7fcf] hover:bg-[#095a8e] text-white font-bold py-2 px-6 rounded-lg text-lg shadow-md transition-all"
-                            >
-                                Ir a Login
-                            </button>
-                        </Link>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };
